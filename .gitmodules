@@ -1,0 +1,9 @@
+[submodule "auth/auth-api"]
+	path = auth/auth-api
+	url = https://github.com/ElwinErnst/auth-api.git
+[submodule "ZeroTrust/zerotrust-api"]
+	path = ZeroTrust/zerotrust-api
+	url = https://github.com/ElwinErnst/zerotrust-api.git
+[submodule "securechain-vault"]
+	path = securechain-vault
+	url = https://github.com/ElwinErnst/securechain-vault.git
