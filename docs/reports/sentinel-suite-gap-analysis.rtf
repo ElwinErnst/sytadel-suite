@@ -1,0 +1,184 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0 Arial;}{\f1 Courier New;}}
+\fs24
+\b Sentinel Suite Gap Analysis\b0\par
+\par
+Fecha: 2026-04-01\par
+Workspace: /Users/sasha/Proyects/sentinel-suite\par
+\par
+\b Resumen ejecutivo\b0\par
+\par
+Estado general del stack:\par
+\bullet auth-api: bien encaminado y funcional para MVP.\par
+\bullet zerotrust-api: base correcta, pero todavia muy MVP y con poca operacion administrable.\par
+\bullet vault-api: es el modulo mas maduro del sistema.\par
+\bullet sentinel-app: ya funciona como consola operativa, pero todavia expone varias capacidades incompletas del backend.\par
+\par
+Lectura sintetica:\par
+\bullet Vault es hoy el componente mas cercano a producto.\par
+\bullet Auth ya sirve como fuente de verdad multi-tenant, pero le faltan piezas clave de identidad.\par
+\bullet Zero Trust resuelve el flujo tecnico principal, pero todavia no se siente un producto operable.\par
+\bullet La app ya demuestra el stack, aunque varias pantallas siguen siendo MVP o lectura parcial.\par
+\par
+\b Matriz por modulo\b0\par
+\par
+\b 1. sentinel-app\b0\par
+\par
+\b Estado actual:\b0 Parcial / usable como consola MVP.\par
+\par
+\b Hecho\b0\par
+\bullet Login y sesion con auth-api.\par
+\bullet Overview de tenant, plan y capacidades.\par
+\bullet Gestion de vaults.\par
+\bullet Upload, download y delete de documentos via zerotrust-api.\par
+\bullet Gestion basica de memberships.\par
+\bullet Lectura de audit logs.\par
+\bullet Settings de perfil y tenant.\par
+\par
+\b Parcial\b0\par
+\bullet Access management todavia muy manual.\par
+\bullet Auditoria visible, pero con experiencia basica.\par
+\bullet Notary aparece de forma parcial a traves de verificacion, no como feature completa.\par
+\bullet Gating de features premium existe, pero todavia se nota como MVP.\par
+\par
+\b Faltante\b0\par
+\bullet Consola real para policies Zero Trust.\par
+\bullet Flujo de invitacion de usuarios por email.\par
+\bullet Busqueda de usuarios para crear memberships.\par
+\bullet Preview documental.\par
+\bullet Metadata y edicion documental.\par
+\bullet Busqueda y filtros mas ricos de documentos.\par
+\bullet Bulk actions y operaciones masivas.\par
+\bullet UX mas madura para roles, errores, estados vacios y permisos.\par
+\bullet Vista operativa completa de Notary y anchors.\par
+\par
+\b Prioridad recomendada:\b0 Alta.\par
+\par
+\b 2. auth-api\b0\par
+\par
+\b Estado actual:\b0 Fuerte para MVP.\par
+\par
+\b Hecho\b0\par
+\bullet Login, refresh, logout, logout-all y me.\par
+\bullet Usuarios.\par
+\bullet Tenants.\par
+\bullet Memberships.\par
+\bullet Sesiones.\par
+\bullet JWT para zerotrust-api.\par
+\bullet Endpoints internos de directorio para otros servicios.\par
+\bullet Entitlements por tenant.\par
+\bullet Seed demo.\par
+\bullet E2E de auth.\par
+\par
+\b Parcial\b0\par
+\bullet Gestion de usuarios todavia orientada a administracion interna y no a producto de identidad completo.\par
+\bullet Roles por tenant bien resueltos, pero sin granularidad fina de permisos.\par
+\bullet Migraciones presentes a nivel de scripts, aunque el propio README marca que la historia de produccion necesita madurez.\par
+\par
+\b Faltante\b0\par
+\bullet MFA / segundo factor.\par
+\bullet Password reset / forgot password.\par
+\bullet Cambio de password de usuario final.\par
+\bullet Verificacion de email.\par
+\bullet Invite flow formal.\par
+\bullet SSO / OIDC / SAML.\par
+\bullet Auditoria mas visible de eventos de identidad.\par
+\bullet Modelo mas granular de permisos si se quiere ir mas alla de MEMBER / ADMIN / OWNER.\par
+\par
+\b Prioridad recomendada:\b0 Muy alta.\par
+\par
+\b 3. zerotrust-api\b0\par
+\par
+\b Estado actual:\b0 Base tecnica correcta, producto todavia incompleto.\par
+\par
+\b Hecho\b0\par
+\bullet Validacion de JWT emitido por auth-api.\par
+\bullet Evaluacion de politicas por upstream, path, method y rol.\par
+\bullet Firma HMAC downstream.\par
+\bullet Proteccion anti replay con timestamp y nonce.\par
+\bullet Gateway catch-all.\par
+\bullet Endpoints admin locales para status, policies, upstreams y reload.\par
+\bullet Integracion real con vault-api.\par
+\par
+\b Parcial\b0\par
+\bullet Modelo de policy util para MVP, pero limitado para una operacion mas rica.\par
+\bullet Admin existe, pero solo local-loopback.\par
+\bullet Soporte de upstream visible hoy centrado en Vault.\par
+\bullet Testing visible, pero mucho menos profundo que en Vault.\par
+\par
+\b Faltante\b0\par
+\bullet Policies por tenant.\par
+\bullet Consola usable de administracion de policies.\par
+\bullet Observabilidad de decisiones de policy.\par
+\bullet Logs operativos mas ricos.\par
+\bullet Metricas y troubleshooting por request.\par
+\bullet Soporte multi-upstream mas maduro.\par
+\bullet Hardening operativo: rate limiting, circuit breaking, estrategias de resiliencia.\par
+\bullet Historia de operacion remota segura mas alla del admin local.\par
+\par
+\b Prioridad recomendada:\b0 Muy alta.\par
+\par
+\b 4. vault-api\b0\par
+\par
+\b Estado actual:\b0 El modulo mas completo del stack.\par
+\par
+\b Hecho\b0\par
+\bullet Creacion y listado de vaults.\par
+\bullet Upload, list, download y delete de documentos.\par
+\bullet Cifrado antes de guardar.\par
+\bullet Storage centralizado.\par
+\bullet Manejo de claves por tenant.\par
+\bullet Auditoria append-only.\par
+\bullet Tenant RBAC y tenant context.\par
+\bullet Verificacion de requests firmadas por Zero Trust.\par
+\bullet Integracion con auth-api como directorio.\par
+\bullet Verificacion publica de anchors.\par
+\bullet Suite de e2e y unit tests bastante mas amplia que otros modulos.\par
+\par
+\b Parcial\b0\par
+\bullet Notary / anchoring existe a nivel de estructura, pero todavia usa un cliente dummy para MVP.\par
+\bullet Governance documental bien encaminada, pero todavia sin features mas avanzadas de producto documental.\par
+\par
+\b Faltante\b0\par
+\bullet Integracion real de anchoring / contrato en produccion.\par
+\bullet Versionado documental.\par
+\bullet Metadata avanzada.\par
+\bullet Rename / move / lifecycle richer operations.\par
+\bullet Search e indexing.\par
+\bullet Retention / archive / legal hold / restore.\par
+\bullet ACL mas fina por vault o por documento si se busca mayor granularidad.\par
+\bullet Admin global mas completo para operacion multi-tenant.\par
+\par
+\b Prioridad recomendada:\b0 Alta.\par
+\par
+\b Prioridades globales\b0\par
+\par
+\b Fase 1\b0\par
+\bullet Cerrar auth-api como sistema de identidad utilizable: invites, reset de password, MFA.\par
+\bullet Cerrar zerotrust-api como producto operable: policies por tenant, visibilidad de decisiones, consola minima.\par
+\par
+\b Fase 2\b0\par
+\bullet Completar vault-api como producto documental serio: anchoring real, metadata, search y lifecycle.\par
+\bullet Elevar sentinel-app para reflejar esas capacidades sin pantallas MVP ni flujos manuales.\par
+\par
+\b Fase 3\b0\par
+\bullet Unificar experiencia de plataforma: identidad, acceso, vault, auditoria y notary en una sola consola consistente.\par
+\bullet Preparar posture de producto para entornos enterprise: SSO, observabilidad, operacion remota y permisos mas finos.\par
+\par
+\b Conclusiones\b0\par
+\par
+\bullet Si hoy hubiera que elegir el modulo mas cerca de producto, es vault-api.\par
+\bullet Si hoy hubiera que elegir el modulo mas critico para cerrar antes de crecer, es auth-api.\par
+\bullet Si hoy hubiera que elegir el modulo con mayor gap entre arquitectura y producto, es zerotrust-api.\par
+\bullet Si hoy hubiera que elegir el modulo que mejor vende el stack, es sentinel-app, pero depende de cerrar capacidades backend todavia parciales.\par
+\par
+\b Recomendacion final\b0\par
+\par
+Secuencia sugerida de trabajo:\par
+\bullet 1. Auth.\par
+\bullet 2. Zero Trust.\par
+\bullet 3. Vault.\par
+\bullet 4. App.\par
+\par
+La razon es simple: la app ya demuestra bastante, pero hoy depende de piezas backend que todavia estan en etapa MVP o semicompleta. Si se cierran primero identidad y control, despues la consola se puede terminar con mucha mas coherencia.\par
+}

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Digital Notary Backend Proposal</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.45; color: #111; }
+    h1, h2, h3 { color: #111; }
+    h1 { font-size: 26px; }
+    h2 { font-size: 20px; margin-top: 24px; }
+    h3 { font-size: 16px; margin-top: 18px; }
+    p, li { font-size: 12px; }
+    code, pre { font-family: Menlo, Consolas, monospace; font-size: 11px; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 8px; white-space: pre-wrap; }
+    ul, ol { margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Digital Notary Backend Proposal</h1>
+  <p><strong>Project:</strong> Sytadel / Secure document workflows</p>
+  <p><strong>Date:</strong> 2026-03-31</p>
+
+  <h2>1. Objective</h2>
+  <p>The initial Digital Notary backend should certify document existence and integrity, preserve verifiable evidence, and expose a clear API for issuance and verification. The system should not start from blockchain complexity first. It should start from a solid evidence model that later allows different notary providers.</p>
+
+  <h2>2. What already exists in the current backend</h2>
+  <ul>
+    <li><code>DocumentEntity</code> already stores document hashes and anchoring-related state.</li>
+    <li><code>AnchorService</code> already computes a SHA-256 hash, anchors a document, retries pending operations, and verifies integrity.</li>
+    <li><code>/public/verify</code> already exposes public verification by <code>documentId</code>.</li>
+    <li>The upload flow already computes <code>sha256PlainHex</code> and persists <code>anchorStatus</code>.</li>
+  </ul>
+  <p>This means the future Digital Notary module does not need to start from zero. The current anchor layer is a good technical seed, but it should evolve into a broader notary model.</p>
+
+  <h2>3. Recommendation</h2>
+  <p>Do not keep the long-term concept centered around “anchor” only. Use a new <strong>Digital Notary</strong> module, where anchoring is one implementation strategy or one stage of the evidence lifecycle.</p>
+
+  <h2>4. Target architecture</h2>
+  <ol>
+    <li><strong>NotaryModule</strong></li>
+    <li><strong>NotaryService</strong></li>
+    <li><strong>NotaryController</strong> for private tenant operations</li>
+    <li><strong>PublicNotaryController</strong> for public verification</li>
+    <li><strong>NotaryProviderPort</strong> to abstract blockchain or external notary providers</li>
+    <li><strong>NotaryJob / Cron</strong> for retries and asynchronous issuance</li>
+  </ol>
+
+  <h2>5. Responsibility split</h2>
+  <ul>
+    <li><strong>DocumentsService</strong>: upload, download, delete.</li>
+    <li><strong>NotaryService</strong>: issue certificate, verify evidence, expose history and state.</li>
+    <li><strong>NotaryProviderPort</strong>: talk to blockchain or external provider.</li>
+    <li><strong>PublicNotaryController</strong>: public verification endpoint.</li>
+    <li><strong>Audit layer</strong>: record issuance, verification, retries, and failures.</li>
+  </ul>
+
+  <h2>6. Data model recommendation</h2>
+  <p>Instead of keeping all notary state directly inside <code>documents</code>, add a dedicated table such as <code>notary_records</code>.</p>
+
+  <h3>Suggested table: <code>notary_records</code></h3>
+  <ul>
+    <li><code>id</code></li>
+    <li><code>tenant_id</code></li>
+    <li><code>document_id</code></li>
+    <li><code>document_sha256</code></li>
+    <li><code>status</code> = <code>PENDING | ISSUED | FAILED | REVOKED</code> (optional later)</li>
+    <li><code>provider</code> = <code>local | ethereum | btc | external</code></li>
+    <li><code>provider_ref</code> = transaction hash or external proof ID</li>
+    <li><code>issued_at</code></li>
+    <li><code>verified_at</code></li>
+    <li><code>payload_json</code></li>
+    <li><code>created_by</code></li>
+    <li><code>failure_reason</code></li>
+    <li><code>created_at</code></li>
+    <li><code>updated_at</code></li>
+  </ul>
+
+  <p>Keep only a summary on <code>documents</code>, for example:</p>
+  <ul>
+    <li><code>notary_status</code></li>
+    <li><code>latest_notary_record_id</code></li>
+  </ul>
+
+  <h3>Why this is better</h3>
+  <ul>
+    <li>A document may need more than one certificate.</li>
+    <li>Evidence history stays independent from document storage concerns.</li>
+    <li>You can reissue, migrate provider, or keep multiple proof records.</li>
+    <li>The system becomes more maintainable and future-proof.</li>
+  </ul>
+
+  <h2>7. Initial API surface</h2>
+
+  <h3>Private endpoints</h3>
+  <ul>
+    <li><code>POST /notary/documents/:id/issue</code></li>
+    <li><code>GET /notary/documents/:id/status</code></li>
+    <li><code>GET /notary/documents/:id/records</code></li>
+    <li><code>POST /notary/documents/:id/retry</code></li>
+  </ul>
+
+  <h3>Public endpoints</h3>
+  <ul>
+    <li><code>GET /public/notary/verify?documentId=...</code></li>
+    <li>Later improvement: <code>GET /public/notary/verify/:recordId</code></li>
+  </ul>
+
+  <h2>8. MVP workflow</h2>
+  <ol>
+    <li>A document is uploaded.</li>
+    <li>The backend calculates the SHA-256 hash.</li>
+    <li>A <code>notary_record</code> is created with status <code>PENDING</code>.</li>
+    <li>A job or manual trigger tries to issue the certificate.</li>
+    <li>The provider returns a reference.</li>
+    <li>The record moves to <code>ISSUED</code>.</li>
+    <li>Public verification uses the saved evidence and the current document hash.</li>
+  </ol>
+
+  <h2>9. Provider abstraction</h2>
+  <p>The first implementation should not be a real blockchain provider. It should be a <strong>real contract with a dummy provider</strong>. That gives a stable backend surface without locking the project into one anchoring technology too early.</p>
+
+  <h3>Suggested port</h3>
+  <pre><code>export interface NotaryProviderPort {
+  issueCertificate(input: {
+    tenantId: string;
+    documentId: string;
+    sha256Hex: string;
+    metadata?: Record&lt;string, unknown&gt;;
+  }): Promise&lt;{
+    provider: string;
+    providerRef: string;
+    issuedAt: Date;
+    payload?: Record&lt;string, unknown&gt;;
+  }&gt;;
+
+  verifyCertificate(input: {
+    providerRef: string;
+    sha256Hex: string;
+  }): Promise&lt;{
+    valid: boolean;
+    checkedAt: Date;
+    details?: Record&lt;string, unknown&gt;;
+  }&gt;;
+}</code></pre>
+
+  <h2>10. Minimal states</h2>
+  <ul>
+    <li><code>PENDING</code></li>
+    <li><code>ISSUED</code></li>
+    <li><code>FAILED</code></li>
+  </ul>
+  <p>These are enough for the first useful version.</p>
+
+  <h2>11. Authorization model</h2>
+  <ul>
+    <li><strong>OWNER / ADMIN</strong>: issue and retry certificates.</li>
+    <li><strong>MEMBER</strong>: read status and record history.</li>
+    <li><strong>Public</strong>: verify by public endpoint.</li>
+  </ul>
+
+  <h2>12. Audit events</h2>
+  <ul>
+    <li><code>NOTARY_ISSUE_REQUESTED</code></li>
+    <li><code>NOTARY_ISSUED</code></li>
+    <li><code>NOTARY_VERIFY</code></li>
+    <li><code>NOTARY_FAILED</code></li>
+    <li><code>NOTARY_RETRY</code></li>
+  </ul>
+
+  <h2>13. What not to build yet</h2>
+  <ul>
+    <li>Revocation workflows</li>
+    <li>Complex legal versioning</li>
+    <li>Signed PDF certificates</li>
+    <li>Multi-chain support</li>
+    <li>Custom smart contracts from day one</li>
+    <li>Human notary workflows</li>
+  </ul>
+
+  <h2>14. Recommended implementation plan</h2>
+  <ol>
+    <li>Create <code>NotaryModule</code> and <code>notary_records</code>.</li>
+    <li>Wrap or evolve the current <code>AnchorService</code> into <code>NotaryService</code>.</li>
+    <li>Create <code>NotaryProviderPort</code>.</li>
+    <li>Implement <code>DummyNotaryProvider</code>.</li>
+    <li>Expose private and public endpoints.</li>
+    <li>Connect retry job / cron.</li>
+    <li>Later swap the dummy provider for a real blockchain or external provider.</li>
+  </ol>
+
+  <h2>15. Final recommendation</h2>
+  <p>Do not start from “blockchain backend”. Start from a clean <strong>evidence backend</strong>. If the evidence model and provider contract are solid, blockchain becomes one implementation detail instead of the center of the architecture.</p>
+</body>
+</html>
