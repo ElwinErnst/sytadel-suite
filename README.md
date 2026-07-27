@@ -1,10 +1,13 @@
 # Sentinel Suite
 
-Monorepo con tres servicios principales:
+Monorepo con los servicios de Sentinel:
 
-- `auth-api`: identidad, tenants, memberships y sesiones
-- `zerotrust-api`: gateway Zero Trust que valida JWT, aplica policy y firma requests downstream
-- `vault-api`: dominio de vaults, documentos, cifrado, auditoría y anclaje
+- `auth-api`: identidad, tenants, memberships y sesiones (submódulo)
+- `zerotrust-api`: gateway Zero Trust que valida JWT, aplica policy y firma requests downstream (submódulo)
+- `vault-api`: dominio de vaults, documentos, cifrado, auditoría, anclaje y notaría (submódulo)
+- `billing-api`: metering + suscripciones (submódulo)
+- `sentinel-web`: landing comercial en Astro
+- `sentinel-app`: dashboard operativo en Next para Auth + Vault + Billing
 
 ## Estado actual
 
@@ -34,6 +37,9 @@ Servicios expuestos:
 - `auth-api`: [http://localhost:3002/api](http://localhost:3002/api)
 - `vault-api`: [http://localhost:3000](http://localhost:3000)
 - `zerotrust-api`: [http://localhost:3010](http://localhost:3010)
+- `billing-api`: [http://localhost:3020/api](http://localhost:3020/api)
+- `sentinel-web`: [http://localhost:4321](http://localhost:4321)
+- `sentinel-app`: [http://localhost:3003](http://localhost:3003)
 - `minio`: [http://localhost:9001](http://localhost:9001)
 
 Para bajar el stack:
@@ -79,15 +85,17 @@ Resultado esperado:
 - `GET /vault/tenants` devuelve `200 OK`
 - `POST /vault/tenants` devuelve `409 Conflict`, porque la creación de tenants pertenece a `auth-api`
 
-## Smoke test
+## Smoke tests
 
 Con el stack levantado:
 
 ```bash
-./scripts/smoke.sh
+./scripts/smoke.sh          # flujo auth → zerotrust → vault (docs)
+./scripts/notary-smoke.sh   # flujo notaría vía vault-api
+node scripts/validate-metering.js   # sanity de la pipeline de billing
 ```
 
-El script valida:
+`smoke.sh` valida:
 
 - login en `auth-api`
 - `GET /vault/tenants` vía `zerotrust-api`
@@ -104,6 +112,15 @@ El script valida:
 
 ## Documentación por servicio
 
-- [auth/auth-api/README.md](/Users/sasha/Proyects/sentinel-suite/auth/auth-api/README.md)
-- [ZeroTrust/zerotrust-api/README.md](/Users/sasha/Proyects/sentinel-suite/ZeroTrust/zerotrust-api/README.md)
-- [securechain-vault/README.md](/Users/sasha/Proyects/sentinel-suite/securechain-vault/README.md)
+- [auth/auth-api/README.md](./auth/auth-api/README.md)
+- [ZeroTrust/zerotrust-api/README.md](./ZeroTrust/zerotrust-api/README.md)
+- [securechain-vault/README.md](./securechain-vault/README.md)
+- [billing/billing-api/](./billing/billing-api/)
+- [sentinel-app/README.md](./sentinel-app/README.md)
+- [sentinel-web/README.md](./sentinel-web/README.md)
+
+## Paquete de documentación integral
+
+Documentación estratégica y técnica de producto:
+- [docs/architecture/README.md](./docs/architecture/README.md)
+- [Documento maestro de Sytadel](./docs/architecture/sytadel-master-es.md)
