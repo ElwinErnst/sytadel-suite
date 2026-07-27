@@ -16,6 +16,23 @@ services:
       timeout: 3s
       retries: 20
 
+  billing-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: billing
+      POSTGRES_USER: billing
+      POSTGRES_PASSWORD: billing
+    ports:
+      - "5435:5432"
+    volumes:
+      - billing_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U billing -d billing"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   vault-db:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -74,6 +91,7 @@ services:
       auth-db:
         condition: service_healthy
     environment:
+      NODE_ENV: production
       PORT: 3001
       DB_HOST: auth-db
       DB_PORT: 5432
@@ -89,6 +107,11 @@ services:
       AUTH_JWT_REFRESH_EXPIRES_IN: 7d
       AUTH_BCRYPT_ROUNDS: 12
       AUTH_INTERNAL_SERVICE_SECRET: change-me-internal-secret
+      AUTH_INTERNAL_HMAC_SECRET: change-me-internal-hmac-secret
+      BILLING_METERING_BASE_URL: http://billing-api:3020/api
+      BILLING_METERING_TIMEOUT_MS: 5000
+      BILLING_INTERNAL_SERVICE_SECRET: change-me-billing-internal-secret
+      BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
       AUTH_BOOTSTRAP_DEMO_DATA: "true"
     ports:
       - "3002:3001"
@@ -123,6 +146,7 @@ services:
       ZT_MAX_CLOCK_SKEW_MS: 30000
       AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
       AUTH_DIRECTORY_SERVICE_SECRET: change-me-internal-secret
+      AUTH_DIRECTORY_HMAC_SECRET: change-me-internal-hmac-secret
       AUTH_DIRECTORY_TIMEOUT_MS: 5000
       MASTER_KEY_B64: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
       MASTER_KEY_VERSION: 1
@@ -139,17 +163,94 @@ services:
       vault-api:
         condition: service_started
     environment:
+      NODE_ENV: production
       PORT: 3010
       ZT_JWT_ISSUER: auth
       ZT_JWT_AUDIENCE: zerotrust-api
       ZT_JWT_HS256_SECRET: change-me-access-secret
       ZT_HMAC_SECRET: change_me_zt_secret
+      AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
+      AUTH_DIRECTORY_SERVICE_SECRET: change-me-internal-secret
+      AUTH_DIRECTORY_HMAC_SECRET: change-me-internal-hmac-secret
+      AUTH_DIRECTORY_TIMEOUT_MS: 5000
+      BILLING_METERING_BASE_URL: http://billing-api:3020/api
+      BILLING_METERING_TIMEOUT_MS: 5000
+      BILLING_INTERNAL_SERVICE_SECRET: change-me-billing-internal-secret
+      BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
       VAULT_BASE_URL: http://vault-api:3000
       ZT_POLICIES_FILE: /app/local/policies.json
     ports:
       - "3010:3010"
 
+  billing-api:
+    build:
+      context: ./billing/billing-api
+    restart: unless-stopped
+    env_file:
+      - ./billing/billing-api/.env
+    depends_on:
+      billing-db:
+        condition: service_healthy
+      auth-api:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      PORT: 3020
+      DB_HOST: billing-db
+      DB_PORT: 5432
+      DB_NAME: billing
+      DB_USER: billing
+      DB_PASSWORD: billing
+      DB_SYNC: "true"
+      BILLING_JWT_ISSUER: auth
+      BILLING_JWT_AUDIENCE: zerotrust-api
+      BILLING_JWT_ACCESS_SECRET: change-me-access-secret
+      AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
+      AUTH_DIRECTORY_SERVICE_SECRET: change-me-internal-secret
+      AUTH_DIRECTORY_HMAC_SECRET: change-me-internal-hmac-secret
+      AUTH_DIRECTORY_TIMEOUT_MS: 5000
+      BILLING_INTERNAL_SERVICE_SECRET: change-me-billing-internal-secret
+      BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
+      BILLING_ALLOW_MOCK_CHECKOUT_ACTIVATION: "true"
+      BILLING_PORTAL_RETURN_URL: http://localhost:3003/app/billing
+      BILLING_TRIAL_DAYS: 14
+      BILLING_CLOSE_DUE_PERIODS_INTERVAL_MS: ${BILLING_CLOSE_DUE_PERIODS_INTERVAL_MS:-300000}
+      MERCADOPAGO_API_BASE_URL: ${MERCADOPAGO_API_BASE_URL:-https://api.mercadopago.com}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+    ports:
+      - "3020:3020"
+
+  sentinel-web:
+    build:
+      context: ./sentinel-web
+    restart: unless-stopped
+    ports:
+      - "4321:4321"
+
+  sentinel-app:
+    build:
+      context: ./sentinel-app
+    restart: unless-stopped
+    depends_on:
+      auth-api:
+        condition: service_started
+      billing-api:
+        condition: service_started
+      zerotrust-api:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      AUTH_API_URL: http://auth-api:3001/api
+      BILLING_API_URL: http://billing-api:3020/api
+      ZT_API_URL: http://zerotrust-api:3010
+      VAULT_API_URL: http://vault-api:3000
+    ports:
+      - "3003:3003"
+
 volumes:
   auth_postgres_data:
+  billing_postgres_data:
   vault_postgres_data:
   minio_data:
