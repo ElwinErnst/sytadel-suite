@@ -7,3 +7,6 @@
 [submodule "securechain-vault"]
 	path = securechain-vault
 	url = https://github.com/ElwinErnst/securechain-vault.git
+[submodule "billing/billing-api"]
+	path = billing/billing-api
+	url = https://github.com/ElwinErnst/billing-api.git
