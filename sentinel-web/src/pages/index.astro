@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const previewCards = [
+  {
+    kicker: 'Console overview',
+    title: 'Vista central del tenant y la operación',
+    copy:
+      'Métricas, capacidad activa, permisos y estado del entorno en una sola capa visual.',
+    chips: ['Tenant', 'Roles', 'Plan', 'Estado'],
+  },
+  {
+    kicker: 'Vault workflows',
+    title: 'Custodia documental con trazabilidad',
+    copy:
+      'Seguimiento de documentos, evidencia y accesos sobre activos sensibles sin perder claridad operativa.',
+    chips: ['Vaults', 'Documentos', 'Historial', 'Custodia'],
+  },
+  {
+    kicker: 'Access + billing',
+    title: 'Acceso y negocio bajo la misma lógica',
+    copy:
+      'Gobernanza comercial y técnica alineadas para escalar membresías, límites y upgrades con control.',
+    chips: ['Membresías', 'Billing', 'Límites', 'Upgrade'],
+  },
+];
+
+const highlights = [
+  'Experiencia privada en preparación para equipos que necesitan orden operativo real.',
+  'Auth, Zero Trust y Vault en una misma consola, sin fragmentación entre herramientas.',
+  'Acceso anticipado por contacto directo mientras cerramos la primera release pública.',
+];
+---
+
+<BaseLayout
+  lang="es"
+  title="Sytadel"
+  description="Sytadel Labs es la capa de control para acceso seguro, identidad y operaciones zero trust en infraestructura moderna."
+>
+  <main class="app-soon-shell app-soon-hidden" id="app-soon-root">
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <section class="app-soon-hero">
+      <div class="app-soon-copy">
+        <div class="app-soon-meta">
+          <a class="brand app-soon-brand" href="https://sytadel-labs.com">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 128 128" fill="none">
+                <path
+                  d="M83.5 38.5H55.5C47.5 38.5 42 43 42 49.5C42 56.2 46.6 59.6 56.2 62.1L67 64.9C73.4 66.5 76 68.4 76 72C76 76.2 72.4 79 66.2 79H37.8"
+                  stroke="url(#brand-mark-stroke-app-soon)"
+                  stroke-width="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M46 93.5H74C82 93.5 87.5 89 87.5 82.5C87.5 75.8 82.9 72.4 73.3 69.9L62.5 67.1C56.1 65.5 53.5 63.6 53.5 60C53.5 55.8 57.1 53 63.3 53H91.7"
+                  stroke="url(#brand-mark-stroke-app-soon)"
+                  stroke-width="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <defs>
+                  <linearGradient
+                    id="brand-mark-stroke-app-soon"
+                    x1="30"
+                    y1="26"
+                    x2="95"
+                    y2="102"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#F8F2FF" />
+                    <stop offset="1" stop-color="#E6D8FF" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </span>
+            <span>Sytadel App</span>
+          </a>
+
+          <span class="app-soon-pill">Coming soon</span>
+        </div>
+        <h1>La consola operativa de Sytadel ya está en camino.</h1>
+        <p class="hero-description app-soon-description">
+          Estamos preparando la primera versión pública de `app.sytadel-labs.com`
+          para mostrar autenticación centralizada, vaults, trazabilidad y control
+          comercial en una sola experiencia.
+        </p>
+
+        <div class="hero-actions app-soon-actions">
+          <a
+            class="button button-primary"
+            href="mailto:sytadel.labs@gmail.com?subject=Quiero%20acceso%20anticipado%20a%20Sytadel"
+          >
+            Contactarnos
+          </a>
+          <a class="button button-secondary" href="https://sytadel-labs.com/es/#contacto">
+            Ver sitio principal
+          </a>
+        </div>
+
+        <div class="app-soon-highlights">
+          {highlights.map((item) => (
+            <article class="app-soon-highlight">
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div class="app-soon-preview-stack" aria-label="Screens del software">
+        {previewCards.map((card, index) => (
+          <article class={`app-screen-card app-screen-card-${index + 1}`}>
+            <div class="app-screen-head">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="app-screen-body">
+              <aside class="app-screen-sidebar">
+                <div class="app-screen-sidebar-mark"></div>
+                <div class="app-screen-sidebar-line short"></div>
+                <div class="app-screen-sidebar-line"></div>
+                <div class="app-screen-sidebar-line"></div>
+                <div class="app-screen-sidebar-line short"></div>
+              </aside>
+
+              <div class="app-screen-main">
+                <div class="app-screen-header">
+                  <p>{card.kicker}</p>
+                  <h2>{card.title}</h2>
+                  <span>{card.copy}</span>
+                </div>
+
+                <div class="app-screen-metrics">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+
+                <div class="app-screen-grid">
+                  <div class="app-screen-panel app-screen-panel-large"></div>
+                  <div class="app-screen-panel"></div>
+                  <div class="app-screen-panel"></div>
+                </div>
+
+                <div class="app-screen-chips">
+                  {card.chips.map((chip) => (
+                    <span>{chip}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="app-soon-contact">
+      <div class="section-intro">
+        <p class="section-kicker">Contacto</p>
+        <h2>¿Quieres acceso anticipado o una demo privada?</h2>
+        <p>
+          Escríbenos y coordinamos una presentación de la consola, sus módulos
+          principales y el roadmap de lanzamiento.
+        </p>
+      </div>
+
+      <article class="app-soon-contact-card">
+        <span class="launch-badge">Email directo</span>
+        <strong>sytadel.labs@gmail.com</strong>
+        <p>
+          También podemos mostrar el producto en una demo privada mientras
+          cerramos la primera release pública.
+        </p>
+
+        <div class="hero-actions app-soon-actions">
+          <a
+            class="button button-primary"
+            href="mailto:sytadel.labs@gmail.com?subject=Quiero%20una%20demo%20de%20Sytadel&body=Hola%20equipo%2C%20quiero%20coordinar%20una%20demo%20privada."
+          >
+            Escribir ahora
+          </a>
+          <a class="button button-secondary" href="https://sytadel-labs.com">
+            Ir a sytadel-labs.com
+          </a>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=/es/" />
+  </noscript>
+
+  <script is:inline>
+    const hostname = window.location.hostname.toLowerCase();
+    const appHosts = new Set(['app.sytadel-labs.com', 'www.app.sytadel-labs.com']);
+    const appSoonRoot = document.getElementById('app-soon-root');
+
+    if (appHosts.has(hostname)) {
+      appSoonRoot?.classList.remove('app-soon-hidden');
+      document.title = 'Sytadel App | Coming soon';
+    } else {
+      window.location.replace('/es/');
+    }
+  </script>
+</BaseLayout>

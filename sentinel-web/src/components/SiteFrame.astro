@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { locales, type Locale } from '../i18n/content';
+import { getNav, getPagePath, type SitePage } from '../i18n/routes';
+
+type Props = {
+  lang: Locale;
+  page: SitePage;
+  title: string;
+  description: string;
+  languageLabel: string;
+  footer: string;
+};
+
+const { lang, page, title, description, languageLabel, footer } = Astro.props;
+
+const langNames: Record<Locale, string> = {
+  es: 'ES',
+  en: 'EN',
+  pt: 'PT',
+};
+
+const topbarCtaLabels: Record<Locale, string> = {
+  es: 'Comenzar',
+  en: 'Get started',
+  pt: 'Começar',
+};
+
+const nav = getNav(lang);
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  <main class="site-shell">
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <header class="topbar" data-menu-open="false">
+      <a class="brand" href={getPagePath(lang, 'home')}>
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 128 128" fill="none">
+            <path
+              d="M83.5 38.5H55.5C47.5 38.5 42 43 42 49.5C42 56.2 46.6 59.6 56.2 62.1L67 64.9C73.4 66.5 76 68.4 76 72C76 76.2 72.4 79 66.2 79H37.8"
+              stroke="url(#brand-mark-stroke-web)"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M46 93.5H74C82 93.5 87.5 89 87.5 82.5C87.5 75.8 82.9 72.4 73.3 69.9L62.5 67.1C56.1 65.5 53.5 63.6 53.5 60C53.5 55.8 57.1 53 63.3 53H91.7"
+              stroke="url(#brand-mark-stroke-web)"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <defs>
+              <linearGradient
+                id="brand-mark-stroke-web"
+                x1="30"
+                y1="26"
+                x2="95"
+                y2="102"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#F8F2FF" />
+                <stop offset="1" stop-color="#E6D8FF" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <span>Sytadel</span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-menu"
+        aria-label="Abrir menú"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="topbar-menu" id="site-menu">
+        <nav class="nav">
+          {nav.map((item) => (
+            <a class={page === 'home' ? '' : 'active'} href={item.href}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <div class="topbar-actions">
+          <div class="lang-switcher" aria-label={languageLabel}>
+            {locales.map((locale) => (
+              <a
+                class={locale === lang ? 'active' : ''}
+                href={getPagePath(locale, page)}
+              >
+                {langNames[locale]}
+              </a>
+            ))}
+          </div>
+
+          <a class="button button-primary topbar-cta" href="https://app.sytadel-labs.com">
+            {topbarCtaLabels[lang]}
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="footer">
+      <span>{footer}</span>
+      <a href={getPagePath(lang, 'home')}>Sytadel Labs</a>
+    </footer>
+  </main>
+
+  <script is:inline>
+    const topbar = document.querySelector('.topbar');
+    const toggle = document.querySelector('.nav-toggle');
+    const menu = document.querySelector('.topbar-menu');
+
+    if (topbar && toggle && menu) {
+      const syncMenu = (open) => {
+        topbar.setAttribute('data-menu-open', String(open));
+        toggle.setAttribute('aria-expanded', String(open));
+      };
+
+      toggle.addEventListener('click', () => {
+        const isOpen = topbar.getAttribute('data-menu-open') === 'true';
+        syncMenu(!isOpen);
+      });
+
+      menu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => syncMenu(false));
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 720) {
+          syncMenu(false);
+        }
+      });
+    }
+  </script>
+</BaseLayout>

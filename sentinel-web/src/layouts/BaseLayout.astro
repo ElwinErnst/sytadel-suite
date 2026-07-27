@@ -1,0 +1,92 @@
+---
+import '../styles/global.css';
+import { locales, type Locale } from '../i18n/content';
+
+type Props = {
+  lang: Locale;
+  title: string;
+  description: string;
+};
+
+const { lang, title, description } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const siteUrl = Astro.site?.toString() ?? 'https://sytadel-labs.com';
+const alternateLinks = locales.map((locale) => ({
+  locale,
+  href: new URL(`/${locale}/`, Astro.site).toString(),
+}));
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Sytadel Labs',
+  url: siteUrl,
+  logo: new URL('/favicon.svg', siteUrl).toString(),
+  sameAs: [],
+};
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Sytadel Labs',
+  url: siteUrl,
+  inLanguage: lang,
+  description,
+};
+const initialBackground = `radial-gradient(circle at 10% 12%, rgba(138, 77, 255, 0.26), transparent 22%),
+radial-gradient(circle at 88% 14%, rgba(30, 167, 255, 0.19), transparent 18%),
+radial-gradient(circle at 78% 68%, rgba(255, 79, 216, 0.18), transparent 16%),
+linear-gradient(180deg, #050510 0%, #0a0817 30%, #050510 64%, #03030a 100%)`;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="author" content="Sytadel Labs" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="application-name" content="Sytadel" />
+    <meta name="theme-color" content="#060511" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:site_name" content="Sytadel Labs" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.toString()} />
+    <meta property="og:locale" content={lang} />
+    <meta property="og:image" content={new URL('/favicon.svg', siteUrl).toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/favicon.svg', siteUrl).toString()} />
+    <link rel="canonical" href={canonicalUrl.toString()} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/es/', Astro.site).toString()} />
+    {alternateLinks.map(({ locale, href }) => (
+      <link rel="alternate" hreflang={locale} href={href} />
+    ))}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
+    <style is:inline>{`
+      html,
+      body {
+        min-height: 100%;
+        background-color: #060511;
+        background-image: ${initialBackground};
+      }
+    `}</style>
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

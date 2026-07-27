@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="14" y1="12" x2="114" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8A4DFF" />
+      <stop offset="0.5" stop-color="#1EA7FF" />
+      <stop offset="1" stop-color="#FF4FD8" />
+    </linearGradient>
+    <linearGradient id="stroke" x1="30" y1="26" x2="95" y2="102" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8F2FF" />
+      <stop offset="1" stop-color="#E6D8FF" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="108" height="108" rx="30" fill="#090815" />
+  <rect x="10" y="10" width="108" height="108" rx="30" fill="url(#bg)" fill-opacity="0.24" />
+  <rect x="10.5" y="10.5" width="107" height="107" rx="29.5" stroke="rgba(255,255,255,0.12)" />
+  <path
+    d="M83.5 38.5H55.5C47.5 38.5 42 43 42 49.5C42 56.2 46.6 59.6 56.2 62.1L67 64.9C73.4 66.5 76 68.4 76 72C76 76.2 72.4 79 66.2 79H37.8"
+    stroke="url(#stroke)"
+    stroke-width="10"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M46 93.5H74C82 93.5 87.5 89 87.5 82.5C87.5 75.8 82.9 72.4 73.3 69.9L62.5 67.1C56.1 65.5 53.5 63.6 53.5 60C53.5 55.8 57.1 53 63.3 53H91.7"
+    stroke="url(#stroke)"
+    stroke-width="10"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

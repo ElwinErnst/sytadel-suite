@@ -1,0 +1,413 @@
+---
+import SiteFrame from '../../components/SiteFrame.astro';
+import { copy, defaultLocale, locales, type Locale } from '../../i18n/content';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang ?? defaultLocale) as Locale;
+const page = copy[lang];
+
+const ids: Record<Locale, Record<string, string>> = {
+  es: {
+    product: 'producto',
+    integrations: 'apis',
+    modules: 'modulos',
+    flow: 'flujo',
+    security: 'seguridad',
+    pricing: 'precios',
+    contact: 'contacto',
+  },
+  en: {
+    product: 'product',
+    integrations: 'apis',
+    modules: 'modules',
+    flow: 'flow',
+    security: 'security',
+    pricing: 'pricing',
+    contact: 'contact',
+  },
+  pt: {
+    product: 'produto',
+    integrations: 'apis',
+    modules: 'modulos',
+    flow: 'fluxo',
+    security: 'seguranca',
+    pricing: 'precos',
+    contact: 'contato',
+  },
+}[lang];
+
+const sectionKickers: Record<
+  Locale,
+  Record<
+    | 'platform'
+    | 'integrations'
+    | 'modules'
+    | 'flow'
+    | 'useCases'
+    | 'security'
+    | 'pricing'
+    | 'contact'
+    | 'heroNoteLabel'
+    | 'heroNoteTitle'
+    | 'heroNoteText'
+    | 'freeBadge'
+    | 'baseBadge'
+    | 'growthBadge',
+    string
+  >
+> = {
+  es: {
+    platform: 'Producto',
+    integrations: 'APIs e integraciones',
+    modules: 'Módulos',
+    flow: 'Flujo',
+    useCases: 'Industrias',
+    security: 'Seguridad',
+    pricing: 'Planes',
+    contact: 'Contacto',
+    heroNoteLabel: 'Compra ejecutiva',
+    heroNoteTitle: 'Control claro para acceso, evidencia y continuidad.',
+    heroNoteText:
+      'Sytadel reúne control operativo, auditoría y resguardo en una sola base.',
+    freeBadge: 'Entrada libre',
+    baseBadge: 'Punto de partida',
+    growthBadge: 'Más elegido',
+  },
+  en: {
+    platform: 'Product',
+    integrations: 'APIs & integrations',
+    modules: 'Modules',
+    flow: 'Flow',
+    useCases: 'Industries',
+    security: 'Security',
+    pricing: 'Plans',
+    contact: 'Contact',
+    heroNoteLabel: 'Executive buy-in',
+    heroNoteTitle: 'Clear control for access, evidence, and continuity.',
+    heroNoteText:
+      'Sytadel brings operational control, audit readiness, and secure handling into one foundation.',
+    freeBadge: 'Free entry',
+    baseBadge: 'Starting point',
+    growthBadge: 'Most chosen',
+  },
+  pt: {
+    platform: 'Produto',
+    integrations: 'APIs e integrações',
+    modules: 'Módulos',
+    flow: 'Fluxo',
+    useCases: 'Setores',
+    security: 'Segurança',
+    pricing: 'Planos',
+    contact: 'Contato',
+    heroNoteLabel: 'Compra executiva',
+    heroNoteTitle: 'Controle claro para acesso, evidência e continuidade.',
+    heroNoteText:
+      'Sytadel reúne controle operacional, auditoria e resguardo em uma única base.',
+    freeBadge: 'Entrada livre',
+    baseBadge: 'Ponto de partida',
+    growthBadge: 'Mais escolhido',
+  },
+}[lang];
+
+const heroPillars: Record<Locale, string[]> = {
+  es: ['Valor para gerencia', 'Compra defendible', 'Oferta por industria'],
+  en: ['Leadership value', 'Board-ready story', 'Industry offer'],
+  pt: ['Valor para liderança', 'Compra defensável', 'Oferta por setor'],
+}[lang];
+
+const heroSignals: Record<Locale, string[]> = {
+  es: [
+    'acceso bajo control',
+    'menos exposición operativa',
+    'evidencia verificable',
+    'más confianza operativa',
+    'crecimiento con gobernanza',
+  ],
+  en: [
+    'access under control',
+    'lower operational exposure',
+    'verifiable evidence',
+    'stronger commercial posture',
+    'growth with governance',
+  ],
+  pt: [
+    'acesso sob controle',
+    'menor exposição operacional',
+    'evidência verificável',
+    'mais confiança operacional',
+    'crescimento com governança',
+  ],
+}[lang];
+
+const contactEmail = 'sytadel.labs@gmail.com';
+
+const contactMessages: Record<
+  Locale,
+  { subject: string; body: string }
+> = {
+  es: {
+    subject: 'Consulta sobre Sytadel',
+    body:
+      'Hola equipo de Sytadel,%0D%0A%0D%0AMe gustaría recibir más información sobre la plataforma.%0D%0A%0D%0AOrganización:%0D%0ATipo de empresa:%0D%0AObjetivo principal:%0D%0A%0D%0AGracias.',
+  },
+  en: {
+    subject: 'Sytadel inquiry',
+    body:
+      'Hello Sytadel team,%0D%0A%0D%0AI would like to learn more about the platform.%0D%0A%0D%0AOrganization:%0D%0ABusiness type:%0D%0APrimary goal:%0D%0A%0D%0AThank you.',
+  },
+  pt: {
+    subject: 'Consulta sobre a Sytadel',
+    body:
+      'Olá equipe da Sytadel,%0D%0A%0D%0AGostaria de receber mais informações sobre a plataforma.%0D%0A%0D%0AOrganização:%0D%0ATipo de empresa:%0D%0AObjetivo principal:%0D%0A%0D%0AObrigado.',
+  },
+};
+
+const contactHref = `mailto:${contactEmail}?subject=${encodeURIComponent(contactMessages[lang].subject)}&body=${contactMessages[lang].body}`;
+---
+
+<SiteFrame
+  lang={lang}
+  page="home"
+  title={page.metaTitle}
+  description={page.metaDescription}
+  languageLabel={page.languageLabel}
+  footer={page.footer}
+>
+  <section class="launch-strip">
+    <div class="launch-copy">
+      <p>{page.launch.text}</p>
+    </div>
+    <a class="launch-link" href={`#${ids.product}`}>{page.launch.cta}</a>
+  </section>
+
+  <section class="hero hero-home">
+    <div class="hero-copy">
+      <div class="hero-pillars">
+        {heroPillars.map((item) => <span>{item}</span>)}
+      </div>
+      <p class="eyebrow">{page.hero.eyebrow}</p>
+      <h1>{page.hero.title}</h1>
+      <p class="hero-description">{page.hero.description}</p>
+      <div class="hero-tags" aria-label="Positioning statements">
+        {page.hero.tags.map((tag) => <span>{tag}</span>)}
+      </div>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href={`#${ids.contact}`}>
+          {page.hero.primaryCta}
+        </a>
+        <a class="button button-secondary" href={`#${ids.product}`}>
+          {page.hero.secondaryCta}
+        </a>
+      </div>
+
+      <div class="stats-grid">
+        {page.hero.stats.map((stat) => (
+          <article class="stat-card">
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="console-card business-card">
+        <div class="console-head">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="console-body">
+          <div class="signal signal-violet"></div>
+          <div class="signal signal-blue"></div>
+          <div class="signal signal-pink"></div>
+          <div class="console-grid"></div>
+          <div class="console-copy">
+            {heroSignals.map((item) => <p>{item}</p>)}
+          </div>
+        </div>
+      </div>
+      <article class="floating-note">
+        <p class="floating-label">{sectionKickers.heroNoteLabel}</p>
+        <strong>{sectionKickers.heroNoteTitle}</strong>
+        <span>{sectionKickers.heroNoteText}</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="proof-strip">
+    {page.proof.map((item) => (
+      <span>{item}</span>
+    ))}
+  </section>
+
+  <section class="content-section" id={ids.product}>
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.platform}</p>
+      <h2>{page.platform.title}</h2>
+      <p>{page.platform.description}</p>
+    </div>
+
+    <div class="card-grid">
+      {page.platform.cards.map((card) => (
+        <article class="feature-card">
+          <h3>{card.title}</h3>
+          <p>{card.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="content-section" id={ids.integrations}>
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.integrations}</p>
+      <h2>{page.integrations.title}</h2>
+      <p>{page.integrations.description}</p>
+    </div>
+
+    <div class="card-grid">
+      {page.integrations.cards.map((card) => (
+        <article class="feature-card">
+          <h3>{card.title}</h3>
+          <p>{card.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="content-section" id={ids.modules}>
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.modules}</p>
+      <h2>{page.modules.title}</h2>
+      <p>{page.modules.description}</p>
+    </div>
+
+    <div class="card-grid">
+      {page.modules.cards.map((card) => (
+        <article class="feature-card">
+          <h3>{card.title}</h3>
+          <p>{card.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="content-section split-highlight" id={ids.flow}>
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.flow}</p>
+      <h2>{page.workflow.title}</h2>
+      <p>{page.workflow.description}</p>
+    </div>
+    <div class="timeline">
+      {page.workflow.steps.map((step) => (
+        <article class="timeline-card">
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.useCases}</p>
+      <h2>{page.useCases.title}</h2>
+      <p>{page.useCases.description}</p>
+    </div>
+
+    <div class="card-grid card-grid-three industries-grid">
+      {page.useCases.items.map((item) => (
+        <article class="feature-card">
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="content-section security-section" id={ids.security}>
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.security}</p>
+      <h2>{page.security.title}</h2>
+      <p>{page.security.description}</p>
+    </div>
+
+    <div class="security-panel">
+      <ul class="bullet-list">
+        {page.security.bullets.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="content-section" id={ids.pricing}>
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.pricing}</p>
+      <h2>{page.pricing.title}</h2>
+      <p>{page.pricing.description}</p>
+    </div>
+
+    <div class="pricing-grid pricing-grid-wide pricing-grid-verticals">
+      {page.pricing.plans.map((plan, index) => (
+        <article class={`price-card ${index <= 1 ? 'price-card-featured' : ''}`}>
+          {index === 0 && <span class="plan-badge">{sectionKickers.freeBadge}</span>}
+          {index === 1 && <span class="plan-badge plan-badge-secondary">{sectionKickers.baseBadge}</span>}
+          {index === 2 && <span class="plan-badge plan-badge-secondary">{sectionKickers.growthBadge}</span>}
+          <div class="price-head">
+            <p>{plan.name}</p>
+            <strong>{plan.price}</strong>
+            <span>{plan.detail}</span>
+          </div>
+          <ul class="bullet-list compact">
+            {plan.features.map((feature) => (
+              <li>{feature}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <div class="section-intro pricing-subsection">
+      <h3>{page.pricing.apiAddons.title}</h3>
+      <p>{page.pricing.apiAddons.description}</p>
+    </div>
+
+    <div class="card-grid card-grid-three">
+      {page.pricing.apiAddons.packages.map((pack) => (
+        <article class="feature-card">
+          <div class="addon-card-head">
+            <h3>{pack.name}</h3>
+            <span class="addon-availability">{pack.availability}</span>
+          </div>
+          <p>{pack.description}</p>
+          <ul class="bullet-list compact">
+            {pack.features.map((feature) => (
+              <li>{feature}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="cta-band" id={ids.contact}>
+    <div>
+      <p class="section-kicker">{sectionKickers.contact}</p>
+      <h2>{page.cta.title}</h2>
+      <p>{page.cta.description}</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button button-primary" href={contactHref}>
+        {page.cta.primary}
+      </a>
+      <a class="button button-secondary" href={`#${ids.modules}`}>
+        {page.cta.secondary}
+      </a>
+    </div>
+  </section>
+</SiteFrame>
