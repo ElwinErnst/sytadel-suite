@@ -122,5 +122,6 @@ node scripts/validate-metering.js   # sanity de la pipeline de billing
 ## Paquete de documentación integral
 
 Documentación estratégica y técnica de producto:
+- [Roadmap](./docs/ROADMAP.md)
 - [docs/architecture/README.md](./docs/architecture/README.md)
 - [Documento maestro de Sytadel](./docs/architecture/sytadel-master-es.md)
