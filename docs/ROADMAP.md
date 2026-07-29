@@ -1,135 +1,180 @@
 # Sytadel Suite — Roadmap
 
-Este documento operacionaliza las prioridades del [documento maestro](./architecture/sytadel-master-es.md) y los objetivos de la [arquitectura target](./architecture/target-state/) en un plan de trabajo ordenado por horizonte.
+## Objetivo actual del proyecto
 
-No es un plan cerrado con fechas rígidas: es la foto viva del rumbo. Cada item indica su estado real hoy y evoluciona con las decisiones del equipo.
+**Usar Sytadel Suite como portfolio piece para conseguir un rol de AI + Cybersecurity engineering en los próximos 3-6 meses.**
+
+Prioridad: signal técnico dirigido a roles específicos > madurez del producto como negocio.
+
+Este roadmap NO es "hacer un producto para vender". Es **producir señal técnica dirigida a las audiencias que apuntamos**: Auth0, Clerk, 1Password, WorkOS, Snyk, Doppler, Vanta, Anthropic contractors, y startups early-stage de AI + Cyber.
+
+Cuando un screener entra a `sytadel-labs.com` desde el link del CV, tiene que ver dos cosas que la mayoría de portfolios no tiene:
+
+1. **Fundamentos de seguridad modernos ejecutados bien** (passkeys, audit chain, session detection) — prueba de nivel AppSec
+2. **AI aplicada al problema de seguridad real** (LLM classifier, MCP server) — prueba del bridge AI+Cyber que casi nadie hace
+
+Referencias:
+- Estrategia base: `career-ops/interview-prep/sytadel-roadmap.md` (2026-07-26)
+- Estado técnico y arquitectura: [architecture/](./architecture/) + [sytadel-master-es.md](./architecture/sytadel-master-es.md)
 
 ## Cómo leer este roadmap
 
-- **✅ Hecho** — mergeado en `main` y verificado con smoke tests
-- **🟡 En curso** — parcialmente implementado, hay tareas concretas identificadas
-- **⏭️ Próximo** — decidido pero no arrancado
-- **🔮 Después** — depende de aprendizajes o de terminar lo anterior
-- **❌ Fuera de scope** — evaluado y descartado (o pospuesto sin fecha)
+Tres tracks paralelos con prioridades distintas:
+
+- **Portfolio track (Q3-Q4 2026)** — objetivo primario. Milestones M1/M2/M3
+- **Product hardening (Q4 2026, en paralelo)** — mínimo indispensable para que el portfolio no se vea flojo si un evaluador clona y corre el repo
+- **Product maturity (2027+)** — explícitamente pospuesto. Se retoma después del hire
+
+Estados: **✅ Hecho** | **🟡 En curso** | **⏭️ Próximo** | **🔮 Después** | **❌ Descartado**
 
 ---
 
-## Ahora (Q3 2026) — Consolidar seguridad y multi-servicio B2B
+## Prerequisitos (bloqueadores antes de arrancar M1)
 
-**Objetivo:** cerrar el modelo de service accounts + client apps + billing metering que quedó implementado en la última iteración, endurecer secretos y dejar el stack apto para un primer piloto B2B real.
+Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
-### Ya implementado (base para lo que sigue)
+- **⏭️ Repos públicos** — hoy `sentinel-suite` y los 4 submódulos son **PRIVATE**. Sin repos linkeables desde el CV, todo el signal es invisible. Mínimo: meta + auth-api + vault-api + billing-api públicos. Zerotrust-api opcional (si preocupa exponer policies)
+- **⏭️ Landing pública en `sytadel-labs.com`** — `sentinel-web` ya está en Astro. Falta comprar dominio + deploy en Vercel + apuntar DNS
+- **✅ Estructura mínima corriendo** — auth, RBAC, vaults, documents, tenants, billing están funcionales y verificados con smoke tests
 
-- **✅ HMAC entre servicios** — `auth-api`, `vault-api`, `zerotrust-api` firman y verifican llamadas internas con HMAC-SHA256 sobre path + timestamp + body
-- **✅ Service accounts + client apps** — `auth-api` (módulo `integrations/`) emite tokens; `zerotrust-api` (módulo `api-access/`) los rutea; `vault-api` marca endpoints con `@ApiClientAllowed`
-- **✅ Billing metering** — `auth-api` y `zerotrust-api` reportan usage events a `billing-api` con `actorType`, `sourceService`, `clientAppId`, `serviceAccountId`
-- **✅ Notary embebido en `vault-api`** — módulo `notary/` con endpoints tenant-scoped y verificación pública. Paso 1 hacia `notary-api` standalone
-- **✅ Tenants con billing sync** — campos `billingBypass`, `maxClientApps`, `maxServiceAccounts` en `Tenant` + short-circuit de entitlements
+**Definition of done:** un evaluador entra a `sytadel-labs.com`, ve qué hace el producto, ve screenshot/demo, y tiene link al repo público.
 
-### Pendiente en este horizonte
+---
 
-- **🟡 Rotar defaults de secretos** — el `docker-compose.yml` usa placeholders `change-me-*`. Falta:
-  - Crear `.env.example` en el root con todas las claves listadas
-  - Migrar el compose a `${VAR}` con `env_file:` para permitir override sin editar compose
-  - Rotar cualquier secreto real en `securechain-vault/infra/.env` (hoy trackeado en git — posible fuga)
-- **🟡 Migraciones controladas** — `DB_SYNC=true` está OK para demo local, pero es riesgo para staging/prod. Falta pipeline de migraciones TypeORM por servicio
-- **⏭️ Anti-replay persistente** — hoy la ventana anti-replay del HMAC vive en memoria. Rompe con escala horizontal. Mover a Redis o table dedicada
+## Portfolio track (Q3-Q4 2026)
+
+### M1 — Fundamentos de seguridad modernos (semanas 1-3)
+
+**Audiencia signal:** Auth0, Clerk, 1Password, WorkOS, Snyk, Doppler, Vanta, AppSec generalist.
+
+| Feature | Estado | Notas |
+|---------|--------|-------|
+| **Passkeys / WebAuthn** | ⏭️ | Reemplaza contraseña por Face ID / Touch ID / YubiKey. Standard 2026 |
+| **Tamper-evident audit log** | ✅ | Ya implementado (`audit-hash.util` + `audit.interceptor` en vault-api). Falta portarlo a doc pública + blog post |
+| **Session anomaly detection** | ⏭️ | Login desde IP/país/horario atípico → alerta + re-verificación |
+| **Automated secret rotation** | ⏭️ | API keys internos rotan cada N días con overlap window. Absorbe la tarea "rotar `change-me-*`" del hardening track |
+
+**Deliverables al cierre:**
+- Blog post: *"Building a tamper-evident audit log in NestJS with hash chains"* — dev.to + Medium + LinkedIn
+- Bullet nuevo en CV bajo "Proyectos Personales" con detalle técnico
+- Números para interviews: throughput del audit log (writes/sec), tamaño en disco después de N eventos, latencia de verificación de la cadena
+
+### M2 — Capa AI-powered de seguridad (semanas 4-7)
+
+**Audiencia signal:** Anthropic contractors, Auth0 AI, Snyk AI, "Product Security Engineer with AI focus".
+
+| Feature | Estado | Notas |
+|---------|--------|-------|
+| **LLM anomaly classifier** | ⏭️ | Cuando M1 detecta anomalía, Claude Sonnet 4.5 clasifica: legítima / sospechosa / crítica. Structured output obligatorio |
+| **Natural language → RBAC policy generator** | ⏭️ | "editors leen todo pero solo modifican lo suyo" → policy JSON validable. LLM-as-compiler |
+| **AI-driven access review** | ⏭️ | Job scheduled: LLM analiza permisos, sugiere revocaciones, genera reporte markdown |
+
+**Decisiones técnicas clave:**
+- Modelo principal: Claude Sonnet 4.5 vía API (cost-effective, structured output)
+- Opción secundaria: modelo local (Llama 3 vía Ollama) — angle "data residency" para EU/regulated
+- **Evals obligatorios:** dataset propio de 20-30 casos etiquetados, precision/recall reportados. Sin evals, un feature con LLM es "un juguete"
+
+**Deliverables al cierre:**
+- Blog post: *"Using Claude to review your org's access sprawl — with actual eval metrics"* — dev.to + LinkedIn + Show HN
+- Sección nueva en CV: "SytadelSuite AI Security Layer"
+- Números: precision/recall del classifier, cost por análisis (USD), latencia p95, tokens promedio por query
+
+### M3 — MCP + Agentic (semanas 8-11)
+
+**Audiencia signal:** Anthropic ecosystem, startup early-stage AI+Cyber, "AI Engineer Product-focused".
+
+| Feature | Estado | Notas |
+|---------|--------|-------|
+| **Sytadel MCP server** | ⏭️ | Expone `list users`, `query audit log`, `revoke access`, `create policy` como tools MCP. Publicado como paquete npm `@sytadel/mcp-server` |
+| **Agentic approval workflow con HITL** | ⏭️ | Request de acceso → agente LLM propone decisión → humano aprueba con un click → registro. LangGraph JS mínimo |
+| **Portfolio landing con demo interactiva** | ⏭️ | Botón "Connect" en `sytadel-labs.com` que conecta el MCP server al Claude Desktop del visitante. "Click and try", no "clone and setup" |
+
+**Decisiones técnicas clave:**
+- MCP server en TypeScript con SDK oficial de Anthropic
+- Documentar en README cómo conectar desde Claude Desktop y desde Cursor (con screenshots)
+- No reinventar el orquestador — usar LangGraph JS o similar. Foco en prompt design y diseño de tools
+
+**Deliverables al cierre:**
+- Blog post: *"Building an MCP server for identity infrastructure — a case study"* — dev.to + LinkedIn + submit a Anthropic community
+- Paquete npm publicado
+- Números: cantidad de tools expuestas, latencia end-to-end del workflow (request → approval), % de approvals que el agente propone correctamente vs. lo que decide el humano
+
+---
+
+## Product hardening track (Q4 2026, en paralelo)
+
+Mínimo indispensable para que si un AppSec engineer clona el repo y lee el código, no vea red flags. No consume slot de milestone, se hace en huecos.
+
+- **🟡 Rotar defaults `change-me-*`** — resuelto por M1 "automated secret rotation" que lo absorbe
+- **🟡 Migraciones controladas** — `DB_SYNC=true` es red flag si un AppSec lee la config. Migrar a TypeORM migrations por servicio
+- **⏭️ Anti-replay persistente** — mover ventana HMAC de memoria a Redis o table dedicada. Red flag menor pero importante para escala horizontal
 - **⏭️ Hardening HTTP** — `helmet`, rate limiting, CSP en frontends
-- **⏭️ Zero Trust admin operable** — hoy `policies.json` es archivo estático. Falta admin por tenant y hot-reload
-
-**Salida esperada:** cuando esto cierra, el stack está listo para el primer cliente piloto sin secretos hardcodeados ni riesgo de replay.
+- **🟡 `securechain-vault/infra/.env` trackeado en git** — si tiene secretos reales, rotarlos + `git rm --cached`. Impacta directo la percepción de un security engineer que audite el repo público
 
 ---
 
-## Próximo (Q4 2026) — Separar `notary-api`
+## Product maturity track (2027+, después del hire)
 
-**Objetivo:** extraer notary del `vault-api` a un servicio propio. El módulo ya está encapsulado, entonces la extracción es mecánica más que arquitectónica.
+Explícitamente pospuesto. Estas eran las prioridades del roadmap anterior — no son signal para roles AI/Cyber engineering. Se retoman cuando el objetivo primario esté cumplido.
 
-Ver [target-state/notary-api.md](./architecture/target-state/notary-api.md).
-
-- **⏭️ Crear repo `notary-api`** — patrón submódulo, mismo que el resto (`ElwinErnst/notary-api`)
-- **⏭️ Mover entidades** — `NotaryRecord`, provider refs, historial de certificaciones desde vault-api
-- **⏭️ Endpoints propios** — tenant-scoped + público (`/public/notary/verify/:id`)
-- **⏭️ Proveedor blockchain real** — reemplazar el anchor client dummy por integración real (Bitcoin OTS, Ethereum, o servicio equivalente)
-- **⏭️ Consumo desde `vault-api`** — llamadas HMAC-firmadas, no import directo
-- **⏭️ Vista de Notary en `sentinel-app`** — módulo propio en la consola
-- **⏭️ Registro en `docker-compose`** + smoke test `./scripts/notary-smoke.sh` apuntando al nuevo servicio
-
-**Precondición:** cerrar la lista de "Ahora" primero. Extraer un servicio sin secretos rotados y sin migraciones controladas es cambiar de auto a mitad de la ruta.
+- **🔮 Extraer `notary-api`** — vía [target-state/notary-api.md](./architecture/target-state/notary-api.md). Hoy embebido en vault-api, funciona
+- **🔮 `audit-api` transversal** — cuando 2+ servicios necesiten emitir eventos al mismo trail
+- **🔮 Stripe production + customer portal + overages** — el mock checkout alcanza para demo
+- **🔮 SSO / OIDC / SAML enterprise** — irrelevante para interviews de M1-M3
+- **🔮 MFA TOTP** — cuando M1 Passkeys resuelva el 80% del problema, TOTP queda como fallback secundario
+- **🔮 Provider blockchain real para notary** — sólo si el target profesional se corre a Web3
 
 ---
 
-## Después (2027+) — Preparar `audit-api`
+## Trampas de tiempo (explícitamente NO hacer)
 
-**Objetivo:** consolidar el trail de auditoría (hoy embebido en `vault-api` como `audit.interceptor` + `audit-hash.util`) como servicio transversal a toda la suite.
+Features tentadoras con ROI cero para la ventana actual:
 
-Ver [target-state/audit-api.md](./architecture/target-state/audit-api.md).
-
-- **🔮 Crear repo `audit-api`** — sólo cuando 2+ servicios necesiten emitir eventos auditables al mismo trail
-- **🔮 Pipeline de ingesta** — desde `auth-api`, `zerotrust-api`, `vault-api`, `billing-api`, `notary-api`
-- **🔮 Persistencia append-only con hash chain** — portada del `audit-hash.util` actual
-- **🔮 Búsqueda y exportación** — para compliance y análisis forense
-- **🔮 Retención configurable por tenant** — parte del plan comercial
-
-**Disparador:** cuando notary-api entre en producción, ya hay 5 servicios generando eventos y separar el trail deja de ser opcional.
+- **❌ App mobile** — 0 signal para roles AI/Cyber, 2 meses perdidos
+- **❌ Enterprise dashboards con 50 vistas** — nadie los prueba en un demo
+- **❌ UI polish perfecto** — función > forma. Demo funcional feo abre más puertas que demo bonito que no hace nada
+- **❌ Reescribir multitenancy** — ya está hecha y funciona. Mantener, no invertir más. Career-ops decía "simulá con dropdown" pero como ya está hecho, no retrocedemos
+- **❌ Refactor de arquitectura sin driver** — el stack actual sirve para los 3 milestones. Cambios arquitectónicos van al track de maturity
 
 ---
 
-## Producto y negocio (continuo, en paralelo)
+## Cadencia y ritual
 
-Estos no dependen de los horizontes técnicos y avanzan en paralelo:
-
-### Billing y monetización
-
-- **🟡 Cerrar pricing y métricas de API packs** — la infra ya reporta usage, falta política comercial: cuánto vale cada request al gateway, cada firma notary, cada GB en vault
-- **🟡 Stripe real** — hoy hay mock checkout + base Stripe. Migrar a producción con webhooks configurados
-- **⏭️ Customer portal Stripe** — self-serve para cambiar plan, actualizar tarjeta, ver facturas
-- **⏭️ Modelado de overages** — qué pasa cuando un tenant supera su cuota (bloqueo suave, cargo extra, upgrade forzado)
-- **⏭️ Reporting comercial** — dashboards de MRR, churn, uso por plan
-
-### Identity como producto vendible
-
-`auth-api` funciona técnicamente, pero como producto de identidad enterprise le falta:
-
-- **⏭️ MFA** — TOTP como base, WebAuthn como upgrade
-- **⏭️ Invite flow sólido** — con expiración, revocación, roles pre-asignados
-- **⏭️ Recuperación de contraseña** — con email verification
-- **⏭️ Email verification** — al signup
-- **🔮 SSO / OIDC / SAML** — cuando el primer cliente enterprise lo pida (y no antes)
-
-### Frontend
-
-- **⏭️ Service accounts / client apps en `sentinel-app`** — hoy sólo se pueden crear vía API
-- **⏭️ Bulk actions** en vaults y documentos
-- **⏭️ Búsqueda documental** — cuando `vault-api` incorpore indexación
-- **⏭️ Narrativa vertical en `sentinel-web`** — mensajes segmentados por fintech / healthtech / legaltech / govtech
+- **1 milestone cada 3-4 semanas** — no menos (calidad baja, signal se diluye), no más (perdés momentum)
+- **1 blog post al cierre de cada milestone** — no opcional. Sin amplificación, el código público no lo ve nadie
+- **CV update + LinkedIn post al cierre de cada milestone** — el proof point va escalando
+- **Aplicar a 3-5 roles nuevos al cierre de cada milestone** usando el bullet nuevo como diferenciador en el cover letter. Medir response rate
+- **Trackear en `career-ops/interview-prep/story-bank.md`** métricas concretas de cada milestone (STAR+R stories)
 
 ---
 
-## Fuera de scope explícito
+## Priorización por rol target
 
-- **❌ `gateway-bff`** — [target-state](./architecture/target-state/gateway-bff.md) lo marca como "opcional según evolución". No se abre hasta que la orquestación desde `sentinel-app` duela concretamente y sumar un servicio más se justifique frente a la complejidad
-- **❌ Almacenamiento genérico** — Sytadel no compite con S3, Drive o Dropbox. Vault es dominio seguro con auditoría y notary, no bucket público
-- **❌ Multi-usuario individual** — la unidad comercial es el tenant, siempre. No hay plan "personal"
-- **❌ Reescribir el auth como OIDC provider full** — hasta que un cliente lo pague explícitamente
+Si en un momento hay que comprimir el track:
+
+| Target | Prioridad |
+|--------|-----------|
+| Anthropic contractor / Claude ecosystem | M3 primero |
+| Auth0 / Clerk / WorkOS / 1Password | M1 + M2 |
+| Snyk / Doppler / Vanta / Drata (DevSecOps) | M1 + M2 con énfasis secret rotation + policy generation |
+| AppSec generalist | M1 completo |
+| Startup early-stage AI+Cyber (LATAM/remoto) | Los 3 = perfil imbatible en la región |
 
 ---
 
-## Riesgos abiertos
+## Riesgos abiertos (del sytadel-master §6, siguen vigentes)
 
-Del [sytadel-master §6](./architecture/sytadel-master-es.md#6-seguridad-como-eje-del-producto), los que siguen vigentes:
-
-- **HMAC compartido entre ZT y Vault** vs. criptografía asimétrica (rotación de secretos es all-or-nothing hoy)
+- **HMAC compartido** entre ZT y Vault vs. criptografía asimétrica — rotación de secretos es all-or-nothing hoy
 - **`DB_SYNC=true`** en dev y demo — si se arrastra a staging destruye datos silenciosamente
-- **Notary y Audit todavía no desacoplados** — dependencia interna en `vault-api` frena refactors del dominio storage
-- **Zero Trust admin muy MVP** — policies como archivo estático, sin admin por tenant
+- **Notary y Audit no desacoplados** — dependencia interna en vault-api frena refactors del dominio storage. Aceptable en el horizonte actual
+- **Zero Trust admin muy MVP** — policies como archivo estático, sin admin por tenant. Aceptable si el rol target no es "ZT product engineer"
 
 ---
 
 ## Cómo actualizar este roadmap
 
-- **Cambios de scope:** editar este doc y commitear con `docs(roadmap): ...`
-- **Cambios de estado** (⏭️ → 🟡 → ✅): también acá, no sólo en commits de código
-- **Nuevos items:** mantener el orden por horizonte, no por urgencia arbitraria
-- **Si algo pasa a ❌:** explicar POR QUÉ en el mismo commit, no sólo removerlo
-- **Revisión programada:** cada vez que se cierre un horizonte completo (Ahora / Próximo / Después)
+- **Cambios de scope:** commit `docs(roadmap): ...`
+- **Cambios de estado** (⏭️ → 🟡 → ✅): también acá, no solo en commits de código
+- **Nuevos items:** mantener por track (Portfolio / Hardening / Maturity)
+- **Si algo pasa de un track a otro:** explicar POR QUÉ
+- **Revisión programada:** al cierre de cada milestone (M1, M2, M3). Revisar también si el objetivo cambia (por ejemplo: si se consigue trabajo antes de M3, se puede pivotar a producto)
