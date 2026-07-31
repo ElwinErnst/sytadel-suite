@@ -113,6 +113,10 @@ services:
       BILLING_INTERNAL_SERVICE_SECRET: change-me-billing-internal-secret
       BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
       AUTH_BOOTSTRAP_DEMO_DATA: "true"
+      WEBAUTHN_RP_ID: localhost
+      WEBAUTHN_RP_NAME: Sytadel
+      WEBAUTHN_ORIGINS: "http://localhost:3003,http://localhost:4321"
+      WEBAUTHN_CHALLENGE_TTL_MS: 300000
     ports:
       - "3002:3001"
 
