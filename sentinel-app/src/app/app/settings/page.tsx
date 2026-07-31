@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { PageHeader } from '@/components/page-header';
+import { PasskeysPanel } from '@/features/auth/passkeys-panel';
 import {
   logoutAllSessionsAction,
   updateProfileAction,
@@ -321,6 +322,14 @@ export default async function SettingsPage({ searchParams }: Props) {
             </p>
           </div>
         )}
+      </section>
+
+      <section className="panel">
+        <div className="panel-head">
+          <h2 className="panel-title">Passkeys</h2>
+          <span className="badge">WebAuthn</span>
+        </div>
+        <PasskeysPanel />
       </section>
     </div>
   );
