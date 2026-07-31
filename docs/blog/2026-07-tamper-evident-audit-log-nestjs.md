@@ -373,19 +373,34 @@ Setup: NestJS 10 + Postgres 16 in Docker Compose, MacBook Pro M2. Single vault-a
 
 The verify step alone processes **~250k rows/sec** on a single thread — the bottleneck is fetching from Postgres, not the crypto. A 1M-row chain verifies in under 30 seconds on this hardware.
 
-### The concurrent-write caveat
+### The concurrent-write bug (and the fix)
 
-There is a subtle bug the sequential numbers hide. When two writes hit the *same scope* concurrently, the `SELECT ... FOR UPDATE LIMIT 1` locks the last existing row — but if both transactions read the same `seq = N` before either has inserted `seq = N+1`, both try to insert `seq = N+1` and the second one hits the `(scope, seq)` unique constraint. Postgres error `23505`, request fails with HTTP 500.
+The sequential numbers hide a subtle race. Running the same bench with `concurrency = 20` against a single scope surfaced it immediately: ~55% of requests failed with `duplicate key value violates unique constraint "audit_logs_scope_seq"` (Postgres error `23505`), and the vault returned HTTP 500.
 
-I saw this immediately when running the same bench with `concurrency = 10` against a single scope: ~70% of requests failed with duplicate key on `(scope, seq)`.
+Root cause: under `READ COMMITTED` isolation, two transactions can both read `seq = N` before either has inserted `seq = N+1`. The `SELECT ... FOR UPDATE LIMIT 1` locks the *existing row it found*, not the *nonexistent row about to be inserted*. Both transactions then try to insert `seq = N+1` and the unique constraint aborts the second one.
 
 Three ways to fix it, in increasing order of correctness:
 
 1. **App-side retry with backoff on `23505`.** Simple, works, but you're papering over the race instead of preventing it.
-2. **`pg_advisory_xact_lock(hashtext(scope))` at the start of the transaction.** Serializes writes per-scope explicitly. Cheap, deterministic.
-3. **`SERIALIZABLE` transaction isolation.** Postgres will abort conflicting transactions cleanly, and you retry. Most correct, slightly more overhead.
+2. **`pg_advisory_xact_lock(hashtext(scope))` at the start of the transaction.** Serializes writes per-scope explicitly. Cheap, deterministic. The lock releases automatically at `COMMIT`.
+3. **`SERIALIZABLE` transaction isolation.** Postgres aborts conflicting transactions cleanly and you retry. Most correct, slightly more overhead across the whole app.
 
-For an audit log, per-scope serialization is not a scaling loss — it's the semantics you want anyway (one chain = one linear history). The current implementation just picks the wrong primitive to enforce it. Advisory locks are what I would ship.
+**The fix I shipped** ([commit `556f7c3`](https://github.com/ElwinErnst/securechain-vault/commit/556f7c3)) uses the advisory lock. `hashtext(scope)` returns int32, which `pg_advisory_xact_lock` accepts, and the lock scopes to the transaction — no cleanup, no leaks.
+
+Re-running the same `concurrency = 20` bench after the fix:
+
+| | Before | After |
+|---|--------|-------|
+| Requests succeeded | 228 / 500 | **500 / 500** |
+| 23505 errors | 272 | **0** |
+| Throughput | 167 req/sec | **497 req/sec** |
+| Latency p95 | 31 ms | 60 ms |
+
+Sequential throughput is essentially unchanged (198 vs 205 req/sec, +1 ms p95 for the extra advisory-lock round-trip). Chain verification still passes end-to-end after the fix.
+
+The p95 went up under concurrency because requests now *wait* for the lock instead of failing fast — that's the tradeoff you want. Serialized-and-slow beats fast-and-broken every time in an audit context.
+
+For an audit log, per-scope serialization is not a scaling loss — it's the semantics you want anyway (one chain = one linear history). The original implementation just picked the wrong primitive to enforce it.
 
 ### Cross-scope scaling
 
