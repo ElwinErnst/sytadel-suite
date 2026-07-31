@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { loginAction } from '@/features/auth/actions';
+import { PasskeyLoginButton } from '@/features/auth/passkey-login-button';
 import { getCurrentSession } from '@/lib/server/session';
 
 type Props = {
@@ -112,9 +113,28 @@ export default async function LoginPage({ searchParams }: Props) {
           </button>
         </form>
 
+        <div
+          aria-hidden="true"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            color: 'var(--muted, #888)',
+            fontSize: 13,
+          }}
+        >
+          <div style={{ flex: 1, height: 1, background: 'currentColor', opacity: 0.2 }} />
+          <span>or</span>
+          <div style={{ flex: 1, height: 1, background: 'currentColor', opacity: 0.2 }} />
+        </div>
+
+        <PasskeyLoginButton />
+
         <div className="info-banner">
           Demo local: <strong>admin@test.com</strong> / <strong>123456</strong> /{' '}
-          <strong>sentinel-labs</strong>
+          <strong>sentinel-labs</strong>. Registrá un passkey desde
+          <strong> Settings</strong> después del primer login para habilitar el
+          botón de arriba.
         </div>
 
         <p className="hint">
