@@ -33,7 +33,7 @@ Estados: **✅ Hecho** | **🟡 En curso** | **⏭️ Próximo** | **🔮 Despu�
 
 Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
-- **⏭️ Repos públicos** — hoy `sentinel-suite` y los 4 submódulos son **PRIVATE**. Sin repos linkeables desde el CV, todo el signal es invisible. Mínimo: meta + auth-api + vault-api + billing-api públicos. Zerotrust-api opcional (si preocupa exponer policies)
+- **⏭️ Repos públicos** — hoy `sytadel-suite` y los 4 submódulos son **PRIVATE**. Sin repos linkeables desde el CV, todo el signal es invisible. Mínimo: meta + auth-api + vault-api + billing-api públicos. Zerotrust-api opcional (si preocupa exponer policies)
 - **⏭️ Landing pública en `sytadel-labs.com`** — `sytadel-web` ya está en Astro. Falta comprar dominio + deploy en Vercel + apuntar DNS
 - **✅ Estructura mínima corriendo** — auth, RBAC, vaults, documents, tenants, billing están funcionales y verificados con smoke tests
 
