@@ -6,7 +6,7 @@ Passkeys (WebAuthn) fix the class of attacks. The credential can't leave the dev
 
 The docs make it sound like a weekend project. It's a weekend project *if* you already know the three or four things that trip you up. This post is those three or four things, with real code from a live multi-tenant NestJS + Next.js app.
 
-Full implementation is public — [ElwinErnst/auth-api](https://github.com/ElwinErnst/auth-api) for the backend, [ElwinErnst/sentinel-suite](https://github.com/ElwinErnst/sentinel-suite) for the meta-repo with the frontend and docker-compose.
+Full implementation is public — [ElwinErnst/auth-api](https://github.com/ElwinErnst/auth-api) for the backend, [ElwinErnst/sytadel-suite](https://github.com/ElwinErnst/sytadel-suite) for the meta-repo with the frontend and docker-compose.
 
 ---
 
@@ -459,7 +459,7 @@ What it deliberately doesn't do:
 ## Source
 
 - Backend: [`auth/auth-api/src/modules/passkeys/`](https://github.com/ElwinErnst/auth-api/tree/main/src/modules/passkeys) in [ElwinErnst/auth-api](https://github.com/ElwinErnst/auth-api)
-- Frontend: [`sytadel-app/src/features/auth/`](https://github.com/ElwinErnst/sentinel-suite/tree/main/sytadel-app/src/features/auth) in [ElwinErnst/sentinel-suite](https://github.com/ElwinErnst/sentinel-suite)
+- Frontend: [`sytadel-app/src/features/auth/`](https://github.com/ElwinErnst/sytadel-suite/tree/main/sytadel-app/src/features/auth) in [ElwinErnst/sytadel-suite](https://github.com/ElwinErnst/sytadel-suite)
 - Runnable end-to-end: `docker compose up --build` from the meta-repo, then `http://localhost:3003/login`
 
-If you spot a hole in this design or hit an edge case I didn't cover, drop it in the [repo issues](https://github.com/ElwinErnst/sentinel-suite/issues) or in the comments — I want to hear it.
+If you spot a hole in this design or hit an edge case I didn't cover, drop it in the [repo issues](https://github.com/ElwinErnst/sytadel-suite/issues) or in the comments — I want to hear it.

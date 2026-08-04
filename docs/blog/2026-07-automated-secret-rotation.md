@@ -292,6 +292,6 @@ When the policy changes, `nextRotationAt` is recomputed from *now*, not from the
 - Cron: [`src/modules/integrations/secret-rotation.cron.ts`](https://github.com/ElwinErnst/auth-api/blob/main/src/modules/integrations/secret-rotation.cron.ts)
 - Entity: [`src/modules/integrations/entities/service-account.entity.ts`](https://github.com/ElwinErnst/auth-api/blob/main/src/modules/integrations/entities/service-account.entity.ts)
 - Endpoint: `PATCH /tenants/:tenantId/service-accounts/:serviceAccountId/rotation-policy`
-- Meta-repo: [ElwinErnst/sentinel-suite](https://github.com/ElwinErnst/sentinel-suite)
+- Meta-repo: [ElwinErnst/sytadel-suite](https://github.com/ElwinErnst/sytadel-suite)
 
-If you build something similar or spot a bug in the grace-window logic, drop it in the [repo issues](https://github.com/ElwinErnst/sentinel-suite/issues).
+If you build something similar or spot a bug in the grace-window logic, drop it in the [repo issues](https://github.com/ElwinErnst/sytadel-suite/issues).

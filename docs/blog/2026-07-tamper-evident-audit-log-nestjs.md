@@ -8,7 +8,7 @@ If your compliance story depends on that log being trustworthy — SOC 2, HIPAA,
 
 This post walks through a small, boring, effective pattern I use for that: a **hash-chained append-only audit log**, implemented in NestJS + Postgres, with per-tenant chains and a verification routine that fails loudly if anyone tampers.
 
-Full code lives in [ElwinErnst/securechain-vault](https://github.com/ElwinErnst/securechain-vault) inside the [Sytadel Suite](https://github.com/ElwinErnst/sentinel-suite).
+Full code lives in [ElwinErnst/securechain-vault](https://github.com/ElwinErnst/securechain-vault) inside the [Sytadel Suite](https://github.com/ElwinErnst/sytadel-suite).
 
 ---
 
@@ -464,7 +464,7 @@ For most SaaS products, the "boring hash chain in Postgres" is exactly the right
 
 ## Source
 
-Full implementation: [ElwinErnst/securechain-vault](https://github.com/ElwinErnst/securechain-vault), inside the [Sytadel Suite](https://github.com/ElwinErnst/sentinel-suite) meta-repo (docker-compose + smoke tests + all four backend services + Astro landing).
+Full implementation: [ElwinErnst/securechain-vault](https://github.com/ElwinErnst/securechain-vault), inside the [Sytadel Suite](https://github.com/ElwinErnst/sytadel-suite) meta-repo (docker-compose + smoke tests + all four backend services + Astro landing).
 
 Relevant files:
 

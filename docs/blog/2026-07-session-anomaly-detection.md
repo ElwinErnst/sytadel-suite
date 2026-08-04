@@ -331,6 +331,6 @@ The right place for ML/LLM is *ranking* — take the top-N warnings/criticals pr
 - Entity: [`src/modules/session-anomaly/entities/session-anomaly-event.entity.ts`](https://github.com/ElwinErnst/auth-api/blob/main/src/modules/session-anomaly/entities/session-anomaly-event.entity.ts)
 - Login hook (password + passkey): both `auth.service.ts` and `passkeys.service.ts` in the same repo
 - Trust-proxy setup: [`src/main.ts`](https://github.com/ElwinErnst/auth-api/blob/main/src/main.ts)
-- Meta-repo + docker-compose to run it locally: [ElwinErnst/sentinel-suite](https://github.com/ElwinErnst/sentinel-suite)
+- Meta-repo + docker-compose to run it locally: [ElwinErnst/sytadel-suite](https://github.com/ElwinErnst/sytadel-suite)
 
 If you're building something similar and hit a bug I didn't cover, open an issue on the repo — I collect them for the follow-up post.
