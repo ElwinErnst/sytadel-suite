@@ -226,16 +226,16 @@ services:
     ports:
       - "3020:3020"
 
-  sentinel-web:
+  sytadel-web:
     build:
-      context: ./sentinel-web
+      context: ./sytadel-web
     restart: unless-stopped
     ports:
       - "4321:4321"
 
-  sentinel-app:
+  sytadel-app:
     build:
-      context: ./sentinel-app
+      context: ./sytadel-app
     restart: unless-stopped
     depends_on:
       auth-api:

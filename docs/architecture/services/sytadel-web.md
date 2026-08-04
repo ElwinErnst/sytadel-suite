@@ -1,4 +1,4 @@
-# sentinel-web
+# sytadel-web
 
 **Estado:** implementado
 
@@ -6,7 +6,7 @@
 Presentar Sytadel como producto B2B SaaS, explicar valor, atraer leads y orientar al cliente hacia la app o hacia contacto comercial.
 
 ## Frontera
-`sentinel-web` no debe actuar como consola operativa ni como lugar de configuración avanzada. Su rol es comercial, narrativo y de adquisición.
+`sytadel-web` no debe actuar como consola operativa ni como lugar de configuración avanzada. Su rol es comercial, narrativo y de adquisición.
 
 ## Responsabilidades
 - narrativa de producto
@@ -20,7 +20,7 @@ Presentar Sytadel como producto B2B SaaS, explicar valor, atraer leads y orienta
 No es dueño de datos operativos del cliente. Solo expone contenido de marketing, pricing y conversión.
 
 ## Integraciones
-- vínculo con `sentinel-app`
+- vínculo con `sytadel-app`
 - apoyo narrativo al modelo de `billing-api`
 - consistencia con la arquitectura real del producto
 

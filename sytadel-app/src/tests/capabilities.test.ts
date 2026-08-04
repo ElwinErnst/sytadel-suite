@@ -12,7 +12,7 @@ function buildSession(overrides?: Partial<SessionState>): SessionState {
     },
     tenant: {
       id: 'tenant-1',
-      name: 'Sentinel Labs',
+      name: 'Sytadel Labs',
       slug: 'sentinel-labs',
       planCode: 'FREE',
       entitlements: {

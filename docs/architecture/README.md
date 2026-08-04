@@ -11,8 +11,8 @@ Este paquete documenta el estado actual del stack, la arquitectura objetivo y la
 - [zerotrust-api](./services/zerotrust-api.md)
 - [vault-api](./services/vault-api.md)
 - [billing-api](./services/billing-api.md)
-- [sentinel-app](./services/sentinel-app.md)
-- [sentinel-web](./services/sentinel-web.md)
+- [sytadel-app](./services/sytadel-app.md)
+- [sytadel-web](./services/sytadel-web.md)
 
 ## Fichas de arquitectura objetivo
 - [notary-api](./target-state/notary-api.md)

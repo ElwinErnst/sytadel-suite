@@ -37,7 +37,7 @@ No debería ser dueño de:
 - integra con `zerotrust-api` como issuer del JWT
 - integra con `vault-api` como directorio interno
 - integra con `billing-api` para sincronizar plan y add-ons
-- es consumido por `sentinel-app`
+- es consumido por `sytadel-app`
 
 ## Seguridad
 - JWT con issuer y audience

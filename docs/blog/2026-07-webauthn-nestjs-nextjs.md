@@ -459,7 +459,7 @@ What it deliberately doesn't do:
 ## Source
 
 - Backend: [`auth/auth-api/src/modules/passkeys/`](https://github.com/ElwinErnst/auth-api/tree/main/src/modules/passkeys) in [ElwinErnst/auth-api](https://github.com/ElwinErnst/auth-api)
-- Frontend: [`sentinel-app/src/features/auth/`](https://github.com/ElwinErnst/sentinel-suite/tree/main/sentinel-app/src/features/auth) in [ElwinErnst/sentinel-suite](https://github.com/ElwinErnst/sentinel-suite)
+- Frontend: [`sytadel-app/src/features/auth/`](https://github.com/ElwinErnst/sentinel-suite/tree/main/sytadel-app/src/features/auth) in [ElwinErnst/sentinel-suite](https://github.com/ElwinErnst/sentinel-suite)
 - Runnable end-to-end: `docker compose up --build` from the meta-repo, then `http://localhost:3003/login`
 
 If you spot a hole in this design or hit an edge case I didn't cover, drop it in the [repo issues](https://github.com/ElwinErnst/sentinel-suite/issues) or in the comments — I want to hear it.
