@@ -64,8 +64,8 @@ Hoy el stack implementado en el repo se compone de:
 - `zerotrust-api`: gateway Zero Trust y enforcement de acceso hacia upstreams
 - `vault-api`: dominio documental, cifrado, auditoría, verificación de requests firmadas y notary embebido MVP
 - `billing-api`: suscripciones, catálogo, checkout self-serve y sync de plan hacia auth
-- `sentinel-app`: consola operativa del cliente
-- `sentinel-web`: sitio comercial y de marketing
+- `sytadel-app`: consola operativa del cliente
+- `sytadel-web`: sitio comercial y de marketing
 
 ### Dependencias de infraestructura visibles hoy
 - PostgreSQL para `auth`, `billing` y `vault`
@@ -90,8 +90,8 @@ La arquitectura objetivo no es idéntica al estado actual. El destino natural de
 - `notary-api` como servicio separado de evidencia e integridad
 - `audit-api` como servicio separado de trail de auditoría y eventos
 - `billing-api` como servicio comercial y de suscripciones
-- `sentinel-app` como consola principal del cliente
-- `sentinel-web` como frente comercial
+- `sytadel-app` como consola principal del cliente
+- `sytadel-web` como frente comercial
 - posible `gateway/BFF` cuando la orquestación frontend necesite consolidación adicional
 
 ### Principio arquitectónico central
@@ -211,7 +211,7 @@ Falta o está parcial:
 - modelado final de overages
 - alineación completa entre compra, métricas y producto vendido
 
-### sentinel-app
+### sytadel-app
 **Estado:** implementado como consola MVP usable.
 
 Existe hoy:
@@ -231,7 +231,7 @@ Falta o está parcial:
 - experiencia más madura de invitaciones, búsquedas, bulk actions y operación documental
 - vista de Notary como módulo propio cuando se desacople
 
-### sentinel-web
+### sytadel-web
 **Estado:** implementado y funcional como frente comercial.
 
 Existe hoy:

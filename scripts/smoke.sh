@@ -142,7 +142,7 @@ endobj
 4 0 obj
 << /Length 44 >>
 stream
-BT /F1 12 Tf 72 120 Td (Sentinel smoke test) Tj ET
+BT /F1 12 Tf 72 120 Td (Sytadel smoke test) Tj ET
 endstream
 endobj
 trailer

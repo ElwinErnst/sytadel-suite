@@ -1,12 +1,12 @@
-# Sentinel App
+# Sytadel App
 
-Dashboard operativo de Sentinel Suite para el MVP de `Auth + Vault`.
+Dashboard operativo de Sytadel Suite para el MVP de `Auth + Vault`.
 
 ## Qué incluye hoy
 
 - login contra `auth-api`
 - sesión segura en cookies `httpOnly`
-- shell enterprise oscura alineada con la paleta de Sentinel
+- shell enterprise oscura alineada con la paleta de Sytadel
 - resumen de tenant, plan y capacidades
 - gestión básica de memberships por tenant
 - gestión de vaults

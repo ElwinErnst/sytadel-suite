@@ -136,7 +136,7 @@ Response tipica:
   },
   "tenant": {
     "id": "tenant-id",
-    "name": "Sentinel Labs",
+    "name": "Sytadel Labs",
     "slug": "sentinel-labs",
     "planCode": "PRO",
     "billingBypass": false,
@@ -519,7 +519,7 @@ Response:
   "tenant": {
     "id": "tenant-id",
     "slug": "sentinel-labs",
-    "name": "Sentinel Labs"
+    "name": "Sytadel Labs"
   },
   "clientApp": {
     "id": "client-app-id",

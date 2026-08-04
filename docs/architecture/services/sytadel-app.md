@@ -1,4 +1,4 @@
-# sentinel-app
+# sytadel-app
 
 **Estado:** implementado / MVP usable
 
@@ -6,7 +6,7 @@
 Ser la consola principal del cliente para operar el workspace de Sytadel.
 
 ## Frontera
-`sentinel-app` no es el dueño del negocio ni de la seguridad. Debe reflejar capacidades reales del backend, no inventarlas ni exponer controles que contradigan billing o entitlements.
+`sytadel-app` no es el dueño del negocio ni de la seguridad. Debe reflejar capacidades reales del backend, no inventarlas ni exponer controles que contradigan billing o entitlements.
 
 ## Responsabilidades
 - login y sesión segura

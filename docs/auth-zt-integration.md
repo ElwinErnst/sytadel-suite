@@ -1,6 +1,6 @@
 # Integracion de Auth + Zero Trust en un proyecto externo
 
-Esta guia resume como integrar un cliente o backend externo con `auth-api` y `zerotrust-api` de Sentinel.
+Esta guia resume como integrar un cliente o backend externo con `auth-api` y `zerotrust-api` de Sytadel.
 
 ## Arquitectura
 
@@ -287,7 +287,7 @@ curl -X POST http://localhost:3010/vault/vaults \
 - `auth/auth-api/README.md`
 - `ZeroTrust/zerotrust-api/README.md`
 - `securechain-vault/README.md`
-- `sentinel-app/src/lib/server/auth-client.ts`
+- `sytadel-app/src/lib/server/auth-client.ts`
 - `auth/auth-api/src/modules/auth/auth.service.ts`
 - `ZeroTrust/zerotrust-api/src/modules/policy/policy.service.ts`
 - `securechain-vault/vault-api/src/common/modules/auth-directory/auth-directory.service.ts`
