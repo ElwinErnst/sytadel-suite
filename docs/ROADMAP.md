@@ -33,11 +33,11 @@ Estados: **✅ Hecho** | **🟡 En curso** | **⏭️ Próximo** | **🔮 Despu�
 
 Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
-- **⏭️ Repos públicos** — hoy `sytadel-suite` y los 4 submódulos son **PRIVATE**. Sin repos linkeables desde el CV, todo el signal es invisible. Mínimo: meta + auth-api + vault-api + billing-api públicos. Zerotrust-api opcional (si preocupa exponer policies)
-- **⏭️ Landing pública en `sytadel-labs.com`** — `sytadel-web` ya está en Astro. Falta comprar dominio + deploy en Vercel + apuntar DNS
+- **✅ Repos públicos** — los 5 (meta + 4 submódulos) son PUBLIC en `github.com/ElwinErnst/*`. Historia auditada, `security-assessment.docx` y email de contributor externo sanitizados con `git filter-repo`
+- **✅ Landing pública en `sytadel-labs.com`** — deployada en Vercel apuntando a `sentinel-web`. Topbar + footer linkean al repo público del meta
 - **✅ Estructura mínima corriendo** — auth, RBAC, vaults, documents, tenants, billing están funcionales y verificados con smoke tests
 
-**Definition of done:** un evaluador entra a `sytadel-labs.com`, ve qué hace el producto, ve screenshot/demo, y tiene link al repo público.
+**Definition of done cumplido:** un evaluador entra a `sytadel-labs.com`, ve qué hace el producto, ve el link a GitHub en el topbar, y salta al repo público con doc + demo runnable.
 
 ---
 
@@ -49,15 +49,18 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
-| **Passkeys / WebAuthn** | ✅ | Implementado en auth-api (`modules/passkeys/` + `config/webauthn.config.ts`). Reemplaza contraseña por Face ID / Touch ID / YubiKey |
-| **Tamper-evident audit log** | ✅ | Ya implementado (`audit-hash.util` + `audit.interceptor` en vault-api). Falta portarlo a doc pública + blog post |
-| **Session anomaly detection** | ✅ | Implementado en auth-api (`modules/session-anomaly/`): score por reglas sobre IP/país/device |
-| **Automated secret rotation** | ✅ | Implementado en auth-api (`modules/integrations/secret-rotation.cron.ts`). API keys internos rotan con overlap window |
+| **Passkeys / WebAuthn** | ✅ | Backend (`auth-api/modules/passkeys/`) + frontend (`sentinel-app` login + settings). Coexistencia password+passkey, multi-device, user-enumeration-resistant. |
+| **Tamper-evident audit log** | ✅ | `vault-api/audit-hash.util` + `audit.interceptor`. Bench: 205 writes/sec, verify 3238 rows en ~100ms. Race del `(scope, seq)` detectado y arreglado con `pg_advisory_xact_lock`. |
+| **Session anomaly detection** | ✅ | `auth-api/modules/session-anomaly/`: score por IP + país (geoip-lite) + coarse UA fingerprint. Smoke: login desde JP con IP fresca dispara `critical` (score 70). |
+| **Automated secret rotation** | ✅ | `auth-api/modules/integrations/secret-rotation.cron.ts` + endpoint `/rotation-policy`. Overlap 24h con `previousSecretHash`. Smoke verificado end-to-end: rotate → new+old ambos válidos durante grace → old rechazado post-grace. |
 
-**Deliverables al cierre:**
-- Blog post: *"Building a tamper-evident audit log in NestJS with hash chains"* — dev.to + Medium + LinkedIn
-- Bullet nuevo en CV bajo "Proyectos Personales" con detalle técnico
-- Números para interviews: throughput del audit log (writes/sec), tamaño en disco después de N eventos, latencia de verificación de la cadena
+**Blog posts publicados en el repo** (`docs/blog/`), listos para dev.to + Medium + LinkedIn:
+- [`2026-07-tamper-evident-audit-log-nestjs.md`](./blog/2026-07-tamper-evident-audit-log-nestjs.md)
+- [`2026-07-webauthn-nestjs-nextjs.md`](./blog/2026-07-webauthn-nestjs-nextjs.md)
+- [`2026-07-session-anomaly-detection.md`](./blog/2026-07-session-anomaly-detection.md)
+- [`2026-07-automated-secret-rotation.md`](./blog/2026-07-automated-secret-rotation.md)
+
+**M1 cerrado.** Cadencia sugerida de publicación: 1 post cada 3-4 días desde dev.to (perfil ya armado), cross-post a LinkedIn con hook + link.
 
 ### M2 — Capa AI-powered de seguridad (semanas 4-7)
 
@@ -65,9 +68,9 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
-| **LLM anomaly classifier** | 🚧 | Implementado en auth-api (async on persist, `modules/session-anomaly/anomaly-classifier.*`). Claude Sonnet 5 clasifica: legítima / sospechosa / crítica con structured output. Faltan correr los evals con key real. Diseño: `docs/architecture/m2-llm-anomaly-classifier.md` |
-| **Natural language → RBAC policy generator** | ⏭️ | "editors leen todo pero solo modifican lo suyo" → policy JSON validable. LLM-as-compiler |
-| **AI-driven access review** | ⏭️ | Job scheduled: LLM analiza permisos, sugiere revocaciones, genera reporte markdown |
+| **LLM anomaly classifier** | 🟡 | Scaffold completo en `auth-api/modules/session-anomaly/`: `anomaly-classifier.service`, `.listener` (consume `ANOMALY_PERSISTED_EVENT` via `EventEmitter2`), entity `session-anomaly-classification`, eval framework (`evals/anomaly-classifier.eval.ts` + `fixtures.ts`), config con toggle `ANOMALY_CLASSIFIER_ENABLED`, `@anthropic-ai/sdk@0.115.0`. Modelo `claude-sonnet-5` + structured output. Bloqueado en: **renovar `ANTHROPIC_API_KEY`** para correr evals y capturar precision/recall. Diseño: [`architecture/m2-llm-anomaly-classifier.md`](./architecture/m2-llm-anomaly-classifier.md) |
+| **Natural language → RBAC policy generator** | ⏭️ | "editors leen todo pero solo modifican lo suyo" → policy JSON validable. LLM-as-compiler. No arrancado |
+| **AI-driven access review** | ⏭️ | Job scheduled: LLM analiza permisos, sugiere revocaciones, genera reporte markdown. No arrancado |
 
 **Decisiones técnicas clave:**
 - Modelo principal: Claude Sonnet 5 vía API (cost-effective, structured output)
@@ -105,11 +108,11 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
 Mínimo indispensable para que si un AppSec engineer clona el repo y lee el código, no vea red flags. No consume slot de milestone, se hace en huecos.
 
-- **🟡 Rotar defaults `change-me-*`** — resuelto por M1 "automated secret rotation" que lo absorbe
+- **🟡 Rotar defaults `change-me-*` del compose** — M1 automated rotation cubrió las credenciales de service accounts. Los HMAC/JWT secrets compartidos entre auth/vault/zt siguen como `change-me-*` en el compose; hay que mover a `.env` real cuando se salga de demo local
 - **🟡 Migraciones controladas** — `DB_SYNC=true` es red flag si un AppSec lee la config. Migrar a TypeORM migrations por servicio
 - **⏭️ Anti-replay persistente** — mover ventana HMAC de memoria a Redis o table dedicada. Red flag menor pero importante para escala horizontal
 - **⏭️ Hardening HTTP** — `helmet`, rate limiting, CSP en frontends
-- **🟡 `securechain-vault/infra/.env` trackeado en git** — si tiene secretos reales, rotarlos + `git rm --cached`. Impacta directo la percepción de un security engineer que audite el repo público
+- **✅ `securechain-vault/infra/.env` trackeado en git** — resuelto: `git rm --cached` + gitignore + `git filter-repo` para limpiar historia antes de publicar el repo
 
 ---
 
