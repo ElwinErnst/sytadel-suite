@@ -32,8 +32,8 @@ No debería ser dueño de:
 
 ## Integraciones
 - sincroniza plan y add-ons con `auth-api`
-- es consumido por `sentinel-app`
-- está alineado con la narrativa comercial de `sentinel-web`
+- es consumido por `sytadel-app`
+- está alineado con la narrativa comercial de `sytadel-web`
 
 ## Seguridad
 - maneja información comercial sensible

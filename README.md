@@ -1,13 +1,13 @@
-# Sentinel Suite
+# Sytadel Suite
 
-Monorepo con los servicios de Sentinel:
+Monorepo con los servicios de Sytadel:
 
 - `auth-api`: identidad, tenants, memberships y sesiones (submódulo)
 - `zerotrust-api`: gateway Zero Trust que valida JWT, aplica policy y firma requests downstream (submódulo)
 - `vault-api`: dominio de vaults, documentos, cifrado, auditoría, anclaje y notaría (submódulo)
 - `billing-api`: metering + suscripciones (submódulo)
-- `sentinel-web`: landing comercial en Astro
-- `sentinel-app`: dashboard operativo en Next para Auth + Vault + Billing
+- `sytadel-web`: landing comercial en Astro
+- `sytadel-app`: dashboard operativo en Next para Auth + Vault + Billing
 
 ## Estado actual
 
@@ -38,8 +38,8 @@ Servicios expuestos:
 - `vault-api`: [http://localhost:3000](http://localhost:3000)
 - `zerotrust-api`: [http://localhost:3010](http://localhost:3010)
 - `billing-api`: [http://localhost:3020/api](http://localhost:3020/api)
-- `sentinel-web`: [http://localhost:4321](http://localhost:4321)
-- `sentinel-app`: [http://localhost:3003](http://localhost:3003)
+- `sytadel-web`: [http://localhost:4321](http://localhost:4321)
+- `sytadel-app`: [http://localhost:3003](http://localhost:3003)
 - `minio`: [http://localhost:9001](http://localhost:9001)
 
 Para bajar el stack:
@@ -116,8 +116,8 @@ node scripts/validate-metering.js   # sanity de la pipeline de billing
 - [ZeroTrust/zerotrust-api/README.md](./ZeroTrust/zerotrust-api/README.md)
 - [securechain-vault/README.md](./securechain-vault/README.md)
 - [billing/billing-api/](./billing/billing-api/)
-- [sentinel-app/README.md](./sentinel-app/README.md)
-- [sentinel-web/README.md](./sentinel-web/README.md)
+- [sytadel-app/README.md](./sytadel-app/README.md)
+- [sytadel-web/README.md](./sytadel-web/README.md)
 
 ## Paquete de documentación integral
 

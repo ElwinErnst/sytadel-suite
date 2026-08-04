@@ -1,11 +1,11 @@
 # Integracion de Auth para sistema de cementerio y sistema de peluquerias
 
-Esta guia describe como integrar un software externo con `auth-api` de Sentinel en dos escenarios concretos:
+Esta guia describe como integrar un software externo con `auth-api` de Sytadel en dos escenarios concretos:
 
 - un sistema de cementerio con operadores, administradores y acceso por sucursal o tenant
 - un sistema de peluquerias con recepcion, caja, administracion y posible integracion backend
 
-La idea es usar `auth-api` como autoridad de identidad y tenancy, y usar `zerotrust-api` como puerta de acceso a APIs protegidas cuando el sistema externo necesite hablar con servicios operativos de Sentinel.
+La idea es usar `auth-api` como autoridad de identidad y tenancy, y usar `zerotrust-api` como puerta de acceso a APIs protegidas cuando el sistema externo necesite hablar con servicios operativos de Sytadel.
 
 ## Objetivo
 
@@ -56,7 +56,7 @@ Flujo:
 1. El usuario inicia sesion contra `auth-api`.
 2. El sistema externo guarda el `accessToken` y el `refreshToken` en una sesion segura.
 3. El sistema externo consulta `GET /auth/me` para obtener usuario, tenant y roles.
-4. Cuando necesite consumir APIs protegidas de Sentinel, usa el `accessToken`.
+4. Cuando necesite consumir APIs protegidas de Sytadel, usa el `accessToken`.
 5. Si recibe `401`, intenta `refresh`.
 
 ### Opcion 2: backend-to-backend
@@ -66,7 +66,7 @@ Usar esta opcion si el sistema externo necesita:
 - sincronizar clientes
 - emitir documentos
 - consultar registros desde jobs o procesos automáticos
-- integrar una API del software de cementerio o peluqueria con Sentinel sin usuario humano logueado
+- integrar una API del software de cementerio o peluqueria con Sytadel sin usuario humano logueado
 
 Flujo:
 
@@ -334,7 +334,7 @@ Luego el backend externo usa:
 Authorization: Bearer <accessToken>
 ```
 
-Si el flujo pasa por Sentinel, la recomendacion actual es consumir `zerotrust-api` y no hablar directo con `vault-api`.
+Si el flujo pasa por Sytadel, la recomendacion actual es consumir `zerotrust-api` y no hablar directo con `vault-api`.
 
 ## Ejemplo de implementacion en Node.js
 
@@ -460,7 +460,7 @@ Antes de vender esta integracion como producto de autenticacion general, hay que
 - no hay MFA
 - no hay password reset ni email verification maduros
 - el flujo machine-to-machine actual es propio, no OAuth `client_credentials`
-- los JWT actuales estan orientados al ecosistema Sentinel
+- los JWT actuales estan orientados al ecosistema Sytadel
 
 Esto no bloquea integrar un sistema de cementerio o peluquerias propio.
 Si bloquea, en cambio, pretender compatibilidad inmediata con software de terceros que espere un IdP estándar.

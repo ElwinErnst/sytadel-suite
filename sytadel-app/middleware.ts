@@ -33,7 +33,7 @@ async function refreshSession(request: NextRequest) {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'user-agent': request.headers.get('user-agent') ?? 'sentinel-app-middleware',
+      'user-agent': request.headers.get('user-agent') ?? 'sytadel-app-middleware',
     },
     body: JSON.stringify({ refreshToken }),
     cache: 'no-store',

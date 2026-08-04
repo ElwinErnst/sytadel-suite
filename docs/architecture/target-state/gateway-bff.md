@@ -18,7 +18,7 @@ No debe reemplazar a Zero Trust ni absorber lógica de dominio. Su rol sería ad
 No debería ser dueño de datos primarios. Debe consumirlos desde los servicios de dominio.
 
 ## Integraciones
-- sentinel-app
+- sytadel-app
 - auth-api
 - billing-api
 - zerotrust-api
