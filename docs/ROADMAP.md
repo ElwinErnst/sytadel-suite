@@ -49,10 +49,10 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
-| **Passkeys / WebAuthn** | ⏭️ | Reemplaza contraseña por Face ID / Touch ID / YubiKey. Standard 2026 |
+| **Passkeys / WebAuthn** | ✅ | Implementado en auth-api (`modules/passkeys/` + `config/webauthn.config.ts`). Reemplaza contraseña por Face ID / Touch ID / YubiKey |
 | **Tamper-evident audit log** | ✅ | Ya implementado (`audit-hash.util` + `audit.interceptor` en vault-api). Falta portarlo a doc pública + blog post |
-| **Session anomaly detection** | ⏭️ | Login desde IP/país/horario atípico → alerta + re-verificación |
-| **Automated secret rotation** | ⏭️ | API keys internos rotan cada N días con overlap window. Absorbe la tarea "rotar `change-me-*`" del hardening track |
+| **Session anomaly detection** | ✅ | Implementado en auth-api (`modules/session-anomaly/`): score por reglas sobre IP/país/device |
+| **Automated secret rotation** | ✅ | Implementado en auth-api (`modules/integrations/secret-rotation.cron.ts`). API keys internos rotan con overlap window |
 
 **Deliverables al cierre:**
 - Blog post: *"Building a tamper-evident audit log in NestJS with hash chains"* — dev.to + Medium + LinkedIn
@@ -65,12 +65,12 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
-| **LLM anomaly classifier** | ⏭️ | Cuando M1 detecta anomalía, Claude Sonnet 4.5 clasifica: legítima / sospechosa / crítica. Structured output obligatorio |
+| **LLM anomaly classifier** | 🚧 | Implementado en auth-api (async on persist, `modules/session-anomaly/anomaly-classifier.*`). Claude Sonnet 5 clasifica: legítima / sospechosa / crítica con structured output. Faltan correr los evals con key real. Diseño: `docs/architecture/m2-llm-anomaly-classifier.md` |
 | **Natural language → RBAC policy generator** | ⏭️ | "editors leen todo pero solo modifican lo suyo" → policy JSON validable. LLM-as-compiler |
 | **AI-driven access review** | ⏭️ | Job scheduled: LLM analiza permisos, sugiere revocaciones, genera reporte markdown |
 
 **Decisiones técnicas clave:**
-- Modelo principal: Claude Sonnet 4.5 vía API (cost-effective, structured output)
+- Modelo principal: Claude Sonnet 5 vía API (cost-effective, structured output)
 - Opción secundaria: modelo local (Llama 3 vía Ollama) — angle "data residency" para EU/regulated
 - **Evals obligatorios:** dataset propio de 20-30 casos etiquetados, precision/recall reportados. Sin evals, un feature con LLM es "un juguete"
 
