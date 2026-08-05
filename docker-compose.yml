@@ -119,8 +119,8 @@ services:
       WEBAUTHN_CHALLENGE_TTL_MS: 300000
       # M2 LLM anomaly classifier — value comes from the (gitignored) root .env.
       # Disabled by default; set ANOMALY_CLASSIFIER_ENABLED=true there to turn on.
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ANOMALY_CLASSIFIER_ENABLED: ${ANOMALY_CLASSIFIER_ENABLED:-false}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANOMALY_CLASSIFIER_ENABLED: "true"
     ports:
       - "3002:3001"
 
