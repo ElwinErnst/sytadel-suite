@@ -187,6 +187,11 @@ services:
       BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
       VAULT_BASE_URL: http://vault-api:3000
       ZT_POLICIES_FILE: /app/local/policies.json
+      # M2 slice 2 — NL → RBAC policy generator. Key comes from the
+      # (gitignored) root .env; set POLICY_GENERATOR_ENABLED=true there
+      # to turn the endpoint on.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      POLICY_GENERATOR_ENABLED: "true"
     ports:
       - "3010:3010"
 
