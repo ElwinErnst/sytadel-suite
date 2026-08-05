@@ -202,7 +202,11 @@ services:
       context: ./billing/billing-api
     restart: unless-stopped
     env_file:
-      - ./billing/billing-api/.env
+      # Optional: real payment-provider secrets for local dev. Absent in CI —
+      # billing-api boots from the `environment:` block below, which is why the
+      # smoke stack must not fail when this file is missing.
+      - path: ./billing/billing-api/.env
+        required: false
     depends_on:
       billing-db:
         condition: service_healthy

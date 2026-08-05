@@ -27,6 +27,28 @@ jobs:
       - name: Show running services
         run: docker compose ps
 
+      # `docker compose up -d` returns once containers are created, not once the
+      # NestJS apps finished booting, connecting to their DBs and seeding demo
+      # data. Gate on the real precondition the smoke needs: auth-api accepting a
+      # login. This mirrors scripts/smoke.sh's default credentials.
+      - name: Wait for stack readiness
+        run: |
+          echo "Waiting for auth-api to accept logins (server + DB + demo seed)..."
+          for attempt in $(seq 1 60); do
+            code="$(curl -s -o /dev/null -w '%{http_code}' \
+              -X POST http://localhost:3002/api/auth/login \
+              -H 'Content-Type: application/json' \
+              --data-raw '{"email":"admin@test.com","password":"123456","tenantSlug":"sentinel-labs"}' 2>/dev/null || true)"
+            if [ "$code" = "201" ]; then
+              echo "Ready after ${attempt} attempt(s)."
+              exit 0
+            fi
+            echo "attempt ${attempt}/60: login returned '${code}', retrying in 3s..."
+            sleep 3
+          done
+          echo "::error::auth-api did not become ready within ~180s"
+          exit 1
+
       - name: Ensure smoke script is executable
         run: chmod +x ./scripts/smoke.sh
 
