@@ -121,6 +121,8 @@ services:
       # Disabled by default; set ANOMALY_CLASSIFIER_ENABLED=true there to turn on.
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANOMALY_CLASSIFIER_ENABLED: "true"
+      # M2 slice 3 — AI-driven access review. Cron defaults to 03:15 UTC daily.
+      ACCESS_REVIEW_ENABLED: "true"
     ports:
       - "3002:3001"
 
