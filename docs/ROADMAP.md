@@ -68,7 +68,7 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
-| **LLM anomaly classifier** | 🟡 | Scaffold completo en `auth-api/modules/session-anomaly/`: `anomaly-classifier.service`, `.listener` (consume `ANOMALY_PERSISTED_EVENT` via `EventEmitter2`), entity `session-anomaly-classification`, eval framework (`evals/anomaly-classifier.eval.ts` + `fixtures.ts`), config con toggle `ANOMALY_CLASSIFIER_ENABLED`, `@anthropic-ai/sdk@0.115.0`. Modelo `claude-sonnet-5` + structured output. Bloqueado en: **renovar `ANTHROPIC_API_KEY`** para correr evals y capturar precision/recall. Diseño: [`architecture/m2-llm-anomaly-classifier.md`](./architecture/m2-llm-anomaly-classifier.md) |
+| **LLM anomaly classifier** | ✅ | End-to-end en producción. Pipeline async: analyzer heurístico → `ANOMALY_PERSISTED_EVENT` (EventEmitter2) → listener → Claude Sonnet 5 con structured output → persiste en `session_anomaly_classifications`. Verificado: login desde IP fresca disparó `suspicious` con confidence 0.60 → `step_up_auth`, 3.7s. **Evals sobre 25 fixtures: accuracy 95.7%, critical class precision 1.00 / recall 1.00, cost $0.00506/análisis, p50 4s / p95 8.7s.** Blog post: [`2026-08-llm-anomaly-classifier.md`](./blog/2026-08-llm-anomaly-classifier.md). Diseño: [`architecture/m2-llm-anomaly-classifier.md`](./architecture/m2-llm-anomaly-classifier.md) |
 | **Natural language → RBAC policy generator** | ⏭️ | "editors leen todo pero solo modifican lo suyo" → policy JSON validable. LLM-as-compiler. No arrancado |
 | **AI-driven access review** | ⏭️ | Job scheduled: LLM analiza permisos, sugiere revocaciones, genera reporte markdown. No arrancado |
 
