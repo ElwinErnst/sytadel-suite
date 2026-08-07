@@ -88,7 +88,7 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
-| **Sytadel MCP server** | ⏭️ | Expone `list users`, `query audit log`, `revoke access`, `create policy` como tools MCP. Publicado como paquete npm `@sytadel/mcp-server` |
+| **Sytadel MCP server** | ✅ | Submódulo público [`ElwinErnst/sytadel-mcp-server`](https://github.com/ElwinErnst/sytadel-mcp-server) con 5 tools (`list_tenant_users`, `list_service_accounts`, `query_session_anomalies`, `generate_policy`, `run_access_review`). Dual-mode auth (user password / service account) para separar admin scope de API_CLIENT scope. Stdio transport, JWT cache con inflight coalescing, native fetch (zero third-party HTTP). Smoke real: 5/5 tools contra el docker stack, `run_access_review` devolvió 10.4KB con 8 recommendations en ~18s. Blog post: [`2026-08-mcp-server-identity-infrastructure.md`](./blog/2026-08-mcp-server-identity-infrastructure.md) |
 | **Agentic approval workflow con HITL** | ⏭️ | Request de acceso → agente LLM propone decisión → humano aprueba con un click → registro. LangGraph JS mínimo |
 | **Portfolio landing con demo interactiva** | ⏭️ | Botón "Connect" en `sytadel-labs.com` que conecta el MCP server al Claude Desktop del visitante. "Click and try", no "clone and setup" |
 
