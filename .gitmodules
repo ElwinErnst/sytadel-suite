@@ -10,3 +10,6 @@
 [submodule "billing/billing-api"]
 	path = billing/billing-api
 	url = https://github.com/ElwinErnst/billing-api.git
+[submodule "mcp-server"]
+	path = mcp-server
+	url = https://github.com/ElwinErnst/sytadel-mcp-server.git
