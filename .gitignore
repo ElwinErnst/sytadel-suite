@@ -43,3 +43,6 @@ pnpm-debug.log*
 *.swp
 *.swo
 *~
+
+# Unpublished blog drafts
+docs/blog/
