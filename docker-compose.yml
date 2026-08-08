@@ -40,16 +40,37 @@ services:
       POSTGRES_DB: vault
       POSTGRES_USER: vault
       POSTGRES_PASSWORD: vault
+      APP_DB_USER: ${VAULT_APP_DB_USER:-vault_app}
+      APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:-vault_app}
     ports:
       - "5433:5432"
     volumes:
       - vault_postgres_data:/var/lib/postgresql/data
       - ./securechain-vault/infra/postgres/init:/docker-entrypoint-initdb.d:ro
+      - ./securechain-vault/infra/postgres:/opt/securechain-postgres:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U vault -d vault"]
       interval: 5s
       timeout: 3s
       retries: 20
+
+  vault-db-upgrade:
+    image: postgres:16-alpine
+    profiles: ["tools"]
+    depends_on:
+      vault-db:
+        condition: service_healthy
+    environment:
+      PGHOST: vault-db
+      PGPORT: 5432
+      PGDATABASE: vault
+      PGUSER: vault
+      PGPASSWORD: vault
+      APP_DB_USER: ${VAULT_APP_DB_USER:-vault_app}
+      APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:-vault_app}
+    volumes:
+      - ./securechain-vault/infra/postgres:/opt/securechain-postgres:ro
+    command: ["/opt/securechain-postgres/apply-upgrades.sh"]
 
   minio:
     image: minio/minio:latest
@@ -117,6 +138,7 @@ services:
       WEBAUTHN_RP_NAME: Sytadel
       WEBAUTHN_ORIGINS: "http://localhost:3003,http://localhost:4321"
       WEBAUTHN_CHALLENGE_TTL_MS: 300000
+      WEBAUTHN_AUTHENTICATION_BEGIN_MIN_DURATION_MS: 250
       # M2 LLM anomaly classifier — value comes from the (gitignored) root .env.
       # Disabled by default; set ANOMALY_CLASSIFIER_ENABLED=true there to turn on.
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
@@ -141,8 +163,8 @@ services:
       DB_HOST: vault-db
       DB_PORT: 5432
       DB_NAME: vault
-      DB_USER: vault
-      DB_PASSWORD: vault
+      DB_USER: ${VAULT_APP_DB_USER:-vault_app}
+      DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:-vault_app}
       STORAGE_DRIVER: minio
       MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
