@@ -111,7 +111,7 @@ Mínimo indispensable para que si un AppSec engineer clona el repo y lee el cód
 - **🟡 Rotar defaults `change-me-*` del compose** — M1 automated rotation cubrió las credenciales de service accounts. Los HMAC/JWT secrets compartidos entre auth/vault/zt siguen como `change-me-*` en el compose; hay que mover a `.env` real cuando se salga de demo local
 - **🟡 Migraciones controladas** — `DB_SYNC=true` es red flag si un AppSec lee la config. Migrar a TypeORM migrations por servicio
 - **⏭️ Anti-replay persistente** — mover ventana HMAC de memoria a Redis o table dedicada. Red flag menor pero importante para escala horizontal
-- **⏭️ Hardening HTTP** — `helmet`, rate limiting, CSP en frontends
+- **✅ Hardening HTTP** — `helmet` + rate limiting per-IP (`@nestjs/throttler`, 300 req/min, tuneable por env) en las 4 APIs (vault/auth/zt/billing; webhooks de pago eximidos con `@SkipThrottle`). CSP en ambos fronts: `sytadel-app` con nonce por-request (middleware, `force-dynamic`), `sytadel-web` con CSP hash-based built-in de Astro (`security.csp`)
 - **✅ `securechain-vault/infra/.env` trackeado en git** — resuelto: `git rm --cached` + gitignore + `git filter-repo` para limpiar historia antes de publicar el repo
 
 ---
