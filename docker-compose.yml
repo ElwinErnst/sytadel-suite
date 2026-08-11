@@ -119,7 +119,7 @@ services:
       DB_NAME: auth
       DB_USER: postgres
       DB_PASS: postgres
-      DB_SYNC: "true"
+      DB_SYNC: "false"
       AUTH_JWT_ISSUER: auth
       AUTH_JWT_AUDIENCE: zerotrust-api
       AUTH_JWT_ACCESS_SECRET: change-me-access-secret
