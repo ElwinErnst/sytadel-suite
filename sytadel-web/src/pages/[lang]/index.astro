@@ -1,5 +1,6 @@
 ---
 import SiteFrame from '../../components/SiteFrame.astro';
+import DemoConsole from '../../components/DemoConsole.astro';
 import { copy, defaultLocale, locales, type Locale } from '../../i18n/content';
 
 export function getStaticPaths() {
@@ -11,6 +12,7 @@ const page = copy[lang];
 
 const ids: Record<Locale, Record<string, string>> = {
   es: {
+    demo: 'demo',
     product: 'producto',
     integrations: 'apis',
     modules: 'modulos',
@@ -20,6 +22,7 @@ const ids: Record<Locale, Record<string, string>> = {
     contact: 'contacto',
   },
   en: {
+    demo: 'demo',
     product: 'product',
     integrations: 'apis',
     modules: 'modules',
@@ -29,6 +32,7 @@ const ids: Record<Locale, Record<string, string>> = {
     contact: 'contact',
   },
   pt: {
+    demo: 'demo',
     product: 'produto',
     integrations: 'apis',
     modules: 'modulos',
@@ -244,6 +248,8 @@ const contactHref = `mailto:${contactEmail}?subject=${encodeURIComponent(contact
       <span>{item}</span>
     ))}
   </section>
+
+  <DemoConsole content={page.demo} id={ids.demo} />
 
   <section class="content-section" id={ids.product}>
     <div class="section-intro">

@@ -1,0 +1,477 @@
+---
+import type { PageCopy } from '../i18n/content';
+
+interface Props {
+  content: PageCopy['demo'];
+  id?: string;
+}
+
+const { content, id = 'demo' } = Astro.props;
+---
+
+<section class="content-section demo-section" id={id}>
+  <div class="section-intro">
+    <p class="section-kicker">{content.kicker}</p>
+    <h2>{content.title}</h2>
+    <p>{content.description}</p>
+  </div>
+
+  <div
+    class="demo-console"
+    data-demo-root
+    data-thinking={content.thinking}
+    data-error-generic={content.errorGeneric}
+    data-error-unavailable={content.errorUnavailable}
+    data-tool-label={content.toolLabel}
+    data-result-label={content.resultLabel}
+  >
+    <div class="demo-disclaimer">
+      <span class="demo-dot" aria-hidden="true"></span>
+      {content.disclaimer}
+    </div>
+
+    <div class="demo-suggestions" data-demo-suggestions>
+      {content.suggestions.map((s) => (
+        <button type="button" class="demo-chip" data-demo-suggestion>{s}</button>
+      ))}
+    </div>
+
+    <div class="demo-thread" data-demo-thread aria-live="polite"></div>
+
+    <form class="demo-form" data-demo-form>
+      <input
+        type="text"
+        class="demo-input"
+        data-demo-input
+        placeholder={content.placeholder}
+        maxlength="600"
+        autocomplete="off"
+        aria-label={content.placeholder}
+      />
+      <div class="demo-actions">
+        <button type="button" class="button button-secondary demo-reset" data-demo-reset>
+          {content.reset}
+        </button>
+        <button type="submit" class="button button-primary demo-send" data-demo-send>
+          {content.send}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .demo-section {
+    scroll-margin-top: 90px;
+  }
+
+  .demo-console {
+    margin-top: 2rem;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    backdrop-filter: blur(12px);
+  }
+
+  .demo-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .demo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(120deg, var(--violet), var(--blue));
+    box-shadow: 0 0 0 4px rgba(138, 77, 255, 0.14);
+    flex-shrink: 0;
+  }
+
+  .demo-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .demo-chip {
+    font: inherit;
+    font-size: 0.83rem;
+    color: var(--text);
+    background: rgba(138, 77, 255, 0.1);
+    border: 1px solid rgba(138, 77, 255, 0.28);
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  }
+
+  .demo-chip:hover {
+    background: rgba(138, 77, 255, 0.2);
+    border-color: rgba(138, 77, 255, 0.5);
+    transform: translateY(-1px);
+  }
+
+  .demo-chip:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .demo-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    max-height: 460px;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
+
+  .demo-thread:empty {
+    display: none;
+  }
+
+  .demo-msg {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 92%;
+  }
+
+  .demo-msg-user {
+    align-self: flex-end;
+    align-items: flex-end;
+  }
+
+  .demo-bubble {
+    border-radius: 16px;
+    padding: 0.8rem 1rem;
+    line-height: 1.55;
+    font-size: 0.92rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .demo-msg-user .demo-bubble {
+    background: linear-gradient(120deg, rgba(138, 77, 255, 0.85), rgba(30, 167, 255, 0.75));
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .demo-msg-agent .demo-bubble {
+    background: var(--panel-strong);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-bottom-left-radius: 4px;
+  }
+
+  .demo-msg-agent.demo-error .demo-bubble {
+    border-color: rgba(255, 79, 216, 0.4);
+    color: var(--muted);
+  }
+
+  .demo-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .demo-tool {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: rgba(13, 10, 29, 0.6);
+    overflow: hidden;
+  }
+
+  .demo-tool > summary {
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    color: var(--text);
+  }
+
+  .demo-tool > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .demo-tool-badge {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(30, 167, 255, 0.16);
+    border: 1px solid rgba(30, 167, 255, 0.4);
+    color: var(--text);
+  }
+
+  .demo-tool-name {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    color: var(--blue);
+  }
+
+  .demo-tool pre {
+    margin: 0;
+    padding: 0.75rem;
+    border-top: 1px solid var(--line);
+    background: var(--bg-deep);
+    font-size: 0.74rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    color: var(--muted);
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  .demo-thinking {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .demo-thinking .demo-dot {
+    animation: demo-pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes demo-pulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-thinking .demo-dot { animation: none; }
+    .demo-chip { transition: none; }
+  }
+
+  .demo-form {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .demo-input {
+    flex: 1 1 260px;
+    font: inherit;
+    font-size: 0.92rem;
+    color: var(--text);
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+  }
+
+  .demo-input:focus-visible {
+    outline: 2px solid var(--violet);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+
+  .demo-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .demo-send:disabled,
+  .demo-reset:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  type ToolCall = { name: string; input: Record<string, unknown>; result: unknown };
+  type DemoResponse = {
+    reply?: string;
+    toolCalls?: ToolCall[];
+    truncated?: boolean;
+    error?: string;
+    message?: string;
+  };
+  type Turn = { role: 'user' | 'assistant'; text: string };
+
+  const root = document.querySelector<HTMLElement>('[data-demo-root]');
+  if (root) {
+    const thread = root.querySelector<HTMLElement>('[data-demo-thread]')!;
+    const form = root.querySelector<HTMLFormElement>('[data-demo-form]')!;
+    const input = root.querySelector<HTMLInputElement>('[data-demo-input]')!;
+    const sendBtn = root.querySelector<HTMLButtonElement>('[data-demo-send]')!;
+    const resetBtn = root.querySelector<HTMLButtonElement>('[data-demo-reset]')!;
+    const suggestions = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[data-demo-suggestion]'),
+    );
+
+    const strings = {
+      thinking: root.dataset.thinking ?? 'Thinking…',
+      errorGeneric: root.dataset.errorGeneric ?? 'Something went wrong.',
+      errorUnavailable: root.dataset.errorUnavailable ?? 'Demo unavailable.',
+      toolLabel: root.dataset.toolLabel ?? 'Tool',
+      resultLabel: root.dataset.resultLabel ?? 'Result',
+    };
+
+    const conversation: Turn[] = [];
+    let busy = false;
+
+    const scrollToEnd = () => {
+      thread.scrollTop = thread.scrollHeight;
+    };
+
+    const setBusy = (state: boolean) => {
+      busy = state;
+      input.disabled = state;
+      sendBtn.disabled = state;
+      resetBtn.disabled = state;
+      suggestions.forEach((b) => (b.disabled = state));
+    };
+
+    const addBubble = (
+      role: 'user' | 'assistant',
+      text: string,
+      opts: { error?: boolean } = {},
+    ) => {
+      const wrap = document.createElement('div');
+      wrap.className = `demo-msg demo-msg-${role === 'user' ? 'user' : 'agent'}`;
+      if (opts.error) wrap.classList.add('demo-error');
+      const bubble = document.createElement('div');
+      bubble.className = 'demo-bubble';
+      bubble.textContent = text;
+      wrap.appendChild(bubble);
+      thread.appendChild(wrap);
+      scrollToEnd();
+      return wrap;
+    };
+
+    const addToolTrace = (host: HTMLElement, calls: ToolCall[]) => {
+      if (!calls.length) return;
+      const box = document.createElement('div');
+      box.className = 'demo-tools';
+      for (const call of calls) {
+        const details = document.createElement('details');
+        details.className = 'demo-tool';
+        const summary = document.createElement('summary');
+        const badge = document.createElement('span');
+        badge.className = 'demo-tool-badge';
+        badge.textContent = strings.toolLabel;
+        const name = document.createElement('span');
+        name.className = 'demo-tool-name';
+        name.textContent = call.name + '()';
+        summary.append(badge, name);
+        const pre = document.createElement('pre');
+        pre.textContent = safeJson(call.result);
+        details.append(summary, pre);
+        box.appendChild(details);
+      }
+      host.insertBefore(box, host.firstChild);
+      scrollToEnd();
+    };
+
+    const safeJson = (value: unknown): string => {
+      try {
+        return JSON.stringify(value, null, 2);
+      } catch {
+        return String(value);
+      }
+    };
+
+    const showThinking = (): HTMLElement => {
+      const wrap = document.createElement('div');
+      wrap.className = 'demo-msg demo-msg-agent';
+      const t = document.createElement('div');
+      t.className = 'demo-thinking';
+      const dot = document.createElement('span');
+      dot.className = 'demo-dot';
+      const label = document.createElement('span');
+      label.textContent = strings.thinking;
+      t.append(dot, label);
+      wrap.appendChild(t);
+      thread.appendChild(wrap);
+      scrollToEnd();
+      return wrap;
+    };
+
+    const send = async (text: string) => {
+      const clean = text.trim();
+      if (!clean || busy) return;
+      setBusy(true);
+      addBubble('user', clean);
+      conversation.push({ role: 'user', text: clean });
+      input.value = '';
+      const pending = showThinking();
+
+      try {
+        const res = await fetch('/api/demo', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ messages: conversation }),
+        });
+
+        // The endpoint only exists where the site is deployed with a runtime
+        // (e.g. Vercel). In a static-only environment it 404s with HTML — treat
+        // any non-JSON / not-found response as "demo unavailable".
+        let data: DemoResponse | null = null;
+        try {
+          data = (await res.json()) as DemoResponse;
+        } catch {
+          data = null;
+        }
+        pending.remove();
+
+        if (!data || res.status === 404) {
+          addBubble('assistant', strings.errorUnavailable, { error: true });
+          return;
+        }
+
+        if (!res.ok) {
+          const msg =
+            data.error === 'demo_unavailable'
+              ? strings.errorUnavailable
+              : data.message ?? strings.errorGeneric;
+          addBubble('assistant', msg, { error: true });
+          return;
+        }
+
+        const reply = data.reply ?? '';
+        const agentBubble = addBubble('assistant', reply);
+        addToolTrace(agentBubble, data.toolCalls ?? []);
+        conversation.push({ role: 'assistant', text: reply });
+      } catch {
+        pending.remove();
+        addBubble('assistant', strings.errorGeneric, { error: true });
+      } finally {
+        setBusy(false);
+        input.focus();
+      }
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      void send(input.value);
+    });
+
+    suggestions.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (busy) return;
+        void send(btn.textContent ?? '');
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (busy) return;
+      conversation.length = 0;
+      thread.replaceChildren();
+      input.value = '';
+      input.focus();
+    });
+  }
+</script>
