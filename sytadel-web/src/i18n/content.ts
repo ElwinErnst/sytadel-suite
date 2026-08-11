@@ -95,6 +95,21 @@ type PageCopy = {
     primary: string;
     secondary: string;
   };
+  demo: {
+    kicker: string;
+    title: string;
+    description: string;
+    disclaimer: string;
+    placeholder: string;
+    send: string;
+    thinking: string;
+    reset: string;
+    toolLabel: string;
+    resultLabel: string;
+    errorGeneric: string;
+    errorUnavailable: string;
+    suggestions: string[];
+  };
   footer: string;
 };
 
@@ -112,6 +127,7 @@ export const copy: Record<Locale, PageCopy> = {
       cta: 'Ver por qué importa',
     },
     nav: [
+      { label: 'Demo', href: '#demo' },
       { label: 'Producto', href: '#producto' },
       { label: 'APIs', href: '#apis' },
       { label: 'Módulos', href: '#modulos' },
@@ -393,6 +409,29 @@ export const copy: Record<Locale, PageCopy> = {
       primary: 'Agendar demo',
       secondary: 'Ver módulos',
     },
+    demo: {
+      kicker: 'Demo en vivo',
+      title: 'Probá el agente de Sytadel, acá mismo.',
+      description:
+        'Este chat conecta a Claude con los mismos tools del servidor MCP de Sytadel, sobre un tenant demo de solo lectura. Preguntá y mirá qué herramienta usa el agente y qué devuelve. Sin instalar nada, sin cuenta.',
+      disclaimer:
+        'Sandbox con datos ficticios. Solo lectura: el agente no modifica nada.',
+      placeholder: 'Preguntá sobre usuarios, anomalías o el estado de acceso…',
+      send: 'Enviar',
+      thinking: 'El agente está pensando…',
+      reset: 'Reiniciar',
+      toolLabel: 'Tool',
+      resultLabel: 'Resultado',
+      errorGeneric: 'El demo no pudo responder eso. Probá de nuevo.',
+      errorUnavailable:
+        'El demo en vivo no está disponible en este entorno. Escribinos para una demo privada.',
+      suggestions: [
+        '¿Quién tiene acceso de más en este tenant?',
+        'Corré un access review y mostrame los hallazgos críticos.',
+        'Mostrame las anomalías de sesión recientes.',
+        'Compilá una policy: OWNER hace todo, MEMBER solo GET /vaults, default deny.',
+      ],
+    },
     footer: 'Sytadel Labs. Acceso seguro, identidad y zero trust operativo para infraestructura moderna.',
   },
   en: {
@@ -406,6 +445,7 @@ export const copy: Record<Locale, PageCopy> = {
       cta: 'See why it matters',
     },
     nav: [
+      { label: 'Demo', href: '#demo' },
       { label: 'Product', href: '#product' },
       { label: 'APIs', href: '#apis' },
       { label: 'Modules', href: '#modules' },
@@ -687,6 +727,29 @@ export const copy: Record<Locale, PageCopy> = {
       primary: 'Book demo',
       secondary: 'See modules',
     },
+    demo: {
+      kicker: 'Live demo',
+      title: 'Try the Sytadel agent, right here.',
+      description:
+        'This chat connects Claude to the same tools the Sytadel MCP server exposes, over a read-only demo tenant. Ask a question and watch which tool the agent calls and what it returns. No install, no account.',
+      disclaimer:
+        'Sandbox with fictional data. Read-only: the agent never changes anything.',
+      placeholder: 'Ask about users, anomalies, or the access posture…',
+      send: 'Send',
+      thinking: 'The agent is thinking…',
+      reset: 'Reset',
+      toolLabel: 'Tool',
+      resultLabel: 'Result',
+      errorGeneric: 'The demo could not answer that. Try again.',
+      errorUnavailable:
+        'The live demo is not available in this environment. Reach out for a private demo.',
+      suggestions: [
+        'Who has too much access in this tenant?',
+        'Run an access review and show me the critical findings.',
+        'Show me the recent session anomalies.',
+        'Compile a policy: OWNER can do anything, MEMBER only GET /vaults, default deny.',
+      ],
+    },
     footer: 'Sytadel Labs. Secure access, identity, and operational zero trust for modern infrastructure.',
   },
   pt: {
@@ -700,6 +763,7 @@ export const copy: Record<Locale, PageCopy> = {
       cta: 'Ver por que isso importa',
     },
     nav: [
+      { label: 'Demo', href: '#demo' },
       { label: 'Produto', href: '#produto' },
       { label: 'APIs', href: '#apis' },
       { label: 'Módulos', href: '#modulos' },
@@ -980,6 +1044,29 @@ export const copy: Record<Locale, PageCopy> = {
         'Podemos preparar uma demo focada em como a Sytadel reduz atrito, melhora rastreabilidade e torna mais defensáveis as decisões operacionais do dia a dia.',
       primary: 'Agendar demo',
       secondary: 'Ver módulos',
+    },
+    demo: {
+      kicker: 'Demo ao vivo',
+      title: 'Teste o agente da Sytadel, aqui mesmo.',
+      description:
+        'Este chat conecta o Claude às mesmas ferramentas que o servidor MCP da Sytadel expõe, sobre um tenant de demonstração somente leitura. Pergunte e veja qual ferramenta o agente usa e o que ela retorna. Sem instalar nada, sem conta.',
+      disclaimer:
+        'Sandbox com dados fictícios. Somente leitura: o agente não altera nada.',
+      placeholder: 'Pergunte sobre usuários, anomalias ou o estado de acesso…',
+      send: 'Enviar',
+      thinking: 'O agente está pensando…',
+      reset: 'Reiniciar',
+      toolLabel: 'Ferramenta',
+      resultLabel: 'Resultado',
+      errorGeneric: 'A demo não conseguiu responder isso. Tente novamente.',
+      errorUnavailable:
+        'A demo ao vivo não está disponível neste ambiente. Fale conosco para uma demo privada.',
+      suggestions: [
+        'Quem tem acesso em excesso neste tenant?',
+        'Rode uma revisão de acesso e mostre os achados críticos.',
+        'Mostre as anomalias de sessão recentes.',
+        'Compile uma policy: OWNER pode tudo, MEMBER só GET /vaults, default deny.',
+      ],
     },
     footer: 'Sytadel Labs. Acesso seguro, identidade e zero trust operacional para infraestrutura moderna.',
   },
