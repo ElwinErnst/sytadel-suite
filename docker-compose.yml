@@ -242,7 +242,7 @@ services:
       DB_NAME: billing
       DB_USER: billing
       DB_PASSWORD: billing
-      DB_SYNC: "true"
+      DB_SYNC: "false"
       BILLING_JWT_ISSUER: auth
       BILLING_JWT_AUDIENCE: zerotrust-api
       BILLING_JWT_ACCESS_SECRET: change-me-access-secret
