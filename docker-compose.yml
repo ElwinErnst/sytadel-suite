@@ -122,17 +122,17 @@ services:
       DB_SYNC: "false"
       AUTH_JWT_ISSUER: auth
       AUTH_JWT_AUDIENCE: zerotrust-api
-      AUTH_JWT_ACCESS_SECRET: change-me-access-secret
-      AUTH_JWT_REFRESH_SECRET: change-me-refresh-secret
+      AUTH_JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-insecure-access-secret}
+      AUTH_JWT_REFRESH_SECRET: ${AUTH_JWT_REFRESH_SECRET:-dev-insecure-refresh-secret}
       AUTH_JWT_ACCESS_EXPIRES_IN: 15m
       AUTH_JWT_REFRESH_EXPIRES_IN: 7d
       AUTH_BCRYPT_ROUNDS: 12
-      AUTH_INTERNAL_SERVICE_SECRET: change-me-internal-secret
-      AUTH_INTERNAL_HMAC_SECRET: change-me-internal-hmac-secret
+      AUTH_INTERNAL_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
+      AUTH_INTERNAL_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
       BILLING_METERING_BASE_URL: http://billing-api:3020/api
       BILLING_METERING_TIMEOUT_MS: 5000
-      BILLING_INTERNAL_SERVICE_SECRET: change-me-billing-internal-secret
-      BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
+      BILLING_INTERNAL_SERVICE_SECRET: ${BILLING_INTERNAL_SERVICE_SECRET:-dev-insecure-billing-internal-secret}
+      BILLING_INTERNAL_HMAC_SECRET: ${BILLING_INTERNAL_HMAC_SECRET:-dev-insecure-billing-internal-hmac-secret}
       AUTH_BOOTSTRAP_DEMO_DATA: "true"
       WEBAUTHN_RP_ID: localhost
       WEBAUTHN_RP_NAME: Sytadel
@@ -177,8 +177,8 @@ services:
       ZT_HMAC_SECRET: change_me_zt_secret
       ZT_MAX_CLOCK_SKEW_MS: 30000
       AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
-      AUTH_DIRECTORY_SERVICE_SECRET: change-me-internal-secret
-      AUTH_DIRECTORY_HMAC_SECRET: change-me-internal-hmac-secret
+      AUTH_DIRECTORY_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
+      AUTH_DIRECTORY_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
       AUTH_DIRECTORY_TIMEOUT_MS: 5000
       MASTER_KEY_B64: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
       MASTER_KEY_VERSION: 1
@@ -199,16 +199,16 @@ services:
       PORT: 3010
       ZT_JWT_ISSUER: auth
       ZT_JWT_AUDIENCE: zerotrust-api
-      ZT_JWT_HS256_SECRET: change-me-access-secret
+      ZT_JWT_HS256_SECRET: ${JWT_ACCESS_SECRET:-dev-insecure-access-secret}
       ZT_HMAC_SECRET: change_me_zt_secret
       AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
-      AUTH_DIRECTORY_SERVICE_SECRET: change-me-internal-secret
-      AUTH_DIRECTORY_HMAC_SECRET: change-me-internal-hmac-secret
+      AUTH_DIRECTORY_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
+      AUTH_DIRECTORY_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
       AUTH_DIRECTORY_TIMEOUT_MS: 5000
       BILLING_METERING_BASE_URL: http://billing-api:3020/api
       BILLING_METERING_TIMEOUT_MS: 5000
-      BILLING_INTERNAL_SERVICE_SECRET: change-me-billing-internal-secret
-      BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
+      BILLING_INTERNAL_SERVICE_SECRET: ${BILLING_INTERNAL_SERVICE_SECRET:-dev-insecure-billing-internal-secret}
+      BILLING_INTERNAL_HMAC_SECRET: ${BILLING_INTERNAL_HMAC_SECRET:-dev-insecure-billing-internal-hmac-secret}
       VAULT_BASE_URL: http://vault-api:3000
       ZT_POLICIES_FILE: /app/local/policies.json
       # M2 slice 2 — NL → RBAC policy generator. Key comes from the
@@ -245,13 +245,13 @@ services:
       DB_SYNC: "false"
       BILLING_JWT_ISSUER: auth
       BILLING_JWT_AUDIENCE: zerotrust-api
-      BILLING_JWT_ACCESS_SECRET: change-me-access-secret
+      BILLING_JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-insecure-access-secret}
       AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
-      AUTH_DIRECTORY_SERVICE_SECRET: change-me-internal-secret
-      AUTH_DIRECTORY_HMAC_SECRET: change-me-internal-hmac-secret
+      AUTH_DIRECTORY_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
+      AUTH_DIRECTORY_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
       AUTH_DIRECTORY_TIMEOUT_MS: 5000
-      BILLING_INTERNAL_SERVICE_SECRET: change-me-billing-internal-secret
-      BILLING_INTERNAL_HMAC_SECRET: change-me-billing-internal-hmac-secret
+      BILLING_INTERNAL_SERVICE_SECRET: ${BILLING_INTERNAL_SERVICE_SECRET:-dev-insecure-billing-internal-secret}
+      BILLING_INTERNAL_HMAC_SECRET: ${BILLING_INTERNAL_HMAC_SECRET:-dev-insecure-billing-internal-hmac-secret}
       BILLING_ALLOW_MOCK_CHECKOUT_ACTIVATION: "true"
       BILLING_PORTAL_RETURN_URL: http://localhost:3003/app/billing
       BILLING_TRIAL_DAYS: 14

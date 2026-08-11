@@ -54,6 +54,30 @@ Para bajar y borrar volúmenes:
 docker compose down -v
 ```
 
+## Secrets (JWT / HMAC compartidos)
+
+Los secrets compartidos entre servicios se inyectan por variable de entorno; el
+compose los interpola desde un `.env` en la raíz (auto-cargado, gitignoreado).
+Sin `.env`, el stack arranca con defaults `dev-insecure-*` **solo aptos para
+local/CI**. En cualquier entorno real, generá valores fuertes y ponelos en
+`.env`:
+
+```bash
+cat > .env <<EOF
+JWT_ACCESS_SECRET=$(openssl rand -hex 32)
+AUTH_JWT_REFRESH_SECRET=$(openssl rand -hex 32)
+INTERNAL_SERVICE_SECRET=$(openssl rand -hex 32)
+INTERNAL_HMAC_SECRET=$(openssl rand -hex 32)
+BILLING_INTERNAL_SERVICE_SECRET=$(openssl rand -hex 32)
+BILLING_INTERNAL_HMAC_SECRET=$(openssl rand -hex 32)
+EOF
+```
+
+Cada variable es un secreto lógico único: un mismo valor alimenta a todos los
+servicios que lo comparten (p. ej. `JWT_ACCESS_SECRET` lo usa auth para firmar y
+zerotrust/billing para verificar), así no pueden desincronizarse. Verificá la
+interpolación con `docker compose config`.
+
 ## Demo local
 
 Con `AUTH_BOOTSTRAP_DEMO_DATA=true`, `auth-api` inicializa:
