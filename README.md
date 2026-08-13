@@ -78,6 +78,14 @@ servicios que lo comparten (p. ej. `JWT_ACCESS_SECRET` lo usa auth para firmar y
 zerotrust/billing para verificar), así no pueden desincronizarse. Verificá la
 interpolación con `docker compose config`.
 
+**Producción (fail-closed):** usá el overlay `docker-compose.prod.yml`, que
+elimina los defaults `dev-insecure-*` y exige cada secreto — si falta alguno,
+`docker compose` falla antes de arrancar:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
 ## Demo local
 
 Con `AUTH_BOOTSTRAP_DEMO_DATA=true`, `auth-api` inicializa:

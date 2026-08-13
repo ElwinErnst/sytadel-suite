@@ -1,0 +1,22 @@
+# Production overlay — fail-closed on shared secrets.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# The base compose ships clearly-labeled `dev-insecure-*` fallbacks so local dev
+# and CI work with zero setup. This overlay removes those fallbacks: every
+# shared secret MUST be provided (via a root .env or the environment), or
+# `docker compose` fails at config time before anything starts.
+#
+# auth-api references all six shared secrets, so requiring them in this one
+# service block gates the entire stack — if any is unset, the whole
+# `docker compose config` errors out.
+services:
+  auth-api:
+    environment:
+      AUTH_JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?set JWT_ACCESS_SECRET in .env for production}
+      AUTH_JWT_REFRESH_SECRET: ${AUTH_JWT_REFRESH_SECRET:?set AUTH_JWT_REFRESH_SECRET in .env for production}
+      AUTH_INTERNAL_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:?set INTERNAL_SERVICE_SECRET in .env for production}
+      AUTH_INTERNAL_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:?set INTERNAL_HMAC_SECRET in .env for production}
+      BILLING_INTERNAL_SERVICE_SECRET: ${BILLING_INTERNAL_SERVICE_SECRET:?set BILLING_INTERNAL_SERVICE_SECRET in .env for production}
+      BILLING_INTERNAL_HMAC_SECRET: ${BILLING_INTERNAL_HMAC_SECRET:?set BILLING_INTERNAL_HMAC_SECRET in .env for production}
