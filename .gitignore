@@ -46,3 +46,6 @@ pnpm-debug.log*
 
 # Unpublished blog drafts
 docs/blog/
+
+# Personal career / interview prep — never publish
+career-ops/
