@@ -37,6 +37,8 @@ Environment:
 |----------|----------|---------|---------|
 | `ANTHROPIC_API_KEY` | yes (for the demo) | — | Server-side key for the demo agent. Without it, the demo degrades gracefully to an "unavailable" message. |
 | `DEMO_MODEL` | no | `claude-haiku-4-5-20251001` | Model used by the demo agent. |
+| `UPSTASH_REDIS_REST_URL` | no | — | Upstash Redis REST URL. With the token below, the demo rate limiter uses a sliding window shared across all serverless instances. |
+| `UPSTASH_REDIS_REST_TOKEN` | no | — | Upstash Redis REST token. Without both Upstash vars, the limiter falls back to a per-instance in-memory window. |
 
 The demo is a curated sandbox: fictional data, read-only, hard caps on turns and
 tokens per request. See `src/lib/demo/` (`fixtures.ts`, `tools.ts`, `agent.ts`).

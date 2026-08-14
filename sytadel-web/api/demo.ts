@@ -8,29 +8,12 @@
  * this route does not exist and the client degrades gracefully.
  */
 import { isDemoConfigured, runDemo, type ChatTurn } from '../src/lib/demo/agent';
+import { rateLimited } from '../src/lib/demo/rate-limit';
 
 export const config = { runtime: 'nodejs' };
 
 const MAX_TURNS = 8; // conversation length the client may send
 const MAX_CHARS = 600; // per message
-const RATE_LIMIT = 8; // requests
-const RATE_WINDOW_MS = 60_000; // per minute, per IP (best-effort, per instance)
-
-// Best-effort limiter. Serverless instances are ephemeral so this is not a hard
-// guarantee — the real cost ceiling is the per-request turn/token cap in the
-// agent. A KV-backed limiter (Vercel KV / Upstash) is the production upgrade.
-const hits = new Map<string, { count: number; resetAt: number }>();
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = hits.get(ip);
-  if (!entry || now > entry.resetAt) {
-    hits.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return false;
-  }
-  entry.count += 1;
-  return entry.count > RATE_LIMIT;
-}
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -77,7 +60,7 @@ export async function POST(request: Request): Promise<Response> {
     );
   }
 
-  if (rateLimited(clientIp(request))) {
+  if (await rateLimited(clientIp(request))) {
     return json(
       { error: 'rate_limited', message: 'Too many requests. Try again in a minute.' },
       429,
