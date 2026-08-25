@@ -132,22 +132,22 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'APIs', href: '#apis' },
       { label: 'Módulos', href: '#modulos' },
       { label: 'Seguridad', href: '#seguridad' },
-      { label: 'Planes', href: '#precios' },
     ],
     hero: {
-      eyebrow: 'Zero trust, hecho operativo',
-      title: 'Acceso seguro, identidad y control para infraestructura moderna.',
+      eyebrow: 'Infraestructura de seguridad · con IA',
+      title: 'Los cimientos de seguridad de tu SaaS, resueltos.',
       description:
-        'Sytadel ayuda a equipos que ya no pueden operar con permisos dispersos, evidencia manual y confianza implícita. La plataforma ordena acceso, información sensible y prueba verificable para reducir fricción operativa, pasar auditorías con más solidez y sostener crecimiento con control real.',
+        'Identidad y passkeys, un gateway Zero Trust con políticas, un vault con notarización a prueba de manipulación, y cobros — como módulos que enchufás. Con una capa de IA que detecta anomalías, compila políticas en lenguaje natural y asiste las decisiones de acceso. Somos una startup de seguridad: corremos sobre nuestro propio stack.',
       tags: [
-        'Infraestructura de seguridad para equipos modernos',
-        'Zero trust, llevado a la operación',
-        'Acceso seguro para infraestructura moderna',
-        'Identidad y control de acceso para sistemas críticos',
-        'La capa de control para operaciones seguras',
+        'Identidad + passkeys (WebAuthn)',
+        'Gateway Zero Trust + políticas',
+        'Vault + Notary (Merkle · RFC 3161)',
+        'Cobros seguros (MercadoPago · Stripe)',
+        'IA: anomalías · NL→RBAC · access review',
+        'MCP server para Claude',
       ],
-      primaryCta: 'Solicitar demo',
-      secondaryCta: 'Entender la plataforma',
+      primaryCta: 'Mirá el agente en acción',
+      secondaryCta: 'Ver los módulos',
       stats: [
         { value: '1 capa', label: 'una sola base para quitar accesos improvisados, credenciales heredadas y decisiones aisladas' },
         { value: 'Políticas claras', label: 'reglas visibles para ordenar quién accede, quién valida y cómo se resguarda cada activo crítico' },
@@ -221,24 +221,34 @@ export const copy: Record<Locale, PageCopy> = {
         'Cada componente existe para resolver un bloqueo operativo concreto. Juntos convierten control, trazabilidad e integración en una ventaja práctica, no en una capa burocrática.',
       cards: [
         {
-          title: 'Sytadel Vault',
+          title: 'Sytadel Auth',
           description:
-            'Protege documentos y activos críticos en un entorno centralizado para que la información sensible no viva repartida entre chats, carpetas y permisos difíciles de defender.',
+            'Identidad completa: usuarios, sesiones con rotación y detección de reuso, y passkeys (WebAuthn) resistentes a phishing. Roles por tenant (RBAC).',
         },
         {
           title: 'Sytadel ZeroTrust',
           description:
-            'Aplica reglas de acceso sobre usuarios, equipos y recursos para que el crecimiento de la operación no venga acompañado por confianza implícita y exposición silenciosa.',
+            'Un gateway que verifica cada request: valida identidad, evalúa políticas (default deny) y firma criptográficamente antes de que llegue a cualquier servicio.',
         },
         {
-          title: 'Sytadel Notary',
+          title: 'Sytadel Vault + Notary',
           description:
-            'Genera prueba verificable sobre existencia e integridad cuando un documento, registro o activo necesita respaldo técnico defendible frente a clientes, aliados o auditoría.',
+            'Documentos cifrados (envelope encryption) con auditoría append-only, y notarización a prueba de manipulación vía Merkle + RFC 3161.',
         },
         {
-          title: 'Expansiones por ecosistema',
+          title: 'Sytadel Billing',
           description:
-            'Permiten conectar la base de control con identidades externas, integraciones y nuevos flujos sin romper la operación existente ni multiplicar excepciones difíciles de gobernar.',
+            'Cobros por suscripción, por uso o pago único. Envuelve a MercadoPago y Stripe con webhooks verificados: configurás los parámetros y cobrás seguro.',
+        },
+        {
+          title: 'Sytadel AI',
+          description:
+            'Detección de anomalías de sesión, políticas RBAC desde lenguaje natural, access reviews automáticos, y un agente HITL que propone accesos — el humano decide.',
+        },
+        {
+          title: 'Sytadel MCP',
+          description:
+            'Un servidor MCP que expone estas capacidades como tools, para que Claude opere tu seguridad desde el mismo chat.',
         },
       ],
     },
@@ -410,16 +420,16 @@ export const copy: Record<Locale, PageCopy> = {
       secondary: 'Ver módulos',
     },
     demo: {
-      kicker: 'Demo en vivo',
-      title: 'Probá el agente de Sytadel, acá mismo.',
+      kicker: 'Cómo funciona',
+      title: 'Mirá al agente en acción.',
       description:
-        'Este chat conecta a Claude con los mismos tools del servidor MCP de Sytadel, sobre un tenant demo de solo lectura. Preguntá y mirá qué herramienta usa el agente y qué devuelve. Sin instalar nada, sin cuenta.',
+        'Una animación de una sesión real: el agente usa los mismos tools del servidor MCP de Sytadel sobre un tenant demo. Mirá qué herramienta llama y qué devuelve — access review, políticas, notarización. Sin instalar nada.',
       disclaimer:
-        'Sandbox con datos ficticios. Solo lectura: el agente no modifica nada.',
+        'Animación con datos de demo — muestra el flujo real, sin llamadas en vivo ni costo.',
       placeholder: 'Preguntá sobre usuarios, anomalías o el estado de acceso…',
       send: 'Enviar',
       thinking: 'El agente está pensando…',
-      reset: 'Reiniciar',
+      reset: 'Reproducir',
       toolLabel: 'Tool',
       resultLabel: 'Resultado',
       errorGeneric: 'El demo no pudo responder eso. Probá de nuevo.',
@@ -450,22 +460,22 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'APIs', href: '#apis' },
       { label: 'Modules', href: '#modules' },
       { label: 'Security', href: '#security' },
-      { label: 'Plans', href: '#pricing' },
     ],
     hero: {
-      eyebrow: 'Zero trust, made operational',
-      title: 'Secure access, identity, and control for modern infrastructure.',
+      eyebrow: 'Security infrastructure · with AI',
+      title: "Your SaaS's security foundations, solved.",
       description:
-        'Sytadel helps teams that can no longer operate on scattered permissions, manual evidence, and implicit trust. The platform organizes access, sensitive information, and verifiable proof to reduce operational friction, strengthen audit readiness, and support growth with real control.',
+        'Identity and passkeys, a Zero Trust gateway with policies, a vault with tamper-evident notarization, and payments — as modules you plug in. Plus an AI layer that detects anomalies, compiles policies from natural language, and assists access decisions. We are a security startup: we run on our own stack.',
       tags: [
-        'Security infrastructure for modern teams',
-        'Zero trust, made operational',
-        'Secure access for modern infrastructure',
-        'Identity and access control for critical systems',
-        'The control layer for secure operations',
+        'Identity + passkeys (WebAuthn)',
+        'Zero Trust gateway + policies',
+        'Vault + Notary (Merkle · RFC 3161)',
+        'Secure payments (MercadoPago · Stripe)',
+        'AI: anomalies · NL→RBAC · access review',
+        'MCP server for Claude',
       ],
-      primaryCta: 'Request demo',
-      secondaryCta: 'Understand the platform',
+      primaryCta: 'See the agent in action',
+      secondaryCta: 'See the modules',
       stats: [
         { value: '1 layer', label: 'one foundation to remove improvised access, inherited credentials, and isolated decisions' },
         { value: 'Clear policies', label: 'rules teams can apply to define who accesses, approves, and safeguards each critical asset' },
@@ -539,24 +549,34 @@ export const copy: Record<Locale, PageCopy> = {
         'Each component exists to solve a concrete operational blocker. Together they turn control, traceability, and integration into a practical advantage instead of an administrative burden.',
       cards: [
         {
-          title: 'Sytadel Vault',
+          title: 'Sytadel Auth',
           description:
-            'Protects critical documents and assets in one managed environment so sensitive information does not live across chats, folders, and permissions that are hard to defend.',
+            'Full identity: users, sessions with rotation and reuse detection, and phishing-resistant passkeys (WebAuthn). Per-tenant roles (RBAC).',
         },
         {
           title: 'Sytadel ZeroTrust',
           description:
-            'Applies access rules across users, teams, and resources so operational growth does not come with silent exposure and default trust.',
+            'A gateway that verifies every request: validates identity, evaluates policies (default deny), and cryptographically signs it before it reaches any service.',
         },
         {
-          title: 'Sytadel Notary',
+          title: 'Sytadel Vault + Notary',
           description:
-            'Generates verifiable proof of existence and integrity when a document, record, or asset needs defensible technical backing for customers, partners, or audit teams.',
+            'Encrypted documents (envelope encryption) with an append-only audit log, and tamper-evident notarization via Merkle + RFC 3161.',
         },
         {
-          title: 'Ecosystem extensions',
+          title: 'Sytadel Billing',
           description:
-            'Connect the control layer with external identity systems, integrations, and new workflows without breaking the existing operating model or multiplying hard-to-govern exceptions.',
+            'Subscription, usage-based, or one-off payments. Wraps MercadoPago and Stripe with verified webhooks: you set the parameters and charge securely.',
+        },
+        {
+          title: 'Sytadel AI',
+          description:
+            'Session anomaly detection, RBAC policies from natural language, automated access reviews, and a HITL agent that proposes access — the human decides.',
+        },
+        {
+          title: 'Sytadel MCP',
+          description:
+            'An MCP server that exposes these capabilities as tools, so Claude can operate your security from the chat itself.',
         },
       ],
     },
@@ -728,16 +748,16 @@ export const copy: Record<Locale, PageCopy> = {
       secondary: 'See modules',
     },
     demo: {
-      kicker: 'Live demo',
-      title: 'Try the Sytadel agent, right here.',
+      kicker: 'How it works',
+      title: 'Watch the agent in action.',
       description:
-        'This chat connects Claude to the same tools the Sytadel MCP server exposes, over a read-only demo tenant. Ask a question and watch which tool the agent calls and what it returns. No install, no account.',
+        'An animation of a real session: the agent uses the same tools the Sytadel MCP server exposes, over a demo tenant. Watch which tool it calls and what it returns — access review, policies, notarization. No install.',
       disclaimer:
-        'Sandbox with fictional data. Read-only: the agent never changes anything.',
+        'Animation with demo data — shows the real flow, no live calls and no cost.',
       placeholder: 'Ask about users, anomalies, or the access posture…',
       send: 'Send',
       thinking: 'The agent is thinking…',
-      reset: 'Reset',
+      reset: 'Replay',
       toolLabel: 'Tool',
       resultLabel: 'Result',
       errorGeneric: 'The demo could not answer that. Try again.',
@@ -768,22 +788,22 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'APIs', href: '#apis' },
       { label: 'Módulos', href: '#modulos' },
       { label: 'Segurança', href: '#seguranca' },
-      { label: 'Planos', href: '#precos' },
     ],
     hero: {
-      eyebrow: 'Zero trust, operacionalizado',
-      title: 'Acesso seguro, identidade e controle para infraestrutura moderna.',
+      eyebrow: 'Infraestrutura de segurança · com IA',
+      title: 'As fundações de segurança do seu SaaS, resolvidas.',
       description:
-        'Sytadel ajuda equipes que já não podem operar com permissões dispersas, evidência manual e confiança implícita. A plataforma organiza acesso, informação sensível e prova verificável para reduzir atrito operacional, fortalecer auditorias e sustentar crescimento com controle real.',
+        'Identidade e passkeys, um gateway Zero Trust com políticas, um vault com notarização à prova de adulteração, e cobranças — como módulos que você pluga. Com uma camada de IA que detecta anomalias, compila políticas em linguagem natural e assiste as decisões de acesso. Somos uma startup de segurança: rodamos sobre nosso próprio stack.',
       tags: [
-        'Infraestrutura de segurança para times modernos',
-        'Zero trust, operacionalizado',
-        'Acesso seguro para infraestrutura moderna',
-        'Identidade e controle de acesso para sistemas críticos',
-        'A camada de controle para operações seguras',
+        'Identidade + passkeys (WebAuthn)',
+        'Gateway Zero Trust + políticas',
+        'Vault + Notary (Merkle · RFC 3161)',
+        'Cobranças seguras (MercadoPago · Stripe)',
+        'IA: anomalias · NL→RBAC · access review',
+        'MCP server para Claude',
       ],
-      primaryCta: 'Solicitar demo',
-      secondaryCta: 'Entender a plataforma',
+      primaryCta: 'Veja o agente em ação',
+      secondaryCta: 'Ver os módulos',
       stats: [
         { value: '1 camada', label: 'uma única base para remover acessos improvisados, credenciais herdadas e decisões isoladas' },
         { value: 'Políticas claras', label: 'regras aplicáveis para definir quem acessa, quem valida e como cada ativo crítico é resguardado' },
@@ -857,24 +877,34 @@ export const copy: Record<Locale, PageCopy> = {
         'Cada componente existe para resolver um bloqueio operacional concreto. Juntos, eles transformam controle, rastreabilidade e integração em uma vantagem prática, não em burocracia.',
       cards: [
         {
-          title: 'Sytadel Vault',
+          title: 'Sytadel Auth',
           description:
-            'Protege documentos e ativos críticos em um ambiente centralizado para que informação sensível não fique espalhada entre chats, pastas e permissões difíceis de defender.',
+            'Identidade completa: usuários, sessões com rotação e detecção de reuso, e passkeys (WebAuthn) resistentes a phishing. Papéis por tenant (RBAC).',
         },
         {
           title: 'Sytadel ZeroTrust',
           description:
-            'Aplica regras de acesso sobre usuários, equipes e recursos para que o crescimento da operação não venha acompanhado de exposição silenciosa e confiança por padrão.',
+            'Um gateway que verifica cada request: valida a identidade, avalia políticas (default deny) e assina criptograficamente antes de chegar a qualquer serviço.',
         },
         {
-          title: 'Sytadel Notary',
+          title: 'Sytadel Vault + Notary',
           description:
-            'Gera prova verificável de existência e integridade quando um documento, registro ou ativo precisa de respaldo técnico defensável perante clientes, parceiros ou auditoria.',
+            'Documentos cifrados (envelope encryption) com auditoria append-only, e notarização à prova de adulteração via Merkle + RFC 3161 — sem blockchain.',
         },
         {
-          title: 'Expansões de ecossistema',
+          title: 'Sytadel Billing',
           description:
-            'Permitem conectar a camada de controle com identidades externas, integrações e novos fluxos sem romper o modelo operacional existente nem multiplicar exceções difíceis de governar.',
+            'Cobranças por assinatura, por uso ou pagamento único. Envolve MercadoPago e Stripe com webhooks verificados: você configura e cobra com segurança.',
+        },
+        {
+          title: 'Sytadel AI',
+          description:
+            'Detecção de anomalias de sessão, políticas RBAC a partir de linguagem natural, access reviews automáticos, e um agente HITL que propõe acessos — o humano decide.',
+        },
+        {
+          title: 'Sytadel MCP',
+          description:
+            'Um servidor MCP que expõe essas capacidades como tools, para que o Claude opere sua segurança a partir do próprio chat.',
         },
       ],
     },
@@ -1046,16 +1076,16 @@ export const copy: Record<Locale, PageCopy> = {
       secondary: 'Ver módulos',
     },
     demo: {
-      kicker: 'Demo ao vivo',
-      title: 'Teste o agente da Sytadel, aqui mesmo.',
+      kicker: 'Como funciona',
+      title: 'Veja o agente em ação.',
       description:
-        'Este chat conecta o Claude às mesmas ferramentas que o servidor MCP da Sytadel expõe, sobre um tenant de demonstração somente leitura. Pergunte e veja qual ferramenta o agente usa e o que ela retorna. Sem instalar nada, sem conta.',
+        'Uma animação de uma sessão real: o agente usa as mesmas ferramentas que o servidor MCP da Sytadel expõe, sobre um tenant de demonstração. Veja qual ferramenta ele chama e o que retorna — access review, políticas, notarização. Sem instalar nada.',
       disclaimer:
-        'Sandbox com dados fictícios. Somente leitura: o agente não altera nada.',
+        'Animação com dados de demonstração — mostra o fluxo real, sem chamadas ao vivo nem custo.',
       placeholder: 'Pergunte sobre usuários, anomalias ou o estado de acesso…',
       send: 'Enviar',
       thinking: 'O agente está pensando…',
-      reset: 'Reiniciar',
+      reset: 'Reproduzir',
       toolLabel: 'Ferramenta',
       resultLabel: 'Resultado',
       errorGeneric: 'A demo não conseguiu responder isso. Tente novamente.',

@@ -20,50 +20,25 @@ const { content, id = 'demo' } = Astro.props;
     class="demo-console"
     data-demo-root
     data-thinking={content.thinking}
-    data-error-generic={content.errorGeneric}
-    data-error-unavailable={content.errorUnavailable}
     data-tool-label={content.toolLabel}
-    data-result-label={content.resultLabel}
+    data-replay={content.reset}
   >
-    <div class="demo-disclaimer">
-      <span class="demo-dot" aria-hidden="true"></span>
-      {content.disclaimer}
-    </div>
-
-    <div class="demo-suggestions" data-demo-suggestions>
-      {content.suggestions.map((s) => (
-        <button type="button" class="demo-chip" data-demo-suggestion>{s}</button>
-      ))}
+    <div class="demo-topline">
+      <div class="demo-disclaimer">
+        <span class="demo-dot" aria-hidden="true"></span>
+        {content.disclaimer}
+      </div>
+      <button type="button" class="demo-replay" data-demo-replay aria-label={content.reset}>
+        <span aria-hidden="true">↻</span> {content.reset}
+      </button>
     </div>
 
     <div class="demo-thread" data-demo-thread aria-live="polite"></div>
-
-    <form class="demo-form" data-demo-form>
-      <input
-        type="text"
-        class="demo-input"
-        data-demo-input
-        placeholder={content.placeholder}
-        maxlength="600"
-        autocomplete="off"
-        aria-label={content.placeholder}
-      />
-      <div class="demo-actions">
-        <button type="button" class="button button-secondary demo-reset" data-demo-reset>
-          {content.reset}
-        </button>
-        <button type="submit" class="button button-primary demo-send" data-demo-send>
-          {content.send}
-        </button>
-      </div>
-    </form>
   </div>
 </section>
 
 <style>
-  .demo-section {
-    scroll-margin-top: 90px;
-  }
+  .demo-section { scroll-margin-top: 90px; }
 
   .demo-console {
     margin-top: 2rem;
@@ -76,6 +51,14 @@ const { content, id = 'demo' } = Astro.props;
     flex-direction: column;
     gap: 1.1rem;
     backdrop-filter: blur(12px);
+  }
+
+  .demo-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .demo-disclaimer {
@@ -95,59 +78,32 @@ const { content, id = 'demo' } = Astro.props;
     flex-shrink: 0;
   }
 
-  .demo-suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .demo-chip {
+  .demo-replay {
     font: inherit;
-    font-size: 0.83rem;
+    font-size: 0.82rem;
     color: var(--text);
     background: rgba(138, 77, 255, 0.1);
     border: 1px solid rgba(138, 77, 255, 0.28);
     border-radius: 999px;
-    padding: 0.45rem 0.85rem;
+    padding: 0.4rem 0.9rem;
     cursor: pointer;
-    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    transition: background 0.18s ease, border-color 0.18s ease;
   }
-
-  .demo-chip:hover {
-    background: rgba(138, 77, 255, 0.2);
-    border-color: rgba(138, 77, 255, 0.5);
-    transform: translateY(-1px);
-  }
-
-  .demo-chip:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  .demo-replay:hover { background: rgba(138, 77, 255, 0.2); border-color: rgba(138, 77, 255, 0.5); }
+  .demo-replay:disabled { opacity: 0.5; cursor: default; }
 
   .demo-thread {
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
+    min-height: 360px;
     max-height: 460px;
     overflow-y: auto;
     padding-right: 0.25rem;
   }
 
-  .demo-thread:empty {
-    display: none;
-  }
-
-  .demo-msg {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-width: 92%;
-  }
-
-  .demo-msg-user {
-    align-self: flex-end;
-    align-items: flex-end;
-  }
+  .demo-msg { display: flex; flex-direction: column; gap: 0.5rem; max-width: 92%; }
+  .demo-msg-user { align-self: flex-end; align-items: flex-end; }
 
   .demo-bubble {
     border-radius: 16px;
@@ -157,13 +113,11 @@ const { content, id = 'demo' } = Astro.props;
     white-space: pre-wrap;
     word-break: break-word;
   }
-
   .demo-msg-user .demo-bubble {
     background: linear-gradient(120deg, rgba(138, 77, 255, 0.85), rgba(30, 167, 255, 0.75));
     color: #fff;
     border-bottom-right-radius: 4px;
   }
-
   .demo-msg-agent .demo-bubble {
     background: var(--panel-strong);
     border: 1px solid var(--line);
@@ -171,24 +125,13 @@ const { content, id = 'demo' } = Astro.props;
     border-bottom-left-radius: 4px;
   }
 
-  .demo-msg-agent.demo-error .demo-bubble {
-    border-color: rgba(255, 79, 216, 0.4);
-    color: var(--muted);
-  }
-
-  .demo-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
+  .demo-tools { display: flex; flex-direction: column; gap: 0.4rem; }
   .demo-tool {
     border: 1px solid var(--line);
     border-radius: 12px;
     background: rgba(13, 10, 29, 0.6);
     overflow: hidden;
   }
-
   .demo-tool > summary {
     cursor: pointer;
     padding: 0.5rem 0.75rem;
@@ -199,11 +142,7 @@ const { content, id = 'demo' } = Astro.props;
     list-style: none;
     color: var(--text);
   }
-
-  .demo-tool > summary::-webkit-details-marker {
-    display: none;
-  }
-
+  .demo-tool > summary::-webkit-details-marker { display: none; }
   .demo-tool-badge {
     font-size: 0.68rem;
     text-transform: uppercase;
@@ -214,17 +153,16 @@ const { content, id = 'demo' } = Astro.props;
     border: 1px solid rgba(30, 167, 255, 0.4);
     color: var(--text);
   }
-
   .demo-tool-name {
-    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-family: 'Geist Mono Variable', ui-monospace, monospace;
     color: var(--blue);
   }
-
   .demo-tool pre {
     margin: 0;
     padding: 0.75rem;
     border-top: 1px solid var(--line);
     background: var(--bg-deep);
+    font-family: 'Geist Mono Variable', ui-monospace, monospace;
     font-size: 0.74rem;
     line-height: 1.5;
     overflow-x: auto;
@@ -240,151 +178,122 @@ const { content, id = 'demo' } = Astro.props;
     color: var(--muted);
     font-size: 0.85rem;
   }
+  .demo-thinking .demo-dot { animation: demo-pulse 1s ease-in-out infinite; }
+  @keyframes demo-pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
 
-  .demo-thinking .demo-dot {
-    animation: demo-pulse 1s ease-in-out infinite;
+  .demo-caret {
+    display: inline-block;
+    width: 0.5ch;
+    background: currentColor;
+    opacity: 0.7;
+    animation: demo-blink 1s step-end infinite;
+    margin-left: 1px;
   }
-
-  @keyframes demo-pulse {
-    0%, 100% { opacity: 0.35; }
-    50% { opacity: 1; }
-  }
+  @keyframes demo-blink { 50% { opacity: 0; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .demo-thinking .demo-dot { animation: none; }
-    .demo-chip { transition: none; }
-  }
-
-  .demo-form {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-  }
-
-  .demo-input {
-    flex: 1 1 260px;
-    font: inherit;
-    font-size: 0.92rem;
-    color: var(--text);
-    background: var(--bg-soft);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 0.75rem 1rem;
-  }
-
-  .demo-input:focus-visible {
-    outline: 2px solid var(--violet);
-    outline-offset: 1px;
-    border-color: transparent;
-  }
-
-  .demo-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .demo-send:disabled,
-  .demo-reset:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+    .demo-thinking .demo-dot, .demo-caret { animation: none; }
   }
 </style>
 
 <script>
-  type ToolCall = { name: string; input: Record<string, unknown>; result: unknown };
-  type DemoResponse = {
-    reply?: string;
-    toolCalls?: ToolCall[];
-    truncated?: boolean;
-    error?: string;
-    message?: string;
-  };
-  type Turn = { role: 'user' | 'assistant'; text: string };
+  type Step =
+    | { t: 'user'; text: string }
+    | { t: 'think' }
+    | { t: 'tool'; name: string; result: string }
+    | { t: 'reply'; text: string };
+
+  // Scripted, canned sessions — pure animation, no network, no LLM, no cost.
+  const SCENARIOS: Step[][] = [
+    [
+      { t: 'user', text: '¿Quién tiene acceso de más en este tenant?' },
+      { t: 'think' },
+      {
+        t: 'tool',
+        name: 'run_access_review',
+        result:
+          '{\n  "users": 6, "serviceAccounts": 4, "anomalies": 4,\n  "recommendations": [\n    { "type": "downgrade", "subject": "carlos.founder@…", "why": "OWNER inactivo ~6 meses" },\n    { "type": "require_password_reset", "subject": "priya.admin@…", "why": "sin passkey + login país nuevo" },\n    { "type": "rotate_service_account_secret", "subject": "legacy-etl", "why": "dormido ~7 meses, sin rotación" }\n  ]\n}',
+      },
+      {
+        t: 'reply',
+        text: 'Encontré tres cosas: un OWNER inactivo hace ~6 meses (lo bajaría a MEMBER), un ADMIN sin passkey con login desde un país nuevo (pediría reset), y un service account dormido hace 7 meses sin rotación. Te dejo las recomendaciones para aprobar con un click.',
+      },
+    ],
+    [
+      { t: 'user', text: 'Compilá una policy: OWNER hace todo, MEMBER solo GET /vaults, default deny.' },
+      { t: 'think' },
+      {
+        t: 'tool',
+        name: 'generate_policy',
+        result:
+          '{\n  "default": "deny",\n  "rules": [\n    { "effect": "allow", "roleIn": ["OWNER"], "methods": ["*"], "pathGlob": "/**" },\n    { "effect": "allow", "roleIn": ["MEMBER"], "methods": ["GET"], "pathGlob": "/vaults/**" }\n  ],\n  "applied": false\n}',
+      },
+      {
+        t: 'reply',
+        text: 'Listo — compilé la PolicySet (default deny, MEMBER read-only en /vaults). Es read-only: no la apliqué. Un humano la revisa y recién la enforcea.',
+      },
+    ],
+    [
+      { t: 'user', text: 'Verificá que este documento no fue alterado.' },
+      { t: 'think' },
+      {
+        t: 'tool',
+        name: 'verify_document',
+        result:
+          '{\n  "status": "ANCHORED",\n  "provider": "rfc3161-tsa",\n  "rootIntact": true,\n  "timestampedAt": "2026-08-10T08:00:00Z"\n}',
+      },
+      {
+        t: 'reply',
+        text: 'Verificado: anclado vía RFC 3161 y el hash coincide con el root — el documento existió en esa fecha y no cambió.',
+      },
+    ],
+  ];
 
   const root = document.querySelector<HTMLElement>('[data-demo-root]');
   if (root) {
     const thread = root.querySelector<HTMLElement>('[data-demo-thread]')!;
-    const form = root.querySelector<HTMLFormElement>('[data-demo-form]')!;
-    const input = root.querySelector<HTMLInputElement>('[data-demo-input]')!;
-    const sendBtn = root.querySelector<HTMLButtonElement>('[data-demo-send]')!;
-    const resetBtn = root.querySelector<HTMLButtonElement>('[data-demo-reset]')!;
-    const suggestions = Array.from(
-      root.querySelectorAll<HTMLButtonElement>('[data-demo-suggestion]'),
-    );
-
+    const replayBtn = root.querySelector<HTMLButtonElement>('[data-demo-replay]')!;
     const strings = {
       thinking: root.dataset.thinking ?? 'Thinking…',
-      errorGeneric: root.dataset.errorGeneric ?? 'Something went wrong.',
-      errorUnavailable: root.dataset.errorUnavailable ?? 'Demo unavailable.',
       toolLabel: root.dataset.toolLabel ?? 'Tool',
-      resultLabel: root.dataset.resultLabel ?? 'Result',
     };
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const conversation: Turn[] = [];
-    let busy = false;
+    let scenarioIdx = 0;
+    let running = false;
+    let runId = 0;
+    let loopTimer: ReturnType<typeof setTimeout> | undefined;
 
-    const scrollToEnd = () => {
-      thread.scrollTop = thread.scrollHeight;
-    };
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const toEnd = () => { thread.scrollTop = thread.scrollHeight; };
 
-    const setBusy = (state: boolean) => {
-      busy = state;
-      input.disabled = state;
-      sendBtn.disabled = state;
-      resetBtn.disabled = state;
-      suggestions.forEach((b) => (b.disabled = state));
-    };
-
-    const addBubble = (
-      role: 'user' | 'assistant',
-      text: string,
-      opts: { error?: boolean } = {},
-    ) => {
+    const bubble = (role: 'user' | 'agent') => {
       const wrap = document.createElement('div');
-      wrap.className = `demo-msg demo-msg-${role === 'user' ? 'user' : 'agent'}`;
-      if (opts.error) wrap.classList.add('demo-error');
-      const bubble = document.createElement('div');
-      bubble.className = 'demo-bubble';
-      bubble.textContent = text;
-      wrap.appendChild(bubble);
+      wrap.className = `demo-msg demo-msg-${role}`;
+      const b = document.createElement('div');
+      b.className = 'demo-bubble';
+      wrap.appendChild(b);
       thread.appendChild(wrap);
-      scrollToEnd();
-      return wrap;
+      toEnd();
+      return b;
     };
 
-    const addToolTrace = (host: HTMLElement, calls: ToolCall[]) => {
-      if (!calls.length) return;
-      const box = document.createElement('div');
-      box.className = 'demo-tools';
-      for (const call of calls) {
-        const details = document.createElement('details');
-        details.className = 'demo-tool';
-        const summary = document.createElement('summary');
-        const badge = document.createElement('span');
-        badge.className = 'demo-tool-badge';
-        badge.textContent = strings.toolLabel;
-        const name = document.createElement('span');
-        name.className = 'demo-tool-name';
-        name.textContent = call.name + '()';
-        summary.append(badge, name);
-        const pre = document.createElement('pre');
-        pre.textContent = safeJson(call.result);
-        details.append(summary, pre);
-        box.appendChild(details);
+    const typeInto = async (el: HTMLElement, text: string, speed: number, id: number) => {
+      if (reduce) { el.textContent = text; toEnd(); return; }
+      const caret = document.createElement('span');
+      caret.className = 'demo-caret';
+      caret.textContent = ' ';
+      el.appendChild(caret);
+      for (let i = 0; i < text.length; i++) {
+        if (id !== runId) return;
+        caret.insertAdjacentText('beforebegin', text[i]);
+        toEnd();
+        await sleep(speed);
       }
-      host.insertBefore(box, host.firstChild);
-      scrollToEnd();
+      caret.remove();
     };
 
-    const safeJson = (value: unknown): string => {
-      try {
-        return JSON.stringify(value, null, 2);
-      } catch {
-        return String(value);
-      }
-    };
-
-    const showThinking = (): HTMLElement => {
+    const thinking = () => {
       const wrap = document.createElement('div');
       wrap.className = 'demo-msg demo-msg-agent';
       const t = document.createElement('div');
@@ -396,82 +305,82 @@ const { content, id = 'demo' } = Astro.props;
       t.append(dot, label);
       wrap.appendChild(t);
       thread.appendChild(wrap);
-      scrollToEnd();
+      toEnd();
       return wrap;
     };
 
-    const send = async (text: string) => {
-      const clean = text.trim();
-      if (!clean || busy) return;
-      setBusy(true);
-      addBubble('user', clean);
-      conversation.push({ role: 'user', text: clean });
-      input.value = '';
-      const pending = showThinking();
+    const tool = (name: string, result: string) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'demo-msg demo-msg-agent';
+      const box = document.createElement('div');
+      box.className = 'demo-tools';
+      const details = document.createElement('details');
+      details.className = 'demo-tool';
+      details.open = true;
+      const summary = document.createElement('summary');
+      const badge = document.createElement('span');
+      badge.className = 'demo-tool-badge';
+      badge.textContent = strings.toolLabel;
+      const nm = document.createElement('span');
+      nm.className = 'demo-tool-name';
+      nm.textContent = name + '()';
+      summary.append(badge, nm);
+      const pre = document.createElement('pre');
+      pre.textContent = result;
+      details.append(summary, pre);
+      box.appendChild(details);
+      wrap.appendChild(box);
+      thread.appendChild(wrap);
+      toEnd();
+    };
 
-      try {
-        const res = await fetch('/api/demo', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ messages: conversation }),
-        });
-
-        // The endpoint only exists where the site is deployed with a runtime
-        // (e.g. Vercel). In a static-only environment it 404s with HTML — treat
-        // any non-JSON / not-found response as "demo unavailable".
-        let data: DemoResponse | null = null;
-        try {
-          data = (await res.json()) as DemoResponse;
-        } catch {
-          data = null;
+    const play = async (scenario: Step[], id: number) => {
+      thread.replaceChildren();
+      for (const step of scenario) {
+        if (id !== runId) return;
+        if (step.t === 'user') {
+          await typeInto(bubble('user'), step.text, 24, id);
+          await sleep(500);
+        } else if (step.t === 'think') {
+          const th = thinking();
+          await sleep(1100);
+          th.remove();
+        } else if (step.t === 'tool') {
+          tool(step.name, step.result);
+          await sleep(900);
+        } else {
+          await typeInto(bubble('agent'), step.text, 15, id);
+          await sleep(400);
         }
-        pending.remove();
-
-        if (!data || res.status === 404) {
-          addBubble('assistant', strings.errorUnavailable, { error: true });
-          return;
-        }
-
-        if (!res.ok) {
-          const msg =
-            data.error === 'demo_unavailable'
-              ? strings.errorUnavailable
-              : data.message ?? strings.errorGeneric;
-          addBubble('assistant', msg, { error: true });
-          return;
-        }
-
-        const reply = data.reply ?? '';
-        const agentBubble = addBubble('assistant', reply);
-        addToolTrace(agentBubble, data.toolCalls ?? []);
-        conversation.push({ role: 'assistant', text: reply });
-      } catch {
-        pending.remove();
-        addBubble('assistant', strings.errorGeneric, { error: true });
-      } finally {
-        setBusy(false);
-        input.focus();
       }
     };
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      void send(input.value);
-    });
+    const run = async () => {
+      clearTimeout(loopTimer);
+      const id = ++runId;
+      running = true;
+      replayBtn.disabled = true;
+      await play(SCENARIOS[scenarioIdx], id);
+      if (id !== runId) return;
+      running = false;
+      replayBtn.disabled = false;
+      scenarioIdx = (scenarioIdx + 1) % SCENARIOS.length;
+      // Gentle loop: after a pause, play the next scenario.
+      if (!reduce) loopTimer = setTimeout(run, 4500);
+    };
 
-    suggestions.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        if (busy) return;
-        void send(btn.textContent ?? '');
-      });
-    });
+    replayBtn.addEventListener('click', () => { void run(); });
 
-    resetBtn.addEventListener('click', () => {
-      if (busy) return;
-      conversation.length = 0;
-      thread.replaceChildren();
-      input.value = '';
-      input.focus();
-    });
+    // Start when the console scrolls into view.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          io.disconnect();
+          void run();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(root);
   }
 </script>

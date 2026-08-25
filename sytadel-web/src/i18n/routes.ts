@@ -13,7 +13,6 @@ const navLabels: Record<Locale, NavItem[]> = {
     { label: 'APIs', href: '#apis' },
     { label: 'Módulos', href: '#modulos' },
     { label: 'Seguridad', href: '#seguridad' },
-    { label: 'Precios', href: '#precios' },
     { label: 'Contacto', href: '#contacto' },
   ],
   en: [
@@ -21,7 +20,6 @@ const navLabels: Record<Locale, NavItem[]> = {
     { label: 'APIs', href: '#apis' },
     { label: 'Modules', href: '#modules' },
     { label: 'Security', href: '#security' },
-    { label: 'Pricing', href: '#pricing' },
     { label: 'Contact', href: '#contact' },
   ],
   pt: [
@@ -29,7 +27,6 @@ const navLabels: Record<Locale, NavItem[]> = {
     { label: 'APIs', href: '#apis' },
     { label: 'Módulos', href: '#modulos' },
     { label: 'Segurança', href: '#seguranca' },
-    { label: 'Preços', href: '#precos' },
     { label: 'Contato', href: '#contato' },
   ],
 };
