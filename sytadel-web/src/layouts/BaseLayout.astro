@@ -1,4 +1,10 @@
 ---
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource/bricolage-grotesque/500.css';
+import '@fontsource/bricolage-grotesque/600.css';
+import '@fontsource/bricolage-grotesque/700.css';
+import '@fontsource/bricolage-grotesque/800.css';
 import '../styles/global.css';
 import { locales, type Locale } from '../i18n/content';
 
@@ -68,12 +74,9 @@ linear-gradient(180deg, #050510 0%, #0a0817 30%, #050510 64%, #03030a 100%)`;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts are self-hosted via @fontsource (imported below), so they respect
+         the strict CSP (font-src 'self'). The old Google Fonts <link> was
+         silently blocked by the CSP and fell back to system fonts. -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
     <style is:inline>{`
