@@ -27,7 +27,7 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--text);
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-family: 'Geist Variable', 'Segoe UI', system-ui, sans-serif;
   background:
     radial-gradient(circle at 10% 12%, rgba(138, 77, 255, 0.26), transparent 22%),
     radial-gradient(circle at 88% 14%, rgba(30, 167, 255, 0.19), transparent 18%),
@@ -158,7 +158,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Bricolage Grotesque', 'Geist Variable', sans-serif;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -295,10 +295,45 @@ a {
   margin: 0 0 14px;
   color: #d7b9ff;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 600;
+  font-family: 'Geist Mono Variable', ui-monospace, monospace;
 }
+
+/* Real product terminal in the hero — grounds the page in the subject
+   (security + AI) instead of an abstract gradient mockup. */
+.term-card {
+  width: min(100%, 620px);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(20, 17, 40, 0.96), rgba(11, 9, 24, 0.98));
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  font-family: 'Geist Mono Variable', ui-monospace, monospace;
+  position: relative;
+  z-index: 1;
+}
+.term-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+}
+.term-dot { width: 11px; height: 11px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); }
+.term-dot:nth-child(1) { background: #ff5f57; }
+.term-dot:nth-child(2) { background: #febc2e; }
+.term-dot:nth-child(3) { background: #28c840; }
+.term-title { margin-left: 8px; font-size: 0.76rem; color: var(--muted); font-style: normal; letter-spacing: 0.02em; }
+.term-body { padding: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; line-height: 1.5; }
+.term-cmd { margin: 0; color: #f0ebff; }
+.term-cmd + .term-cmd, .term-out + .term-cmd, .term-ok + .term-cmd, .term-warn + .term-cmd { margin-top: 8px; }
+.term-arrow { color: var(--violet); margin-right: 8px; }
+.term-out { margin: 0; color: var(--muted); padding-left: 20px; }
+.term-warn { margin: 0; color: #ffcf8a; padding-left: 20px; }
+.term-ok { margin: 0; color: #8ee0a6; padding-left: 20px; }
 
 .hero-pillars {
   display: inline-flex;
@@ -323,7 +358,7 @@ h3,
 .brand,
 .price-head strong,
 .stat-card strong {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Bricolage Grotesque', 'Geist Variable', sans-serif;
 }
 
 h1 {
@@ -424,6 +459,7 @@ p {
 .button-secondary {
   border-color: var(--line);
   background: rgba(255, 255, 255, 0.035);
+  color: var(--text);
 }
 
 .stats-grid {
@@ -638,7 +674,7 @@ p {
 }
 
 .floating-note strong {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Bricolage Grotesque', 'Geist Variable', sans-serif;
   font-size: 1.05rem;
   line-height: 1.25;
   margin-bottom: 10px;
@@ -1144,7 +1180,7 @@ p {
 
 .app-screen-header h2,
 .app-soon-contact-card strong {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Bricolage Grotesque', 'Geist Variable', sans-serif;
 }
 
 .app-screen-header h2 {
