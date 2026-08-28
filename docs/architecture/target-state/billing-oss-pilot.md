@@ -105,16 +105,20 @@ own logic (confirm reserva, email). Payment state always reflects the provider
 
 ## Phased task breakdown (each phase shippable)
 
-1. **One-off checkout** — add `mode: one_off` to the checkout surface + provider
-   adapters (start with MercadoPago, since that's the wedge). Reuse the existing
-   MP `Preference` creation, generalized off subscriptions.
-2. **Outbound signed webhooks** *(the core)* — a `WebhookEndpoint` per tenant
-   (url + secret), a signer (invert the HMAC canonicalization), a delivery worker
-   with retries + `event_id` dedupe. Emit `payment.approved` / `.failed` from the
-   inbound handler after the provider re-fetch.
-3. **Idempotency** — `Idempotency-Key` on `/checkout`; store + replay results.
+1. ✅ **One-off checkout** — `POST /billing/one-off-checkout` + `BillingPaymentIntent`
+   entity/migration; MercadoPago preference or mock; passthrough
+   `external_reference` + `metadata` + `webhookUrl`. *(billing-api #5, shipped.)*
+2. ✅ **Outbound signed webhooks** *(the core)* — `OutboundWebhookService` signs
+   `${ts}.${rawBody}` with HMAC-SHA256 (inverse of the internal-service HMAC),
+   `x-sytadel-signature: t=,v1=` + `x-sytadel-event-id`, delivery with timeout +
+   bounded retries. `reconcileOneOffPaymentIntent` emits `payment.approved`/`.failed`
+   on the first terminal transition after the provider re-fetch (idempotent via
+   stored status). Secret via `BILLING_OUTBOUND_WEBHOOK_SECRET`; never sends
+   unsigned. *(billing-api #6.)*
+3. **Idempotency** — `Idempotency-Key` on `/one-off-checkout`; store + replay results.
 4. **API-key issuance** — self-serve create/scope/rotate keys for `API_CLIENT`
-   (build on `clientAppId` + service accounts).
+   (build on `clientAppId` + service accounts). Moves the outbound secret to
+   **per-tenant** (replacing the phase-2 shared `BILLING_OUTBOUND_WEBHOOK_SECRET`).
 5. **Decouple from auth** — entitlements behind an interface with an
    all-allowed default so billing runs standalone.
 6. **OpenAPI + 10-minute quickstart** — versioned contract, an SDK snippet, and a
