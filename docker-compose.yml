@@ -176,6 +176,13 @@ services:
       DOCS_ALLOWED_MIME_TYPES: application/pdf,image/png,image/jpeg
       ZT_HMAC_SECRET: change_me_zt_secret
       ZT_MAX_CLOCK_SKEW_MS: 30000
+      # Asymmetric v2 verification keyring: JSON {kid: pemPublicKey}. Public keys
+      # are non-secret. Empty = v2 requests rejected (unknown kid) until keys are
+      # provisioned; v1 HMAC keeps working meanwhile.
+      ZT_VERIFY_PUBLIC_KEYS: ${ZT_VERIFY_PUBLIC_KEYS:-}
+      # Accept the legacy v1 HMAC protocol during migration. Set to "false" to
+      # retire HMAC once the gateway signs ed25519.
+      ZT_ACCEPT_V1_HMAC: ${ZT_ACCEPT_V1_HMAC:-true}
       AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
       AUTH_DIRECTORY_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
       AUTH_DIRECTORY_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
@@ -201,6 +208,15 @@ services:
       ZT_JWT_AUDIENCE: zerotrust-api
       ZT_JWT_HS256_SECRET: ${JWT_ACCESS_SECRET:-dev-insecure-access-secret}
       ZT_HMAC_SECRET: change_me_zt_secret
+      # Outbound signing mode for the gateway->Vault hop. Default "hmac" keeps
+      # v1; set "ed25519" (with the kid + private key below, and the matching
+      # public key in vault-api's ZT_VERIFY_PUBLIC_KEYS) to emit v2. Reversible
+      # via env with no Vault redeploy.
+      ZT_SIGN_MODE: ${ZT_SIGN_MODE:-hmac}
+      ZT_SIGNING_KID: ${ZT_SIGNING_KID:-}
+      # Ed25519 private key (PEM or base64-PEM). Secret — required only in
+      # ed25519 mode; never commit a real key here.
+      ZT_SIGNING_PRIVATE_KEY: ${ZT_SIGNING_PRIVATE_KEY:-}
       AUTH_DIRECTORY_BASE_URL: http://auth-api:3001/api
       AUTH_DIRECTORY_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
       AUTH_DIRECTORY_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
