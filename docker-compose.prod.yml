@@ -20,3 +20,12 @@ services:
       AUTH_INTERNAL_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:?set INTERNAL_HMAC_SECRET in .env for production}
       BILLING_INTERNAL_SERVICE_SECRET: ${BILLING_INTERNAL_SERVICE_SECRET:?set BILLING_INTERNAL_SERVICE_SECRET in .env for production}
       BILLING_INTERNAL_HMAC_SECRET: ${BILLING_INTERNAL_HMAC_SECRET:?set BILLING_INTERNAL_HMAC_SECRET in .env for production}
+#
+# Asymmetric ZT signing (gateway->Vault) defaults to HMAC and needs no extra
+# secrets to run. To flip to Ed25519 in production, provide in .env:
+#   ZT_SIGN_MODE=ed25519
+#   ZT_SIGNING_KID=<kid>                # e.g. zt-2026-08
+#   ZT_SIGNING_PRIVATE_KEY=<base64 PEM>  # secret, zerotrust-api only
+#   ZT_VERIFY_PUBLIC_KEYS={"<kid>":"<PEM public key>"}  # vault-api, non-secret
+# The kid must match on both sides. Roll back by setting ZT_SIGN_MODE=hmac
+# (no Vault redeploy). Retire HMAC later with ZT_ACCEPT_V1_HMAC=false.
