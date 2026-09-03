@@ -1,17 +1,17 @@
-# Production overlay — fail-closed on shared secrets.
+# Production overlay — fail-closed on every secret.
 #
 # Usage:
 #   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 #
 # The base compose ships clearly-labeled `dev-insecure-*` fallbacks so local dev
 # and CI work with zero setup. This overlay removes those fallbacks: every
-# shared secret MUST be provided (via a root .env or the environment), or
-# `docker compose` fails at config time before anything starts.
+# secret MUST be provided (via a root .env or the environment), or
+# `docker compose config` fails before anything starts.
 #
-# auth-api references all six shared secrets, so requiring them in this one
-# service block gates the entire stack — if any is unset, the whole
-# `docker compose config` errors out.
+# See env.production.example for the full list and how to generate values.
 services:
+  # --- Shared app secrets. auth-api references all six, so gating them here
+  #     fails the whole stack if any is unset. ---
   auth-api:
     environment:
       AUTH_JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?set JWT_ACCESS_SECRET in .env for production}
@@ -20,6 +20,52 @@ services:
       AUTH_INTERNAL_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:?set INTERNAL_HMAC_SECRET in .env for production}
       BILLING_INTERNAL_SERVICE_SECRET: ${BILLING_INTERNAL_SERVICE_SECRET:?set BILLING_INTERNAL_SERVICE_SECRET in .env for production}
       BILLING_INTERNAL_HMAC_SECRET: ${BILLING_INTERNAL_HMAC_SECRET:?set BILLING_INTERNAL_HMAC_SECRET in .env for production}
+      DB_PASS: ${AUTH_DB_PASSWORD:?set AUTH_DB_PASSWORD in .env for production}
+
+  # --- Per-service database passwords (each gated on both the db and its api,
+  #     so a mismatch can never ship). ---
+  auth-db:
+    environment:
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:?set AUTH_DB_PASSWORD in .env for production}
+
+  billing-db:
+    environment:
+      POSTGRES_PASSWORD: ${BILLING_DB_PASSWORD:?set BILLING_DB_PASSWORD in .env for production}
+
+  billing-api:
+    environment:
+      DB_PASSWORD: ${BILLING_DB_PASSWORD:?set BILLING_DB_PASSWORD in .env for production}
+
+  vault-db:
+    environment:
+      POSTGRES_PASSWORD: ${VAULT_DB_PASSWORD:?set VAULT_DB_PASSWORD in .env for production}
+      APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:?set VAULT_APP_DB_PASSWORD in .env for production}
+
+  # --- Vault: app DB password, MinIO credentials, the shared ZT v1 HMAC secret,
+  #     and the envelope-encryption master key (KEK). ---
+  vault-api:
+    environment:
+      DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:?set VAULT_APP_DB_PASSWORD in .env for production}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env for production}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env for production}
+      ZT_HMAC_SECRET: ${ZT_HMAC_SECRET:?set ZT_HMAC_SECRET in .env for production}
+      MASTER_KEY_B64: ${MASTER_KEY_B64:?set MASTER_KEY_B64 (vault KEK) in .env for production}
+
+  # --- MinIO object storage root credentials. ---
+  minio:
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env for production}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env for production}
+
+  minio-init:
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env for production}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env for production}
+
+  # --- Gateway: must share the same ZT v1 HMAC secret as vault-api. ---
+  zerotrust-api:
+    environment:
+      ZT_HMAC_SECRET: ${ZT_HMAC_SECRET:?set ZT_HMAC_SECRET in .env for production}
 #
 # Asymmetric ZT signing (gateway->Vault) defaults to HMAC and needs no extra
 # secrets to run. To flip to Ed25519 in production, provide in .env:

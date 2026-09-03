@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: auth
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:-dev-insecure-auth-db}
     ports:
       - "5434:5432"
     volumes:
@@ -22,7 +22,7 @@ services:
     environment:
       POSTGRES_DB: billing
       POSTGRES_USER: billing
-      POSTGRES_PASSWORD: billing
+      POSTGRES_PASSWORD: ${BILLING_DB_PASSWORD:-dev-insecure-billing-db}
     ports:
       - "5435:5432"
     volumes:
@@ -39,7 +39,7 @@ services:
     environment:
       POSTGRES_DB: vault
       POSTGRES_USER: vault
-      POSTGRES_PASSWORD: vault
+      POSTGRES_PASSWORD: ${VAULT_DB_PASSWORD:-dev-insecure-vault-db}
       APP_DB_USER: ${VAULT_APP_DB_USER:-vault_app}
       APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:-vault_app}
     ports:
@@ -65,7 +65,7 @@ services:
       PGPORT: 5432
       PGDATABASE: vault
       PGUSER: vault
-      PGPASSWORD: vault
+      PGPASSWORD: ${VAULT_DB_PASSWORD:-dev-insecure-vault-db}
       APP_DB_USER: ${VAULT_APP_DB_USER:-vault_app}
       APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:-vault_app}
     volumes:
@@ -76,8 +76,8 @@ services:
     image: minio/minio:latest
     restart: unless-stopped
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dev-insecure-minio}
     command: server /data --console-address ":9001"
     ports:
       - "9000:9000"
@@ -96,9 +96,12 @@ services:
     depends_on:
       minio:
         condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dev-insecure-minio}
     entrypoint: >
       /bin/sh -c "
-      mc alias set scv http://minio:9000 minioadmin minioadmin &&
+      mc alias set scv http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
       mc mb -p scv/vault || true &&
       mc anonymous set none scv/vault || true &&
       echo 'MinIO bucket ready: vault';
@@ -118,7 +121,7 @@ services:
       DB_PORT: 5432
       DB_NAME: auth
       DB_USER: postgres
-      DB_PASS: postgres
+      DB_PASS: ${AUTH_DB_PASSWORD:-dev-insecure-auth-db}
       DB_SYNC: "false"
       AUTH_JWT_ISSUER: auth
       AUTH_JWT_AUDIENCE: zerotrust-api
@@ -168,13 +171,13 @@ services:
       STORAGE_DRIVER: minio
       MINIO_ENDPOINT: minio
       MINIO_PORT: 9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-dev-insecure-minio}
       MINIO_BUCKET: vault
       MINIO_USE_SSL: "false"
       DOCS_MAX_FILE_SIZE_MB: 20
       DOCS_ALLOWED_MIME_TYPES: application/pdf,image/png,image/jpeg
-      ZT_HMAC_SECRET: change_me_zt_secret
+      ZT_HMAC_SECRET: ${ZT_HMAC_SECRET:-dev-insecure-zt-hmac-secret}
       ZT_MAX_CLOCK_SKEW_MS: 30000
       # Asymmetric v2 verification keyring: JSON {kid: pemPublicKey}. Public keys
       # are non-secret. Empty = v2 requests rejected (unknown kid) until keys are
@@ -187,7 +190,7 @@ services:
       AUTH_DIRECTORY_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
       AUTH_DIRECTORY_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
       AUTH_DIRECTORY_TIMEOUT_MS: 5000
-      MASTER_KEY_B64: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+      MASTER_KEY_B64: ${MASTER_KEY_B64:-MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=}
       MASTER_KEY_VERSION: 1
     ports:
       - "3000:3000"
@@ -207,7 +210,7 @@ services:
       ZT_JWT_ISSUER: auth
       ZT_JWT_AUDIENCE: zerotrust-api
       ZT_JWT_HS256_SECRET: ${JWT_ACCESS_SECRET:-dev-insecure-access-secret}
-      ZT_HMAC_SECRET: change_me_zt_secret
+      ZT_HMAC_SECRET: ${ZT_HMAC_SECRET:-dev-insecure-zt-hmac-secret}
       # Outbound signing mode for the gateway->Vault hop. Default "hmac" keeps
       # v1; set "ed25519" (with the kid + private key below, and the matching
       # public key in vault-api's ZT_VERIFY_PUBLIC_KEYS) to emit v2. Reversible
@@ -257,7 +260,7 @@ services:
       DB_PORT: 5432
       DB_NAME: billing
       DB_USER: billing
-      DB_PASSWORD: billing
+      DB_PASSWORD: ${BILLING_DB_PASSWORD:-dev-insecure-billing-db}
       DB_SYNC: "false"
       BILLING_JWT_ISSUER: auth
       BILLING_JWT_AUDIENCE: zerotrust-api
