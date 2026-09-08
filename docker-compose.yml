@@ -174,7 +174,7 @@ services:
       MINIO_USE_SSL: "false"
       DOCS_MAX_FILE_SIZE_MB: 20
       DOCS_ALLOWED_MIME_TYPES: application/pdf,image/png,image/jpeg
-      ZT_HMAC_SECRET: change_me_zt_secret
+      ZT_HMAC_SECRET: ${ZT_HMAC_SECRET:-dev-insecure-zt-hmac-secret}
       ZT_MAX_CLOCK_SKEW_MS: 30000
       # Asymmetric v2 verification keyring: JSON {kid: pemPublicKey}. Public keys
       # are non-secret. Empty = v2 requests rejected (unknown kid) until keys are
@@ -187,7 +187,7 @@ services:
       AUTH_DIRECTORY_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:-dev-insecure-internal-secret}
       AUTH_DIRECTORY_HMAC_SECRET: ${INTERNAL_HMAC_SECRET:-dev-insecure-internal-hmac-secret}
       AUTH_DIRECTORY_TIMEOUT_MS: 5000
-      MASTER_KEY_B64: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+      MASTER_KEY_B64: ${VAULT_MASTER_KEY_B64:-MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=}
       MASTER_KEY_VERSION: 1
     ports:
       - "3000:3000"
@@ -207,7 +207,7 @@ services:
       ZT_JWT_ISSUER: auth
       ZT_JWT_AUDIENCE: zerotrust-api
       ZT_JWT_HS256_SECRET: ${JWT_ACCESS_SECRET:-dev-insecure-access-secret}
-      ZT_HMAC_SECRET: change_me_zt_secret
+      ZT_HMAC_SECRET: ${ZT_HMAC_SECRET:-dev-insecure-zt-hmac-secret}
       # Outbound signing mode for the gateway->Vault hop. Default "hmac" keeps
       # v1; set "ed25519" (with the kid + private key below, and the matching
       # public key in vault-api's ZT_VERIFY_PUBLIC_KEYS) to emit v2. Reversible
