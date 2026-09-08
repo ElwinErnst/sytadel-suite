@@ -193,7 +193,7 @@ EOF
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
-> **Known gap (tracked):** a few dev credentials — notably `ZT_HMAC_SECRET`, the vault `MASTER_KEY_B64`, and the local DB/MinIO creds — are still hardcoded in `docker-compose.yml` and not yet covered by the prod overlay's required-secret gate. See the [review report](./docs/reports/sytadel-portfolio-review-2026-09.md) for the full list and the one-line fixes.
+The prod overlay also gates the vault master key (`VAULT_MASTER_KEY_B64`) and the gateway→Vault HMAC (`ZT_HMAC_SECRET`), which are `dev-insecure-*` fallbacks in the base compose. The local Postgres/MinIO credentials remain plain dev defaults (they only ever bind to the compose network) — hardening those is a low-priority follow-up in the [review report](./docs/reports/sytadel-portfolio-review-2026-09.md).
 
 ### Demo credentials
 
