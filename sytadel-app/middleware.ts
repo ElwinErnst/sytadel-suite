@@ -134,7 +134,10 @@ export async function middleware(request: NextRequest) {
   }
 
   const response = nextWithCsp();
-  const secure = request.nextUrl.protocol === 'https:';
+  // Match session.ts: gate Secure on the environment, not the request protocol.
+  // Behind a TLS-terminating proxy `nextUrl.protocol` can read as `http:` even
+  // though the user is on HTTPS, which would drop Secure on prod cookies.
+  const secure = process.env.NODE_ENV === 'production';
 
   response.cookies.set(ACCESS_COOKIE, rotated.accessToken, {
     httpOnly: true,

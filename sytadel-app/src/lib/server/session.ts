@@ -122,27 +122,29 @@ export async function getCurrentSession(): Promise<SessionState | null> {
   if (!accessToken || !tenantId) return null;
 
   try {
-    const me = await requestJson<{
-      user: SessionState['user'];
-      tenant: {
-        id: string;
-        name: string;
-        slug: string;
-        planCode: string | null;
-        billingBypass?: boolean;
-        entitlements: SessionState['tenant']['entitlements'];
-      };
-      roles: SessionState['roles'];
-      sessionId: string | null;
-    }>(`${env.authApiUrl}/auth/me`, {
-      method: 'GET',
-      token: accessToken,
-    });
-
-    const tenant = await requestJson<TenantSummary>(`${env.authApiUrl}/tenants/${tenantId}`, {
-      method: 'GET',
-      token: accessToken,
-    });
+    // Independent reads — fan them out instead of waiting one for the other.
+    const [me, tenant] = await Promise.all([
+      requestJson<{
+        user: SessionState['user'];
+        tenant: {
+          id: string;
+          name: string;
+          slug: string;
+          planCode: string | null;
+          billingBypass?: boolean;
+          entitlements: SessionState['tenant']['entitlements'];
+        };
+        roles: SessionState['roles'];
+        sessionId: string | null;
+      }>(`${env.authApiUrl}/auth/me`, {
+        method: 'GET',
+        token: accessToken,
+      }),
+      requestJson<TenantSummary>(`${env.authApiUrl}/tenants/${tenantId}`, {
+        method: 'GET',
+        token: accessToken,
+      }),
+    ]);
 
     return {
       user: me.user,
@@ -167,8 +169,15 @@ export async function getCurrentSession(): Promise<SessionState | null> {
       roles: me.roles,
       sessionId: me.sessionId,
     };
-  } catch {
-    return null;
+  } catch (error) {
+    // Only a genuine auth failure means "not logged in" -> null -> redirect to
+    // login. A transient backend/network error (5xx, unreachable API) must NOT
+    // masquerade as a logout: rethrow so it surfaces as an error, not a session
+    // wipe on a valid user.
+    if (error instanceof ApiError && error.status === 401) {
+      return null;
+    }
+    throw error;
   }
 }
 
