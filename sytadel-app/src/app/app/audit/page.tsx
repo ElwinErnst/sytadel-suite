@@ -3,6 +3,8 @@ import { PageHeader } from '@/components/page-header';
 import { getServerAccessTokenOrRedirect, requireOperationalSession } from '@/lib/server/session';
 import * as authClient from '@/lib/server/auth-client';
 import * as vaultClient from '@/lib/server/vault-client';
+import * as ztPolicyClient from '@/lib/server/zt-policy-client';
+import type { TenantPolicyVersion } from '@/lib/server/types/policy.type';
 import { formatDate, formatName } from '@/lib/ui/format';
 
 type Props = {
@@ -58,7 +60,7 @@ export default async function AuditPage({ searchParams }: Props) {
     );
   }
 
-  const [audit, memberships] = await Promise.all([
+  const [audit, memberships, policyVersions] = await Promise.all([
     vaultClient.listAuditLogs(accessToken, {
       page,
       limit,
@@ -69,6 +71,14 @@ export default async function AuditPage({ searchParams }: Props) {
       to: to || undefined,
     }),
     authClient.listTenantMemberships(accessToken, session.tenant.id),
+    // Zero Trust policy changes are a second auditable system. They live in
+    // auth-api (versioned), independent of the vault log's server-side
+    // filters/pagination, so they render as their own lane rather than being
+    // forced into the vault-shaped table. A failure here must not take down the
+    // document log.
+    ztPolicyClient
+      .listPolicyVersions(accessToken, session.tenant.id)
+      .catch(() => [] as TenantPolicyVersion[]),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(audit.total / audit.limit));
@@ -82,8 +92,8 @@ export default async function AuditPage({ searchParams }: Props) {
     <div className="page-shell">
         <PageHeader
           eyebrow="Audit / Trazabilidad"
-          title="Log auditable del tenant"
-          description="Consultá eventos operativos, filtrá por acción y seguí la trazabilidad del tenant con más contexto."
+          title="Auditoría del tenant"
+          description="La trazabilidad de tus sistemas en un solo lugar: actividad de documentos (Vault, con cadena firmada) y cambios de política (Zero Trust). Más sistemas se suman a medida que crece el modelo de eventos."
       >
         <div className="stack-sm">
           <span className="badge">{audit.total} eventos</span>
@@ -162,7 +172,8 @@ export default async function AuditPage({ searchParams }: Props) {
 
       <section className="table-shell">
         <div className="panel-head" style={{ padding: '18px 18px 0' }}>
-          <h2 className="panel-title">Eventos recientes</h2>
+          <h2 className="panel-title">Actividad de documentos</h2>
+          <span className="badge">Vault · cadena firmada</span>
         </div>
         <table>
           <thead>
@@ -268,6 +279,75 @@ export default async function AuditPage({ searchParams }: Props) {
         >
           Siguiente
         </a>
+      </section>
+
+      <section className="table-shell">
+        <div className="panel-head" style={{ padding: '18px 18px 0' }}>
+          <h2 className="panel-title">Cambios de política</h2>
+          <span className="badge">Zero Trust · versionado</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Versión</th>
+              <th>Autor</th>
+              <th>Reglas</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {policyVersions.length ? (
+              policyVersions.map((version) => {
+                const author = version.createdBy
+                  ? userMap.get(version.createdBy)
+                  : undefined;
+
+                return (
+                  <tr key={version.id}>
+                    <td>{formatDate(version.createdAt)}</td>
+                    <td>
+                      <strong>v{version.version}</strong>
+                    </td>
+                    <td>
+                      <div className="stack-xs">
+                        <strong>{formatName(author ?? {})}</strong>
+                        <span className="muted">
+                          {author?.email ?? version.createdBy ?? 'Sistema'}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="stack-xs">
+                        <strong>{version.policySet?.rules?.length ?? 0}</strong>
+                        <span className="muted">
+                          por defecto {version.policySet?.default ?? '—'}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          version.status === 'published'
+                            ? 'status-badge'
+                            : 'badge'
+                        }
+                      >
+                        {version.status}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan={5}>
+                  Todavía no hay cambios de política registrados.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </section>
     </div>
   );
