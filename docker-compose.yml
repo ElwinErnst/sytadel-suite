@@ -192,6 +192,23 @@ services:
     ports:
       - "3000:3000"
 
+  zt-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: zerotrust
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - zt_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d zerotrust"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   zerotrust-api:
     build:
       context: ./ZeroTrust/zerotrust-api
@@ -201,9 +218,16 @@ services:
         condition: service_started
       vault-api:
         condition: service_started
+      zt-db:
+        condition: service_healthy
     environment:
       NODE_ENV: production
       PORT: 3010
+      DB_HOST: zt-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: zerotrust
       ZT_JWT_ISSUER: auth
       ZT_JWT_AUDIENCE: zerotrust-api
       ZT_JWT_HS256_SECRET: ${JWT_ACCESS_SECRET:-dev-insecure-access-secret}
@@ -310,4 +334,5 @@ volumes:
   auth_postgres_data:
   billing_postgres_data:
   vault_postgres_data:
+  zt_postgres_data:
   minio_data:
