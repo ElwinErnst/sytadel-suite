@@ -1,5 +1,6 @@
 import { env } from './env';
 import { requestJson } from './http';
+import type { AuditEventsPage } from './types/audit-event.type';
 import type {
   ClientAppRecord,
   CreatedServiceAccountRecord,
@@ -70,6 +71,22 @@ export async function getTenant(accessToken: string, tenantId: string) {
     method: 'GET',
     token: accessToken,
   });
+}
+
+export async function listAuthAuditEvents(
+  accessToken: string,
+  tenantId: string,
+  query: { page?: number; limit?: number } = {},
+) {
+  const params = new URLSearchParams();
+  if (query.page) params.set('page', String(query.page));
+  if (query.limit) params.set('limit', String(query.limit));
+  const suffix = params.toString();
+
+  return requestJson<AuditEventsPage>(
+    `${env.authApiUrl}/tenants/${tenantId}/audit-events${suffix ? `?${suffix}` : ''}`,
+    { method: 'GET', token: accessToken },
+  );
 }
 
 export async function listTenantMemberships(accessToken: string, tenantId: string) {
