@@ -48,3 +48,15 @@ export async function listEnvironments(
     { method: 'GET', token: accessToken },
   );
 }
+
+// The list endpoint already returns each app with its service accounts, so a
+// single fetch gives everything the detail view needs; there is no single-app
+// GET on auth-api.
+export async function getApplication(
+  accessToken: string,
+  tenantId: string,
+  clientAppId: string,
+): Promise<ClientAppSummary | null> {
+  const apps = await listApplications(accessToken, tenantId);
+  return apps.find((app) => app.id === clientAppId) ?? null;
+}
