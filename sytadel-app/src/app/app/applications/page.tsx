@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { PageHeader } from '@/components/page-header';
 import {
   listApplications,
@@ -74,7 +75,9 @@ export default async function ApplicationsPage() {
           <section key={app.id} className="panel stack-sm">
             <div className="panel-head">
               <div className="stack-sm">
-                <h2 className="panel-title">{app.name}</h2>
+                <Link className="panel-title" href={`/app/applications/${app.id}`}>
+                  {app.name}
+                </Link>
                 <span className="muted">{app.slug}</span>
               </div>
               <span className="status-badge">
