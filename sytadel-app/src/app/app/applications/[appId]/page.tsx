@@ -7,8 +7,12 @@ import {
 } from '@/lib/server/applications-client';
 import {
   getUsageByApplication,
+  listApplicationPayments,
+  listApplicationSubscriptions,
   listProviderConnections,
   listWebhookEndpoints,
+  type ApplicationPayment,
+  type ApplicationSubscription,
   type ProviderConnectionSummary,
   type UsageApplication,
   type WebhookEndpointSummary,
@@ -25,7 +29,23 @@ type DetailData = {
   providers: ProviderConnectionSummary[];
   webhooks: WebhookEndpointSummary[];
   usage: UsageApplication | null;
+  payments: ApplicationPayment[];
+  subscriptions: ApplicationSubscription[];
 };
+
+function formatMoney(amountCents: number, currency: string) {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amountCents / 100);
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium' }).format(
+    new Date(value),
+  );
+}
 
 export default async function ApplicationDetailPage({ params }: Props) {
   const { appId } = await params;
@@ -37,13 +57,16 @@ export default async function ApplicationDetailPage({ params }: Props) {
   try {
     data = await withSessionToken(async (token, cookieStore) => {
       const tenantId = cookieStore.get('sentinel_tenant_id')?.value ?? '';
-      const [app, environments, providers, webhooks, usage] = await Promise.all([
-        getApplication(token, tenantId, appId),
-        listEnvironments(token, tenantId, appId),
-        listProviderConnections(token),
-        listWebhookEndpoints(token),
-        getUsageByApplication(token),
-      ]);
+      const [app, environments, providers, webhooks, usage, payments, subs] =
+        await Promise.all([
+          getApplication(token, tenantId, appId),
+          listEnvironments(token, tenantId, appId),
+          listProviderConnections(token),
+          listWebhookEndpoints(token),
+          getUsageByApplication(token),
+          listApplicationPayments(token, appId),
+          listApplicationSubscriptions(token, appId),
+        ]);
       const forApp = <T extends { clientAppId: string | null }>(rows: T[]) =>
         rows.filter((r) => r.clientAppId === appId || r.clientAppId === null);
       return {
@@ -52,6 +75,8 @@ export default async function ApplicationDetailPage({ params }: Props) {
         providers: forApp(providers),
         webhooks: forApp(webhooks),
         usage: usage.applications.find((a) => a.clientAppId === appId) ?? null,
+        payments: payments.payments,
+        subscriptions: subs.subscriptions,
       };
     });
   } catch (error) {
@@ -95,7 +120,8 @@ export default async function ApplicationDetailPage({ params }: Props) {
     );
   }
 
-  const { app, environments, providers, webhooks, usage } = data;
+  const { app, environments, providers, webhooks, usage, payments, subscriptions } =
+    data;
 
   return (
     <div className="page-shell">
@@ -178,6 +204,51 @@ export default async function ApplicationDetailPage({ params }: Props) {
                 <span className="muted"> · {envName(endpoint.environmentId)}</span>
                 <span className="muted"> · {endpoint.events.join(', ')}</span>
                 {!endpoint.enabled ? <span className="badge"> off</span> : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="panel stack-sm">
+        <span className="panel-title">Pagos · {payments.length}</span>
+        {payments.length === 0 ? (
+          <span className="muted">Sin pagos registrados</span>
+        ) : (
+          <ul className="detail-list">
+            {payments.map((payment) => (
+              <li key={payment.id}>
+                <strong>{formatMoney(payment.amountCents, payment.currency)}</strong>
+                <span className="muted"> · {payment.status}</span>
+                <span className="muted"> · {envName(payment.environmentId)}</span>
+                <span className="muted"> · {payment.provider}</span>
+                {payment.externalReference ? (
+                  <span className="muted"> · {payment.externalReference}</span>
+                ) : null}
+                <span className="muted"> · {formatDate(payment.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="panel stack-sm">
+        <span className="panel-title">Suscripciones · {subscriptions.length}</span>
+        {subscriptions.length === 0 ? (
+          <span className="muted">Sin suscripciones</span>
+        ) : (
+          <ul className="detail-list">
+            {subscriptions.map((subscription) => (
+              <li key={subscription.id}>
+                <strong>{subscription.basePlan}</strong>
+                <span className="muted"> · {subscription.status}</span>
+                <span className="muted">
+                  {' '}
+                  · {formatMoney(subscription.amountCents, subscription.currency)}/
+                  {subscription.billingCycle === 'yearly' ? 'año' : 'mes'}
+                </span>
+                <span className="muted"> · {subscription.seats} seats</span>
+                <span className="muted"> · {envName(subscription.environmentId)}</span>
               </li>
             ))}
           </ul>
