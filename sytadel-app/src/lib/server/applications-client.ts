@@ -60,3 +60,14 @@ export async function getApplication(
   const apps = await listApplications(accessToken, tenantId);
   return apps.find((app) => app.id === clientAppId) ?? null;
 }
+
+export async function createApplication(
+  accessToken: string,
+  tenantId: string,
+  input: { name: string; slug: string; description?: string },
+) {
+  return requestJson<ClientAppSummary>(
+    `${env.authApiUrl}/tenants/${tenantId}/client-apps`,
+    { method: 'POST', token: accessToken, body: input },
+  );
+}
