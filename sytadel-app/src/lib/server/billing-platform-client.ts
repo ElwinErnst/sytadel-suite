@@ -68,3 +68,53 @@ export async function getUsageByApplication(accessToken: string) {
     { method: 'GET', token: accessToken },
   );
 }
+
+export type ApplicationPayment = {
+  id: string;
+  environmentId: string | null;
+  providerConnectionId: string | null;
+  provider: string;
+  status: string;
+  amountCents: number;
+  currency: string;
+  description: string | null;
+  externalReference: string | null;
+  createdAt: string;
+};
+
+export type ApplicationSubscription = {
+  id: string;
+  environmentId: string | null;
+  provider: string;
+  status: string;
+  basePlan: string;
+  billingCycle: string;
+  seats: number;
+  currency: string;
+  amountCents: number;
+  currentPeriodEndsAt: string | null;
+  createdAt: string;
+};
+
+export async function listApplicationPayments(
+  accessToken: string,
+  clientAppId: string,
+) {
+  return requestJson<{ clientAppId: string; payments: ApplicationPayment[] }>(
+    `${env.billingApiUrl}/billing/applications/${clientAppId}/payments`,
+    { method: 'GET', token: accessToken },
+  );
+}
+
+export async function listApplicationSubscriptions(
+  accessToken: string,
+  clientAppId: string,
+) {
+  return requestJson<{
+    clientAppId: string;
+    subscriptions: ApplicationSubscription[];
+  }>(`${env.billingApiUrl}/billing/applications/${clientAppId}/subscriptions`, {
+    method: 'GET',
+    token: accessToken,
+  });
+}
