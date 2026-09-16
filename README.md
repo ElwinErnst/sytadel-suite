@@ -215,6 +215,12 @@ They only exist when `AUTH_BOOTSTRAP_DEMO_DATA=true`. Do not enable demo bootstr
 - **Roadmap** — [`docs/ROADMAP.md`](./docs/ROADMAP.md)
 - **Architecture (master doc)** — [`docs/architecture/sytadel-master-es.md`](./docs/architecture/sytadel-master-es.md)
 - **Security & portfolio review** — [`docs/reports/sytadel-portfolio-review-2026-09.md`](./docs/reports/sytadel-portfolio-review-2026-09.md)
-- **Per-service** — [auth-api](./auth/auth-api/README.md) · [zerotrust-api](./ZeroTrust/zerotrust-api/README.md) · [vault-api](./securechain-vault/README.md) · [billing-api](./billing/billing-api/) · [sytadel-app](./sytadel-app/README.md) · [sytadel-web](./sytadel-web/README.md)
+- **Per-service** — [auth-api](./auth/auth-api/README.md) · [zerotrust-api](./ZeroTrust/zerotrust-api/README.md) · [vault-api](./securechain-vault/README.md) · [billing-api](./billing/billing-api/README.md) · [mcp-server](./mcp-server/README.md) · [sytadel-app](./sytadel-app/README.md) · [sytadel-web](./sytadel-web/README.md)
 
 > Most in-repo documentation is written in Spanish; this README is in English for the primary audience. If you'd like any service doc translated, open an issue.
+
+---
+
+## License
+
+Apache-2.0 — see [LICENSE](./LICENSE). Each service submodule carries its own Apache-2.0 `LICENSE` so it stays licensed when used on its own.

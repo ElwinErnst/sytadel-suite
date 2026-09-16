@@ -2,6 +2,10 @@
 
 Landing multilenguaje de Sytadel Labs construida con Astro.
 
+## Qué es y rol en Sytadel
+
+Es el **sitio público** de la suite: narrativa del producto y una demo scripted (sin backend). A diferencia de los servicios backend, no es un módulo reutilizable "standalone" — es la cara de marketing de Sytadel. Corre de forma totalmente independiente (no llama a ninguna API en runtime) y se despliega por separado. Ver la [suite](../README.md).
+
 ## Stack
 - Astro
 - TypeScript
@@ -44,3 +48,7 @@ typing/looping) and loops gently through a few scenarios with a Replay control.
 ## Dominio
 
 El sitio está configurado para `https://sytadel-labs.com`.
+
+## Licencia
+
+Apache-2.0. Ver el [LICENSE de la suite](../LICENSE).
