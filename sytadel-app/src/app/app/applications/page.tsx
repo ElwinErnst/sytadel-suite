@@ -8,6 +8,11 @@ import {
 } from '@/lib/server/applications-client';
 import { ApiError } from '@/lib/server/http';
 import { requireSession, withSessionToken } from '@/lib/server/session';
+import { createApplicationAction } from '@/features/applications/actions';
+
+type Props = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
 
 const ENV_ORDER: Record<EnvironmentSummary['name'], number> = {
   production: 0,
@@ -25,8 +30,13 @@ function formatDate(value: string) {
   );
 }
 
-export default async function ApplicationsPage() {
-  await requireSession();
+export default async function ApplicationsPage({ searchParams }: Props) {
+  const session = await requireSession();
+  const params = (await searchParams) ?? {};
+  const created = typeof params.created === 'string' ? params.created : null;
+  const errorMessage = typeof params.error === 'string' ? params.error : null;
+  const canManage =
+    session.roles.includes('OWNER') || session.roles.includes('ADMIN');
 
   let applications: AppWithEnvironments[] = [];
   let notice: string | null = null;
@@ -61,7 +71,55 @@ export default async function ApplicationsPage() {
         description="Las aplicaciones cliente de tu organización que usan Sytadel, con sus entornos y API keys."
       />
 
+      {created ? (
+        <div className="info-banner">Aplicación «{created}» creada.</div>
+      ) : null}
+      {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
       {notice ? <div className="info-banner">{notice}</div> : null}
+
+      {canManage && !notice ? (
+        <section className="panel stack-sm">
+          <span className="panel-title">Nueva aplicación</span>
+          <form action={createApplicationAction} className="stack-sm">
+            <div className="field">
+              <label htmlFor="app-name">Nombre</label>
+              <input
+                id="app-name"
+                className="input"
+                name="name"
+                maxLength={120}
+                required
+                placeholder="Reservations"
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="app-slug">Slug</label>
+              <input
+                id="app-slug"
+                className="input"
+                name="slug"
+                maxLength={120}
+                pattern="[a-z0-9-]+"
+                required
+                placeholder="reservations"
+              />
+              <span className="hint">Minúsculas, números y guiones.</span>
+            </div>
+            <div className="field">
+              <label htmlFor="app-description">Descripción (opcional)</label>
+              <input
+                id="app-description"
+                className="input"
+                name="description"
+                maxLength={500}
+              />
+            </div>
+            <button className="button" type="submit">
+              Crear aplicación
+            </button>
+          </form>
+        </section>
+      ) : null}
 
       {!notice && applications.length === 0 ? (
         <div className="empty-card">
