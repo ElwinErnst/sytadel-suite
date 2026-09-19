@@ -1,5 +1,6 @@
 import { env } from './env';
 import { requestJson } from './http';
+import type { AuditEventsPage } from './types/audit-event.type';
 import type {
   BillingCheckoutSession,
   BillingOverview,
@@ -58,4 +59,20 @@ export async function scheduleCancellation(accessToken: string) {
 
 export function getActiveSubscription(subscriptions: BillingSubscription | null | undefined) {
   return subscriptions ?? null;
+}
+
+/** Billing audit events (subscription lifecycle). Tenant from the token. */
+export async function listBillingAuditEvents(
+  accessToken: string,
+  query: { page?: number; limit?: number } = {},
+) {
+  const params = new URLSearchParams();
+  if (query.page) params.set('page', String(query.page));
+  if (query.limit) params.set('limit', String(query.limit));
+  const suffix = params.toString();
+
+  return requestJson<AuditEventsPage>(
+    `${env.billingApiUrl}/billing/audit-events${suffix ? `?${suffix}` : ''}`,
+    { method: 'GET', token: accessToken },
+  );
 }
