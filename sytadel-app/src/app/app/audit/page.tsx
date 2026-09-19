@@ -5,6 +5,7 @@ import {
   requireOperationalSession,
 } from '@/lib/server/session';
 import * as authClient from '@/lib/server/auth-client';
+import * as billingClient from '@/lib/server/billing-client';
 import * as vaultClient from '@/lib/server/vault-client';
 import * as ztClient from '@/lib/server/zt-client';
 import * as ztPolicyClient from '@/lib/server/zt-policy-client';
@@ -28,6 +29,7 @@ const SYSTEM_TABS: Array<{ value: string; label: string }> = [
   { value: 'vault', label: 'Vault' },
   { value: 'auth', label: 'Auth' },
   { value: 'zerotrust', label: 'Zero Trust' },
+  { value: 'billing', label: 'Billing' },
 ];
 
 function readString(
@@ -67,7 +69,7 @@ export default async function AuditPage({ searchParams }: Props) {
 
   // Each source is fetched independently and degrades to empty on failure, so
   // one system being down never blanks the whole timeline.
-  const [vaultRes, memberships, policyVersions, authRes, ztRes] =
+  const [vaultRes, memberships, policyVersions, authRes, ztRes, billingRes] =
     await Promise.all([
       vaultClient
         .listAuditLogs(accessToken, { page: 1, limit: WINDOW })
@@ -82,6 +84,9 @@ export default async function AuditPage({ searchParams }: Props) {
         .listAuthAuditEvents(accessToken, session.tenant.id, { limit: WINDOW })
         .catch(() => null),
       ztClient.listZtAuditEvents(accessToken, { limit: WINDOW }).catch(() => null),
+      billingClient
+        .listBillingAuditEvents(accessToken, { limit: WINDOW })
+        .catch(() => null),
     ]);
 
   const userMap = new Map(
@@ -94,6 +99,7 @@ export default async function AuditPage({ searchParams }: Props) {
     ),
     (authRes?.items ?? []).map(fromAuditEvent),
     (ztRes?.items ?? []).map(fromAuditEvent),
+    (billingRes?.items ?? []).map(fromAuditEvent),
     policyVersions.map(fromPolicyVersion),
   ]).filter((event) => !systemFilter || event.system === systemFilter);
 
