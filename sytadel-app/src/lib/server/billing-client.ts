@@ -1,6 +1,6 @@
 import { env } from './env';
 import { requestJson } from './http';
-import type { AuditEventsPage } from './types/audit-event.type';
+import type { AuditEventsPage, ChainVerifyResult } from './types/audit-event.type';
 import type {
   BillingCheckoutSession,
   BillingOverview,
@@ -73,6 +73,14 @@ export async function listBillingAuditEvents(
 
   return requestJson<AuditEventsPage>(
     `${env.billingApiUrl}/billing/audit-events${suffix ? `?${suffix}` : ''}`,
+    { method: 'GET', token: accessToken },
+  );
+}
+
+/** Verify the tamper-evident chain of the billing audit store for a tenant. */
+export async function verifyBillingChain(accessToken: string) {
+  return requestJson<ChainVerifyResult>(
+    `${env.billingApiUrl}/billing/audit-events/verify`,
     { method: 'GET', token: accessToken },
   );
 }

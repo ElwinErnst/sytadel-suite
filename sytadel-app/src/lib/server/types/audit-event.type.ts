@@ -29,3 +29,13 @@ export type AuditEventsPage = {
   page: number;
   limit: number;
 };
+
+/** Result of verifying a service's tamper-evident audit chain for a tenant. */
+export type ChainVerifyResult = {
+  scope: string;
+  status: 'VALID' | 'BROKEN' | 'EMPTY';
+  checked: number;
+  headSeq: string | null;
+  headHash: string | null;
+  firstBreak: { seq: string; reason: string; detail: string } | null;
+};
