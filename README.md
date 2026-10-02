@@ -1,14 +1,21 @@
 # Sytadel Suite
 
-**A security-first, multi-tenant B2B platform that treats identity, access, document custody, audit integrity, and AI-assisted security operations as one system.**
+**Sytadel is being built as a secure PaaS and control plane for teams building software and automations with AI agents.**
 
-Sytadel is a working reference stack for the problems that show up when a SaaS handles sensitive data: who can do what, across which tenant, with what proof — and how AI can help operate that safely without being handed the keys. It is built as independent services (each usable on its own) that compose into a suite.
+Sytadel aims to abstract the trust infrastructure those teams would otherwise build themselves: identity and tenancy, policy enforcement, secrets and Vault, tamper-evident audit and notary, billing and entitlements, agent identity, MCP, and human approval for consequential actions. The goal is for teams to focus on their business rules while Sytadel supplies the secure control plane. The current suite is a set of independently deployable services and working components—not a complete hosted agent runtime.
 
-> This is an engineering portfolio project, not a commercial product. It is designed to be **cloned, run, and read** — the code is the argument. Where something is a development default or still on the roadmap, this README says so explicitly.
+> **Product boundary:** Sytadel is an actively developed product direction, not a claim of a production-ready hosted runtime. This repository contains working services and prototypes; target capabilities are labeled as planned, and operational maturity, certifications, and final commercial terms are not implied.
 
 ---
 
 ## What it demonstrates
+
+The product objective is a secure platform for software and automations built
+with AI agents. Sytadel is intended to centralize the controls around those
+agents—who they are, what they may access, which secrets they can use, what was
+done, what is billable, and when a person must approve—so customer teams can
+concentrate on domain-specific business rules. The table below describes
+implemented components, not a complete hosted agent runtime.
 
 | Capability | What's actually there | Signal for |
 |---|---|---|
