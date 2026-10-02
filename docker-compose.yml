@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: auth
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:-dev-insecure-auth-db}
     ports:
       - "5434:5432"
     volumes:
@@ -22,7 +22,7 @@ services:
     environment:
       POSTGRES_DB: billing
       POSTGRES_USER: billing
-      POSTGRES_PASSWORD: billing
+      POSTGRES_PASSWORD: ${BILLING_DB_PASSWORD:-dev-insecure-billing-db}
     ports:
       - "5435:5432"
     volumes:
@@ -39,7 +39,7 @@ services:
     environment:
       POSTGRES_DB: vault
       POSTGRES_USER: vault
-      POSTGRES_PASSWORD: vault
+      POSTGRES_PASSWORD: ${VAULT_DB_PASSWORD:-dev-insecure-vault-db}
       APP_DB_USER: ${VAULT_APP_DB_USER:-vault_app}
       APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:-vault_app}
     ports:
@@ -65,7 +65,7 @@ services:
       PGPORT: 5432
       PGDATABASE: vault
       PGUSER: vault
-      PGPASSWORD: vault
+      PGPASSWORD: ${VAULT_DB_PASSWORD:-dev-insecure-vault-db}
       APP_DB_USER: ${VAULT_APP_DB_USER:-vault_app}
       APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:-vault_app}
     volumes:
@@ -103,7 +103,7 @@ services:
       DB_PORT: 5432
       DB_NAME: auth
       DB_USER: postgres
-      DB_PASS: postgres
+      DB_PASS: ${AUTH_DB_PASSWORD:-dev-insecure-auth-db}
       DB_SYNC: "false"
       AUTH_JWT_ISSUER: auth
       AUTH_JWT_AUDIENCE: zerotrust-api
@@ -266,7 +266,7 @@ services:
       DB_PORT: 5432
       DB_NAME: billing
       DB_USER: billing
-      DB_PASSWORD: billing
+      DB_PASSWORD: ${BILLING_DB_PASSWORD:-dev-insecure-billing-db}
       DB_SYNC: "false"
       BILLING_JWT_ISSUER: auth
       BILLING_JWT_AUDIENCE: zerotrust-api
