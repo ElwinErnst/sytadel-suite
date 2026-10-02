@@ -117,9 +117,9 @@ export const defaultLocale: Locale = 'es';
 
 export const copy: Record<Locale, PageCopy> = {
   es: {
-    metaTitle: 'Sytadel Labs | Zero trust operacional para infraestructura moderna',
+    metaTitle: 'Sytadel Labs | Plano de control seguro para software con agentes de IA',
     metaDescription:
-      'Sytadel Labs es la capa de control para acceso seguro, identidad y operaciones zero trust en infraestructura moderna.',
+      'Sytadel se está construyendo como una PaaS y un plano de control seguro para equipos que crean software y automatizaciones con agentes de IA.',
     languageLabel: 'Idioma',
     launch: {
       badge: 'Sytadel Labs',
@@ -134,10 +134,10 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'Seguridad', href: '#seguridad' },
     ],
     hero: {
-      eyebrow: 'Infraestructura de seguridad · con IA',
-      title: 'Los cimientos de seguridad de tu SaaS, resueltos.',
+      eyebrow: 'PaaS segura · software y automatizaciones con agentes de IA',
+      title: 'Construye con agentes. Enfócate en tus reglas de negocio.',
       description:
-        'Identidad y passkeys, un gateway Zero Trust con políticas, un vault con notarización a prueba de manipulación, y cobros — como módulos que enchufás. Con una capa de IA que detecta anomalías, compila políticas en lenguaje natural y asiste las decisiones de acceso. Somos una startup de seguridad: corremos sobre nuestro propio stack.',
+        'Sytadel busca abstraer identidad y tenancy, políticas, secretos y Vault, auditoría y notaría a prueba de manipulaciones, facturación y entitlements, identidad de agentes, MCP y aprobación humana para acciones consecuentes. La suite actual aporta servicios y capacidades funcionales; el runtime alojado completo sigue siendo un objetivo, no una capacidad disponible.',
       tags: [
         'Identidad + passkeys (WebAuthn)',
         'Gateway Zero Trust + políticas',
@@ -162,9 +162,9 @@ export const copy: Record<Locale, PageCopy> = {
       'APIs listas para integrar',
     ],
     platform: {
-      title: 'Sytadel es la capa de control para equipos que operan infraestructura y sistemas críticos',
+      title: 'Un plano de control seguro para equipos que construyen con agentes de IA',
       description:
-        'Muchos equipos crecen con accesos concedidos por urgencia, información sensible repartida en varias herramientas y controles que recién aparecen cuando algo sale mal. Sytadel ordena esa operación con una capa clara de control antes de que el costo sea una auditoría fallida, una venta trabada o una exposición innecesaria.',
+        'La dirección del producto es abstraer los controles que los equipos necesitarían construir por separado —identidad, tenancy, políticas, secretos, trazabilidad y límites para agentes— para que puedan enfocarse en sus reglas de negocio. Los componentes actuales son una base en evolución, no un runtime de agentes completo.',
       cards: [
         {
           title: 'Identidad como base operativa',
@@ -191,7 +191,7 @@ export const copy: Record<Locale, PageCopy> = {
     integrations: {
       title: 'APIs y servicios para integrarlo con tus sistemas',
       description:
-        'Sytadel no se queda en una consola aislada. La plataforma puede integrarse con aplicaciones propias para resolver login, Zero Trust y resguardo cifrado de archivos dentro de los flujos que tu equipo ya usa.',
+        'La plataforma apunta a integrarse con aplicaciones y automatizaciones existentes. Hoy hay servicios y APIs para identidad, políticas y documentos; la orquestación alojada de agentes y el control integral de sus acciones siguen en desarrollo.',
       cards: [
         {
           title: 'Login e identidad para tus aplicaciones',
@@ -445,9 +445,9 @@ export const copy: Record<Locale, PageCopy> = {
     footer: 'Sytadel Labs. Acceso seguro, identidad y zero trust operativo para infraestructura moderna.',
   },
   en: {
-    metaTitle: 'Sytadel Labs | Zero trust made operational',
+    metaTitle: 'Sytadel Labs | A secure control plane for agentic software',
     metaDescription:
-      'Sytadel Labs is the control layer for secure access, identity, and zero-trust operations in modern infrastructure.',
+      'Sytadel is being built as a secure PaaS and control plane for teams building software and automations with AI agents.',
     languageLabel: 'Language',
     launch: {
       badge: 'Sytadel Labs',
@@ -462,10 +462,10 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'Security', href: '#security' },
     ],
     hero: {
-      eyebrow: 'Security infrastructure · with AI',
-      title: "Your SaaS's security foundations, solved.",
+      eyebrow: 'Secure PaaS · software and automations with AI agents',
+      title: 'Build with agents. Focus on your business rules.',
       description:
-        'Identity and passkeys, a Zero Trust gateway with policies, a vault with tamper-evident notarization, and payments — as modules you plug in. Plus an AI layer that detects anomalies, compiles policies from natural language, and assists access decisions. We are a security startup: we run on our own stack.',
+        'Sytadel aims to abstract identity and tenancy, policy, secrets and Vault, tamper-evident audit and notary, billing and entitlements, agent identity, MCP, and human approval for consequential actions. The current suite provides working services and capabilities; a complete hosted agent runtime remains a target, not an available capability.',
       tags: [
         'Identity + passkeys (WebAuthn)',
         'Zero Trust gateway + policies',
@@ -490,9 +490,9 @@ export const copy: Record<Locale, PageCopy> = {
       'API-ready integrations',
     ],
     platform: {
-      title: 'Sytadel is the control layer for teams operating infrastructure and critical systems',
+      title: 'A secure control plane for teams building with AI agents',
       description:
-        'Many teams grow with access granted out of urgency, sensitive information spread across tools, and controls that only appear after something goes wrong. Sytadel organizes that operation around a clear control layer before the cost becomes a failed audit, a stalled deal, or unnecessary exposure.',
+        'The product direction is to abstract controls teams would otherwise build separately—identity, tenancy, policy, secrets, traceability, and agent boundaries—so they can focus on business rules. Current components are an evolving foundation, not a complete agent runtime.',
       cards: [
         {
           title: 'Identity as an operational foundation',
@@ -519,7 +519,7 @@ export const copy: Record<Locale, PageCopy> = {
     integrations: {
       title: 'APIs and services that fit into your systems',
       description:
-        'Sytadel is not limited to a standalone console. The platform can plug into your own applications to handle login, Zero Trust, and encrypted file storage inside the workflows your team already runs.',
+        'The platform is intended to integrate with existing applications and automations. Identity, policy, and document services are available today; hosted agent orchestration and end-to-end action governance remain in development.',
       cards: [
         {
           title: 'Login and identity for your applications',
@@ -773,9 +773,9 @@ export const copy: Record<Locale, PageCopy> = {
     footer: 'Sytadel Labs. Secure access, identity, and operational zero trust for modern infrastructure.',
   },
   pt: {
-    metaTitle: 'Sytadel Labs | Zero trust operacional para infraestrutura moderna',
+    metaTitle: 'Sytadel Labs | Plano de controle seguro para software com agentes de IA',
     metaDescription:
-      'Sytadel Labs é a camada de controle para acesso seguro, identidade e operações zero trust em infraestrutura moderna.',
+      'A Sytadel está sendo construída como uma PaaS e um plano de controle seguro para equipes que criam software e automações com agentes de IA.',
     languageLabel: 'Idioma',
     launch: {
       badge: 'Sytadel Labs',
@@ -790,10 +790,10 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'Segurança', href: '#seguranca' },
     ],
     hero: {
-      eyebrow: 'Infraestrutura de segurança · com IA',
-      title: 'As fundações de segurança do seu SaaS, resolvidas.',
+      eyebrow: 'PaaS segura · software e automações com agentes de IA',
+      title: 'Construa com agentes. Foque nas regras do seu negócio.',
       description:
-        'Identidade e passkeys, um gateway Zero Trust com políticas, um vault com notarização à prova de adulteração, e cobranças — como módulos que você pluga. Com uma camada de IA que detecta anomalias, compila políticas em linguagem natural e assiste as decisões de acesso. Somos uma startup de segurança: rodamos sobre nosso próprio stack.',
+        'A Sytadel busca abstrair identidade e tenancy, políticas, segredos e Vault, auditoria e notariação à prova de adulteração, faturamento e entitlements, identidade de agentes, MCP e aprovação humana para ações consequentes. A suíte atual oferece serviços e capacidades funcionais; um runtime hospedado completo para agentes continua sendo um objetivo, não uma capacidade disponível.',
       tags: [
         'Identidade + passkeys (WebAuthn)',
         'Gateway Zero Trust + políticas',
@@ -818,9 +818,9 @@ export const copy: Record<Locale, PageCopy> = {
       'Integrações prontas via API',
     ],
     platform: {
-      title: 'Sytadel é a camada de controle para equipes que operam infraestrutura e sistemas críticos',
+      title: 'Um plano de controle seguro para equipes que desenvolvem com agentes de IA',
       description:
-        'Muitas equipes crescem com acessos concedidos por urgência, informação sensível espalhada entre ferramentas e controles que só aparecem depois que algo dá errado. A Sytadel organiza essa operação sobre uma camada clara de controle antes que o custo seja uma auditoria perdida, uma venda travada ou exposição desnecessária.',
+        'A direção do produto é abstrair os controles que as equipes precisariam construir separadamente — identidade, tenancy, políticas, segredos, rastreabilidade e limites para agentes — para que possam focar nas regras do negócio. Os componentes atuais são uma base em evolução, não um runtime completo para agentes.',
       cards: [
         {
           title: 'Identidade como base operacional',
@@ -847,7 +847,7 @@ export const copy: Record<Locale, PageCopy> = {
     integrations: {
       title: 'APIs e serviços para integrar com seus sistemas',
       description:
-        'A Sytadel não fica presa a uma console isolada. A plataforma pode se integrar às suas próprias aplicações para resolver login, Zero Trust e armazenamento cifrado de arquivos dentro dos fluxos que sua equipe já utiliza.',
+        'A plataforma pretende se integrar às aplicações e automações existentes. Hoje há serviços e APIs para identidade, políticas e documentos; a orquestração hospedada de agentes e o controle integral de suas ações seguem em desenvolvimento.',
       cards: [
         {
           title: 'Login e identidade para suas aplicações',

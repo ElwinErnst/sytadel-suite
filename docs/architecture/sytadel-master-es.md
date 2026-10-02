@@ -1,11 +1,11 @@
 # Sytadel: documento maestro de producto, seguridad y arquitectura
 
 ## 1. Visión general de Sytadel
-Sytadel es una plataforma B2B SaaS de infraestructura de confianza digital para organizaciones que gestionan información sensible y necesitan control operativo, trazabilidad, acceso seguro y evidencia verificable.
+Sytadel se está construyendo como una PaaS segura y un plano de control para equipos que desarrollan software y automatizaciones con agentes de IA. Su objetivo es abstraer la infraestructura de confianza que esos equipos necesitarían construir y operar: identidad y tenancy, políticas, secretos y Vault, auditoría/notaría tamper-evident, Billing y entitlements, identidad de agentes, MCP y aprobación humana de acciones consecuentes.
 
-El producto no se posiciona como almacenamiento genérico ni como un simple proveedor de autenticación. Su propuesta es dar una base operativa confiable para trabajar con identidad, acceso, documentos sensibles, políticas de seguridad y evidencia auditable dentro de una misma plataforma.
+Así, los equipos pueden enfocarse en sus reglas de negocio en lugar de ensamblar por separado identidad, autorización, secretos, evidencia y controles para agentes. La suite actual aporta servicios y capacidades funcionales a esa dirección, pero no es todavía un runtime alojado completo para agentes ni una oferta enterprise madura.
 
-Sytadel se concibe como una suite modular. El cliente compra un workspace principal, capacidades por plan y, cuando corresponde, API packs para integrar la plataforma dentro de sus propias aplicaciones.
+Sytadel se concibe como una plataforma modular que puede integrarse en aplicaciones y flujos de trabajo propios. Los planes, API packs y su empaquetado comercial siguen sujetos a validación; las descripciones de este documento no establecen precios finales.
 
 ## 2. Qué problema resuelve
 Muchas empresas crecen con permisos dispersos, documentos críticos sin trazabilidad fuerte, controles administrativos poco claros y procesos sensibles apoyados en confianza implícita.
@@ -29,14 +29,20 @@ Hoy Sytadel vende principalmente:
 - capas de Zero Trust para proteger el acceso al dominio documental
 - facturación por tenant con planes y add-ons
 
-### Qué venderemos de forma más clara a medida que madure
-La arquitectura y el roadmap apuntan a vender una suite modular compuesta por:
+### PaaS y plano de control objetivo
+La arquitectura y el roadmap apuntan a evolucionar hacia una plataforma que coordine:
 - Auth
 - Zero Trust
 - Vault
 - Notary
 - Audit
 - API packs para integraciones
+
+También deberá incorporar identidad de agentes, una capa de integración MCP,
+gestión de secretos, controles de aprobación humana y políticas que delimiten
+acciones externas. Estas capacidades forman parte del objetivo; no implican que
+exista hoy un runtime alojado completo ni un sistema genérico de aprobación
+comercialmente disponible.
 
 ### Unidad comercial
 La unidad comercial y de facturación es el tenant, no el usuario individual.
@@ -48,12 +54,11 @@ La unidad comercial y de facturación es el tenant, no el usuario individual.
 - futura expansión a módulos premium más explícitos por dominio
 
 ### Enfoque B2B
-El producto está orientado a:
-- fintechs
-- healthtechs
-- legaltechs
-- govtechs
-- empresas SaaS y equipos con requerimientos de trazabilidad y control
+El usuario objetivo son equipos que desarrollan software o automatizaciones con
+agentes de IA y necesitan delegarles trabajo sin ceder controles de identidad,
+autorización, secretos, trazabilidad, facturación y aprobación humana. Fintech,
+healthtech, legaltech, govtech y empresas SaaS son segmentos posibles, no
+mercados validados ni compromisos de disponibilidad.
 
 El lenguaje comercial correcto no es “más almacenamiento”, sino “más control, acceso seguro, evidencia y continuidad operativa”.
 
@@ -93,6 +98,11 @@ La arquitectura objetivo no es idéntica al estado actual. El destino natural de
 - `sytadel-app` como consola principal del cliente
 - `sytadel-web` como frente comercial
 - posible `gateway/BFF` cuando la orquestación frontend necesite consolidación adicional
+- control plane para identidad de agentes, políticas de herramientas, acceso a secretos en Vault, registro de acciones, entitlements y puntos de aprobación humana para efectos consecuentes
+
+Este estado objetivo requiere diseño e implementación incremental. No se debe
+describir como un runtime de agentes hospedado o como una capacidad disponible
+hasta que exista y se verifique como tal.
 
 ### Principio arquitectónico central
 Cada servicio debe tener una frontera clara y un ownership explícito sobre su dominio. El objetivo no es solo modularidad técnica; es reducir la posibilidad de comprometer datos, mezclar responsabilidades o volver difuso el modelo de confianza del sistema.

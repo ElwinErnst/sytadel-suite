@@ -1,29 +1,26 @@
-# Sytadel Suite — Roadmap
+# Sytadel — Secure Agentic Platform Roadmap
 
-## Objetivo actual del proyecto
+## Objetivo del producto
 
-**Usar Sytadel Suite como portfolio piece para conseguir un rol de AI + Cybersecurity engineering en los próximos 3-6 meses.**
+**Construir Sytadel como una PaaS segura y un plano de control para equipos que
+crean software y automatizaciones con agentes de IA.** Sytadel debe abstraer
+identidad y tenancy, políticas, secretos y Vault, auditoría/notaría
+tamper-evident, Billing y entitlements, identidad de agentes, MCP y aprobación
+humana de acciones consecuentes, para que cada equipo pueda enfocarse en sus
+reglas de negocio.
 
-Prioridad: signal técnico dirigido a roles específicos > madurez del producto como negocio.
-
-Este roadmap NO es "hacer un producto para vender". Es **producir señal técnica dirigida a las audiencias que apuntamos**: Auth0, Clerk, 1Password, WorkOS, Snyk, Doppler, Vanta, Anthropic contractors, y startups early-stage de AI + Cyber.
-
-Cuando un screener entra a `sytadel-labs.com` desde el link del CV, tiene que ver dos cosas que la mayoría de portfolios no tiene:
-
-1. **Fundamentos de seguridad modernos ejecutados bien** (passkeys, audit chain, session detection) — prueba de nivel AppSec
-2. **AI aplicada al problema de seguridad real** (LLM classifier, MCP server) — prueba del bridge AI+Cyber que casi nadie hace
-
-Referencias:
-- Estrategia base: `career-ops/interview-prep/sytadel-roadmap.md` (2026-07-26)
-- Estado técnico y arquitectura: [architecture/](./architecture/) + [sytadel-master-es.md](./architecture/sytadel-master-es.md)
+La suite actual contiene servicios y capacidades funcionales que forman una
+base para ese objetivo; no es todavía un runtime alojado completo para agentes.
+Este roadmap separa explícitamente lo implementado de la arquitectura objetivo
+y sus brechas de producto.
 
 ## Cómo leer este roadmap
 
-Tres tracks paralelos con prioridades distintas:
+Tres tracks paralelos para llevar la base actual hacia el producto objetivo:
 
-- **Portfolio track (Q3-Q4 2026)** — objetivo primario. Milestones M1/M2/M3
-- **Product hardening (Q4 2026, en paralelo)** — mínimo indispensable para que el portfolio no se vea flojo si un evaluador clona y corre el repo
-- **Product maturity (2027+)** — explícitamente pospuesto. Se retoma después del hire
+- **Platform foundation (Q3-Q4 2026)** — completar y demostrar controles de confianza reutilizables.
+- **Operational hardening (Q4 2026, en paralelo)** — mejorar seguridad y confiabilidad de los componentes actuales.
+- **Product maturity (2027+)** — cerrar brechas necesarias para ofrecer una plataforma operable por equipos externos.
 
 Estados: **✅ Hecho** | **🟡 En curso** | **⏭️ Próximo** | **🔮 Después** | **❌ Descartado**
 
@@ -37,15 +34,15 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 - **✅ Landing pública en `sytadel-labs.com`** — deployada en Vercel apuntando a `sentinel-web`. Topbar + footer linkean al repo público del meta
 - **✅ Estructura mínima corriendo** — auth, RBAC, vaults, documents, tenants, billing están funcionales y verificados con smoke tests
 
-**Definition of done cumplido:** un evaluador entra a `sytadel-labs.com`, ve qué hace el producto, ve el link a GitHub en el topbar, y salta al repo público con doc + demo runnable.
+**Estado de base:** la landing pública presenta capacidades actuales y permite explorar una demo limitada. Esto demuestra componentes existentes; no acredita una plataforma operativa completa ni un runtime alojado de agentes.
 
 ---
 
-## Portfolio track (Q3-Q4 2026)
+## Platform foundation track (Q3-Q4 2026)
 
 ### M1 — Fundamentos de seguridad modernos (semanas 1-3)
 
-**Audiencia signal:** Auth0, Clerk, 1Password, WorkOS, Snyk, Doppler, Vanta, AppSec generalist.
+**Platform outcome:** demostrar identidad, aislamiento por tenant, evidencia tamper-evident y límites de acceso reutilizables.
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
@@ -60,11 +57,11 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 - [`2026-07-session-anomaly-detection.md`](./blog/2026-07-session-anomaly-detection.md)
 - [`2026-07-automated-secret-rotation.md`](./blog/2026-07-automated-secret-rotation.md)
 
-**M1 cerrado.** Cadencia sugerida de publicación: 1 post cada 3-4 días desde dev.to (perfil ya armado), cross-post a LinkedIn con hook + link.
+**M1 cerrado.** Conservar resultados de pruebas y decisiones como evidencia de las capacidades actuales.
 
 ### M2 — Capa AI-powered de seguridad (semanas 4-7)
 
-**Audiencia signal:** Anthropic contractors, Auth0 AI, Snyk AI, "Product Security Engineer with AI focus".
+**Platform outcome:** mantener las capacidades de IA medibles, acotadas y subordinadas al enforcement determinista.
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
@@ -77,36 +74,30 @@ Sin esto, el resto del roadmap no tiene dónde apoyarse:
 - Opción secundaria: modelo local (Llama 3 vía Ollama) — angle "data residency" para EU/regulated
 - **Evals obligatorios:** dataset propio de 20-30 casos etiquetados, precision/recall reportados. Sin evals, un feature con LLM es "un juguete"
 
-**Deliverables al cierre:**
-- Blog post: *"Using Claude to review your org's access sprawl — with actual eval metrics"* — dev.to + LinkedIn + Show HN
-- Sección nueva en CV: "SytadelSuite AI Security Layer"
-- Números: precision/recall del classifier, cost por análisis (USD), latencia p95, tokens promedio por query
+**Evidencia a conservar:** evaluaciones y metodología; precision/recall del clasificador, generador de políticas y access review; costo por análisis, latencia p95 y promedio de tokens por consulta.
 
 ### M3 — MCP + Agentic (semanas 8-11)
 
-**Audiencia signal:** Anthropic ecosystem, startup early-stage AI+Cyber, "AI Engineer Product-focused".
+**Platform outcome:** expose existing identity/access operations through typed MCP tools, with explicit human-approval boundaries.
 
 | Feature | Estado | Notas |
 |---------|--------|-------|
 | **Sytadel MCP server** | ✅ | Submódulo público [`ElwinErnst/sytadel-mcp-server`](https://github.com/ElwinErnst/sytadel-mcp-server) con 5 tools (`list_tenant_users`, `list_service_accounts`, `query_session_anomalies`, `generate_policy`, `run_access_review`). Dual-mode auth (user password / service account) para separar admin scope de API_CLIENT scope. Stdio transport, JWT cache con inflight coalescing, native fetch (zero third-party HTTP). Smoke real: 5/5 tools contra el docker stack, `run_access_review` devolvió 10.4KB con 8 recommendations en ~18s. Blog post: [`2026-08-mcp-server-identity-infrastructure.md`](./blog/2026-08-mcp-server-identity-infrastructure.md) |
 | **Agentic approval workflow con HITL** | ✅ | Request de acceso → agente LangGraph (Claude) propone allow/deny con reasoning + confidence → OWNER/ADMIN aprueba (aplica la membership) o rechaza. El agente solo PROPONE; el humano decide. Contexto reusa el access-review snapshot. Degrada sin bloquear si el agente falla/está deshabilitado. 8/8 unit tests, agente verificado end-to-end. Submódulo `auth/auth-api`, módulo `access-request` |
-| **Portfolio landing con demo interactiva** | ✅ | Consola "Try it" embebida en `sytadel-web`: el visitante chatea y Claude usa los mismos tools que expone el MCP server, sobre un tenant demo read-only con fixtures. "Click and try" real: sin instalar, sin cuenta, sin login. Nota: el "Connect al Claude Desktop de un click" no es factible para un MCP de terceros (no hay deep-link de auto-install estándar + necesita credenciales); la demo in-browser cumple la intención sin esos bloqueos, y deja abierto el connector remoto a futuro. Sitio estático + una función serverless (`api/demo.ts`), API key server-side, degradación elegante fuera de Vercel |
+| **Product demo with interactive preview** | ✅ | Consola "Try it" embebida en `sytadel-web`: el visitante chatea y Claude usa los mismos tools que expone el MCP server, sobre un tenant demo read-only con fixtures. "Click and try" real: sin instalar, sin cuenta, sin login. Nota: el "Connect al Claude Desktop de un click" no es factible para un MCP de terceros (no hay deep-link de auto-install estándar + necesita credenciales); la demo in-browser cumple la intención sin esos bloqueos, y deja abierto el connector remoto a futuro. Sitio estático + una función serverless (`api/demo.ts`), API key server-side, degradación elegante fuera de Vercel |
 
 **Decisiones técnicas clave:**
 - MCP server en TypeScript con SDK oficial de Anthropic
 - Documentar en README cómo conectar desde Claude Desktop y desde Cursor (con screenshots)
 - No reinventar el orquestador — usar LangGraph JS o similar. Foco en prompt design y diseño de tools
 
-**Deliverables al cierre:**
-- Blog post: *"Building an MCP server for identity infrastructure — a case study"* — dev.to + LinkedIn + submit a Anthropic community
-- Paquete npm publicado
-- Números: cantidad de tools expuestas, latencia end-to-end del workflow (request → approval), % de approvals que el agente propone correctamente vs. lo que decide el humano
+**Evidencia a conservar:** inventario de herramientas, latencia de extremo a extremo para request → approval y evaluación de recomendaciones del agente frente a decisiones humanas. Publicar un paquete o artículo es opcional y no define la madurez del producto.
 
 ---
 
-## Product hardening track (Q4 2026, en paralelo)
+## Operational hardening track (Q4 2026, en paralelo)
 
-Mínimo indispensable para que si un AppSec engineer clona el repo y lee el código, no vea red flags. No consume slot de milestone, se hace en huecos.
+Priorizar la reducción de riesgos operativos y el cierre de brechas de seguridad en los componentes actuales, en paralelo con la evolución del producto.
 
 - **✅ Rotar defaults `change-me-*` del compose** — M1 automated rotation cubrió las credenciales de service accounts. Los 6 HMAC/JWT secrets compartidos ya no están hardcodeados: el compose los interpola vía `${VAR:-dev-insecure-*}`, un único var por secreto lógico (los compartidos no pueden desincronizarse). Producción inyecta valores fuertes en un `.env` raíz (gitignoreado, auto-cargado); local/CI usan defaults `dev-insecure-*` explícitos. Generación documentada en el README (`openssl rand -hex 32`). Validado por Smoke CI (el matching cross-service de JWT sigue intacto). PR #14
 - **✅ Migraciones controladas** — `DB_SYNC=true` era red flag si un AppSec lee la config. **Ningún servicio en el compose corre `DB_SYNC=true`**. auth-api (baseline 12 entidades) y billing-api (baseline 4 entidades) ahora poseen su schema vía TypeORM migrations con `migrationsRun` on boot; ambos validados por el Smoke CI en DBs frescas (PRs auth-api #5 / billing-api #2 + bumps #12 / #13). vault-api usa SQL init scripts; zerotrust-api no usa TypeORM synchronize. De paso se sacó un `console.log` que filtraba la password de la DB en el boot de auth-api
@@ -118,52 +109,48 @@ Mínimo indispensable para que si un AppSec engineer clona el repo y lee el cód
 
 ---
 
-## Product maturity track (2027+, después del hire)
+## Product maturity track (2027+)
 
-Explícitamente pospuesto. Estas eran las prioridades del roadmap anterior — no son signal para roles AI/Cyber engineering. Se retoman cuando el objetivo primario esté cumplido.
+Estas brechas describen el trabajo futuro necesario para que los equipos externos puedan operar los componentes actuales. Las prioridades dependen de la validación con clientes, los requisitos operativos y los riesgos observados.
 
 - **🔮 Extraer `notary-api`** — vía [target-state/notary-api.md](./architecture/target-state/notary-api.md). Hoy embebido en vault-api, funciona
 - **🔮 `audit-api` transversal** — cuando 2+ servicios necesiten emitir eventos al mismo trail
-- **🔮 Stripe production + customer portal + overages** — el mock checkout alcanza para demo
-- **🔮 SSO / OIDC / SAML enterprise** — irrelevante para interviews de M1-M3
+- **🔮 Stripe production + customer portal + overages** — validar el modelo comercial y los flujos operativos antes del lanzamiento
+- **🔮 SSO / OIDC / SAML** — priorizar cuando segmentos de clientes validados requieran federación
 - **🔮 MFA TOTP** — cuando M1 Passkeys resuelva el 80% del problema, TOTP queda como fallback secundario
-- **🔮 Provider blockchain real para notary** — sólo si el target profesional se corre a Web3
+- **🔮 Proveedor blockchain para notary** — solo si los casos de uso validados lo requieren
 
 ---
 
-## Trampas de tiempo (explícitamente NO hacer)
+## Guardrails de priorización
 
-Features tentadoras con ROI cero para la ventana actual:
+Evitar ampliar el alcance sin una necesidad validada o un riesgo concreto:
 
-- **❌ App mobile** — 0 signal para roles AI/Cyber, 2 meses perdidos
-- **❌ Enterprise dashboards con 50 vistas** — nadie los prueba en un demo
-- **❌ UI polish perfecto** — función > forma. Demo funcional feo abre más puertas que demo bonito que no hace nada
-- **❌ Reescribir multitenancy** — ya está hecha y funciona. Mantener, no invertir más. Career-ops decía "simulá con dropdown" pero como ya está hecho, no retrocedemos
-- **❌ Refactor de arquitectura sin driver** — el stack actual sirve para los 3 milestones. Cambios arquitectónicos van al track de maturity
+- **Evitar interfaces sin un flujo de cliente que las necesite** — priorizar capacidades operativas sobre la cantidad de pantallas.
+- **No reescribir multitenancy sin evidencia** — los cambios requieren un driver técnico o de producto.
+- **No refactorizar arquitectura sin un driver** — vincular los cambios con una brecha de plataforma o una necesidad operativa verificable.
 
 ---
 
-## Cadencia y ritual
+## Cadencia de producto y comunicación
 
 - **1 milestone cada 3-4 semanas** — no menos (calidad baja, signal se diluye), no más (perdés momentum)
-- **1 blog post al cierre de cada milestone** — no opcional. Sin amplificación, el código público no lo ve nadie
-- **CV update + LinkedIn post al cierre de cada milestone** — el proof point va escalando
-- **Aplicar a 3-5 roles nuevos al cierre de cada milestone** usando el bullet nuevo como diferenciador en el cover letter. Medir response rate
-- **Trackear en `career-ops/interview-prep/story-bank.md`** métricas concretas de cada milestone (STAR+R stories)
+- **Publicar una nota técnica cuando aporte evidencia útil** — explicar decisiones, límites y resultados de las capacidades implementadas.
+- **Compartir avances con clientes potenciales y usuarios** — usar el feedback para validar problemas, empaquetado y prioridades; no presentar planes como capacidades disponibles.
+- **Registrar evidencia de cada milestone** — conservar evaluaciones, resultados de smoke tests, riesgos y límites conocidos.
 
 ---
 
-## Priorización por rol target
+## Priorización por necesidad de producto
 
-Si en un momento hay que comprimir el track:
+Si hay que comprimir las prioridades, ordenar el trabajo según necesidades validadas y riesgos:
 
 | Target | Prioridad |
 |--------|-----------|
-| Anthropic contractor / Claude ecosystem | M3 primero |
-| Auth0 / Clerk / WorkOS / 1Password | M1 + M2 |
-| Snyk / Doppler / Vanta / Drata (DevSecOps) | M1 + M2 con énfasis secret rotation + policy generation |
-| AppSec generalist | M1 completo |
-| Startup early-stage AI+Cyber (LATAM/remoto) | Los 3 = perfil imbatible en la región |
+| Equipo que integra agentes mediante MCP | M3 y controles de herramientas |
+| Equipo que delega trabajo con datos sensibles | Identidad, políticas, Vault y evidencia auditable |
+| Equipo con requisitos de trazabilidad | Audit/notary y verificación de integridad |
+| Requisito de disponibilidad empresarial | Validar primero operación, federación y soporte |
 
 ---
 
@@ -180,6 +167,6 @@ _Resueltos: **HMAC compartido ZT↔Vault** → firma asimétrica Ed25519 (dual-m
 
 - **Cambios de scope:** commit `docs(roadmap): ...`
 - **Cambios de estado** (⏭️ → 🟡 → ✅): también acá, no solo en commits de código
-- **Nuevos items:** mantener por track (Portfolio / Hardening / Maturity)
+- **Nuevos items:** mantener por track (Foundation / Hardening / Maturity)
 - **Si algo pasa de un track a otro:** explicar POR QUÉ
-- **Revisión programada:** al cierre de cada milestone (M1, M2, M3). Revisar también si el objetivo cambia (por ejemplo: si se consigue trabajo antes de M3, se puede pivotar a producto)
+- **Revisión programada:** al cierre de cada milestone (M1, M2, M3) y cuando cambien las necesidades validadas, los riesgos o el alcance del producto.
