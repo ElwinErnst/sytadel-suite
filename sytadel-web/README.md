@@ -51,4 +51,4 @@ El sitio está configurado para `https://sytadel-labs.com`.
 
 ## Licencia
 
-Apache-2.0. Ver el [LICENSE de la suite](../LICENSE).
+PolyForm Strict 1.0.0 (source-available, uso no comercial). Ver el [LICENSE de la suite](../LICENSE).
