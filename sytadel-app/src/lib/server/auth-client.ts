@@ -1,6 +1,6 @@
 import { env } from './env';
 import { requestJson } from './http';
-import type { AuditEventsPage } from './types/audit-event.type';
+import type { AuditEventsPage, ChainVerifyResult } from './types/audit-event.type';
 import type {
   ClientAppRecord,
   CreatedServiceAccountRecord,
@@ -85,6 +85,14 @@ export async function listAuthAuditEvents(
 
   return requestJson<AuditEventsPage>(
     `${env.authApiUrl}/tenants/${tenantId}/audit-events${suffix ? `?${suffix}` : ''}`,
+    { method: 'GET', token: accessToken },
+  );
+}
+
+/** Verify the tamper-evident chain of the auth audit store for a tenant. */
+export async function verifyAuthChain(accessToken: string, tenantId: string) {
+  return requestJson<ChainVerifyResult>(
+    `${env.authApiUrl}/tenants/${tenantId}/audit-events/verify`,
     { method: 'GET', token: accessToken },
   );
 }

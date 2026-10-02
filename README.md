@@ -223,4 +223,4 @@ They only exist when `AUTH_BOOTSTRAP_DEMO_DATA=true`. Do not enable demo bootstr
 
 ## License
 
-Apache-2.0 — see [LICENSE](./LICENSE). Each service submodule carries its own Apache-2.0 `LICENSE` so it stays licensed when used on its own.
+PolyForm Strict 1.0.0 — see [LICENSE](./LICENSE). This is a **source-available** license, not an OSI open-source one: the code is published for transparency, all rights are reserved by the licensor, and noncommercial use is the only permitted use. Each service submodule carries its own PolyForm Strict `LICENSE` so the terms travel with it when used on its own.

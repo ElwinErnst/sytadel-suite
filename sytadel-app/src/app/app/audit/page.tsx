@@ -69,25 +69,42 @@ export default async function AuditPage({ searchParams }: Props) {
 
   // Each source is fetched independently and degrades to empty on failure, so
   // one system being down never blanks the whole timeline.
-  const [vaultRes, memberships, policyVersions, authRes, ztRes, billingRes] =
-    await Promise.all([
-      vaultClient
-        .listAuditLogs(accessToken, { page: 1, limit: WINDOW })
-        .catch(() => null),
-      authClient
-        .listTenantMemberships(accessToken, session.tenant.id)
-        .catch(() => []),
-      ztPolicyClient
-        .listPolicyVersions(accessToken, session.tenant.id)
-        .catch(() => []),
-      authClient
-        .listAuthAuditEvents(accessToken, session.tenant.id, { limit: WINDOW })
-        .catch(() => null),
-      ztClient.listZtAuditEvents(accessToken, { limit: WINDOW }).catch(() => null),
-      billingClient
-        .listBillingAuditEvents(accessToken, { limit: WINDOW })
-        .catch(() => null),
-    ]);
+  const [
+    vaultRes,
+    memberships,
+    policyVersions,
+    authRes,
+    ztRes,
+    billingRes,
+    authChain,
+    billingChain,
+  ] = await Promise.all([
+    vaultClient
+      .listAuditLogs(accessToken, { page: 1, limit: WINDOW })
+      .catch(() => null),
+    authClient
+      .listTenantMemberships(accessToken, session.tenant.id)
+      .catch(() => []),
+    ztPolicyClient
+      .listPolicyVersions(accessToken, session.tenant.id)
+      .catch(() => []),
+    authClient
+      .listAuthAuditEvents(accessToken, session.tenant.id, { limit: WINDOW })
+      .catch(() => null),
+    ztClient.listZtAuditEvents(accessToken, { limit: WINDOW }).catch(() => null),
+    billingClient
+      .listBillingAuditEvents(accessToken, { limit: WINDOW })
+      .catch(() => null),
+    authClient.verifyAuthChain(accessToken, session.tenant.id).catch(() => null),
+    billingClient.verifyBillingChain(accessToken).catch(() => null),
+  ]);
+
+  // Systems whose audit store is cryptographically chained. Each reports
+  // VALID / BROKEN / EMPTY; a null means the check itself was unreachable.
+  const integrity = [
+    { label: 'Auth', result: authChain },
+    { label: 'Billing', result: billingChain },
+  ];
 
   const userMap = new Map(
     memberships.map((membership) => [membership.userId, membership.user]),
@@ -112,6 +129,62 @@ export default async function AuditPage({ searchParams }: Props) {
       >
         <span className="badge">{timeline.length} eventos recientes</span>
       </PageHeader>
+
+      <section className="panel">
+        <h3>Integridad de la cadena</h3>
+        <p className="section-copy">
+          Los registros de estos sistemas forman una cadena de hashes firmada —
+          cualquier edición o borrado se detecta.
+        </p>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 12,
+            marginTop: 12,
+          }}
+        >
+          {integrity.map(({ label, result }) => {
+            const status = result?.status ?? 'UNAVAILABLE';
+            const isValid = status === 'VALID';
+            const isBroken = status === 'BROKEN';
+            const text = isValid
+              ? `verificado · ${result?.checked ?? 0} eventos`
+              : isBroken
+                ? `cadena rota en seq ${result?.firstBreak?.seq ?? '?'}`
+                : status === 'EMPTY'
+                  ? 'sin eventos'
+                  : 'no disponible';
+            return (
+              <div
+                key={label}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 12px',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 10,
+                }}
+              >
+                <strong>{label}</strong>
+                <span
+                  className={
+                    isValid
+                      ? 'status-badge'
+                      : isBroken
+                        ? 'badge badge-danger'
+                        : 'badge'
+                  }
+                >
+                  {isValid ? '✓ ' : isBroken ? '⚠ ' : ''}
+                  {text}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       <section className="panel">
         <div className="inline-actions">
