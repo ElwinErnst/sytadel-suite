@@ -9,12 +9,13 @@ const NAV_ITEMS = [
   { href: '/app/vaults', label: 'Vaults' },
   { href: '/app/documents', label: 'Documentos' },
   { href: '/app/audit', label: 'Auditoría' },
+  { href: '/app/zero-trust', label: 'Zero Trust' },
+  { href: '/app/applications', label: 'Aplicaciones' },
   { href: '/app/billing', label: 'Facturación' },
   { href: '/app/settings', label: 'Configuración' },
 ];
 
 const ROADMAP_ITEMS = [
-  { label: 'Zero Trust' },
   { label: 'Notary' },
 ];
 

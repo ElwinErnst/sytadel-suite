@@ -1,13 +1,36 @@
 import { getCapabilities } from '@/lib/server/capabilities';
 import { PageHeader } from '@/components/page-header';
-import { getServerAccessTokenOrRedirect, requireOperationalSession } from '@/lib/server/session';
+import {
+  getServerAccessTokenOrRedirect,
+  requireOperationalSession,
+} from '@/lib/server/session';
 import * as authClient from '@/lib/server/auth-client';
+import * as billingClient from '@/lib/server/billing-client';
 import * as vaultClient from '@/lib/server/vault-client';
+import * as ztClient from '@/lib/server/zt-client';
+import * as ztPolicyClient from '@/lib/server/zt-policy-client';
+import {
+  fromAuditEvent,
+  fromPolicyVersion,
+  fromVaultLog,
+  mergeTimeline,
+  type VaultAuditLogItem,
+} from '@/lib/ui/audit-timeline';
 import { formatDate, formatName } from '@/lib/ui/format';
 
 type Props = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
+
+const WINDOW = 50;
+
+const SYSTEM_TABS: Array<{ value: string; label: string }> = [
+  { value: '', label: 'Todos' },
+  { value: 'vault', label: 'Vault' },
+  { value: 'auth', label: 'Auth' },
+  { value: 'zerotrust', label: 'Zero Trust' },
+  { value: 'billing', label: 'Billing' },
+];
 
 function readString(
   params: Record<string, string | string[] | undefined>,
@@ -16,26 +39,11 @@ function readString(
   return typeof params[key] === 'string' ? (params[key] as string) : '';
 }
 
-function readNumber(
-  params: Record<string, string | string[] | undefined>,
-  key: string,
-  fallback: number,
-) {
-  const raw = typeof params[key] === 'string' ? Number(params[key]) : NaN;
-  return Number.isFinite(raw) && raw > 0 ? raw : fallback;
-}
-
 export default async function AuditPage({ searchParams }: Props) {
   const session = await requireOperationalSession();
   const accessToken = await getServerAccessTokenOrRedirect();
   const params = (await searchParams) ?? {};
-  const page = readNumber(params, 'page', 1);
-  const limit = readNumber(params, 'limit', 20);
-  const action = readString(params, 'action');
-  const resourceType = readString(params, 'resourceType');
-  const outcome = readString(params, 'outcome');
-  const from = readString(params, 'from');
-  const to = readString(params, 'to');
+  const systemFilter = readString(params, 'system');
   const capabilities = getCapabilities(session);
 
   if (!capabilities.canManageMembersByRole) {
@@ -43,14 +51,15 @@ export default async function AuditPage({ searchParams }: Props) {
       <div className="page-shell">
         <PageHeader
           eyebrow="Audit / Trazabilidad"
-          title="Log auditable del tenant"
+          title="Auditoría del tenant"
           description="La lectura del log está disponible para perfiles con permisos de administración."
         />
         <div className="upgrade-banner">
           <div>
             <strong>Tu rol actual no puede consultar audit logs.</strong>
             <p className="muted">
-              Ingresá como ADMIN u OWNER para usar los filtros y revisar la cadena de eventos.
+              Ingresá como ADMIN u OWNER para revisar la trazabilidad del
+              tenant.
             </p>
           </div>
         </div>
@@ -58,216 +67,212 @@ export default async function AuditPage({ searchParams }: Props) {
     );
   }
 
-  const [audit, memberships] = await Promise.all([
-    vaultClient.listAuditLogs(accessToken, {
-      page,
-      limit,
-      action: action || undefined,
-      resourceType: resourceType || undefined,
-      outcome: outcome === 'SUCCESS' || outcome === 'FAILURE' ? outcome : undefined,
-      from: from || undefined,
-      to: to || undefined,
-    }),
-    authClient.listTenantMemberships(accessToken, session.tenant.id),
+  // Each source is fetched independently and degrades to empty on failure, so
+  // one system being down never blanks the whole timeline.
+  const [
+    vaultRes,
+    memberships,
+    policyVersions,
+    authRes,
+    ztRes,
+    billingRes,
+    authChain,
+    billingChain,
+  ] = await Promise.all([
+    vaultClient
+      .listAuditLogs(accessToken, { page: 1, limit: WINDOW })
+      .catch(() => null),
+    authClient
+      .listTenantMemberships(accessToken, session.tenant.id)
+      .catch(() => []),
+    ztPolicyClient
+      .listPolicyVersions(accessToken, session.tenant.id)
+      .catch(() => []),
+    authClient
+      .listAuthAuditEvents(accessToken, session.tenant.id, { limit: WINDOW })
+      .catch(() => null),
+    ztClient.listZtAuditEvents(accessToken, { limit: WINDOW }).catch(() => null),
+    billingClient
+      .listBillingAuditEvents(accessToken, { limit: WINDOW })
+      .catch(() => null),
+    authClient.verifyAuthChain(accessToken, session.tenant.id).catch(() => null),
+    billingClient.verifyBillingChain(accessToken).catch(() => null),
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(audit.total / audit.limit));
-  const canGoPrev = audit.page > 1;
-  const canGoNext = audit.page < totalPages;
+  // Systems whose audit store is cryptographically chained. Each reports
+  // VALID / BROKEN / EMPTY; a null means the check itself was unreachable.
+  const integrity = [
+    { label: 'Auth', result: authChain },
+    { label: 'Billing', result: billingChain },
+  ];
+
   const userMap = new Map(
     memberships.map((membership) => [membership.userId, membership.user]),
   );
 
+  const timeline = mergeTimeline([
+    (vaultRes?.items ?? []).map((item) =>
+      fromVaultLog(item as unknown as VaultAuditLogItem),
+    ),
+    (authRes?.items ?? []).map(fromAuditEvent),
+    (ztRes?.items ?? []).map(fromAuditEvent),
+    (billingRes?.items ?? []).map(fromAuditEvent),
+    policyVersions.map(fromPolicyVersion),
+  ]).filter((event) => !systemFilter || event.system === systemFilter);
+
   return (
     <div className="page-shell">
-        <PageHeader
-          eyebrow="Audit / Trazabilidad"
-          title="Log auditable del tenant"
-          description="Consultá eventos operativos, filtrá por acción y seguí la trazabilidad del tenant con más contexto."
+      <PageHeader
+        eyebrow="Audit / Trazabilidad"
+        title="Auditoría del tenant"
+        description="La trazabilidad de tus sistemas en una sola línea de tiempo: accesos a documentos (Vault), decisiones y cambios de política (Zero Trust) y accesos de identidad (Auth)."
       >
-        <div className="stack-sm">
-          <span className="badge">{audit.total} eventos</span>
-          <span className="badge">
-            Pagina {audit.page} / {totalPages}
-          </span>
-        </div>
+        <span className="badge">{timeline.length} eventos recientes</span>
       </PageHeader>
 
       <section className="panel">
-        <div className="panel-head">
-          <h2 className="panel-title">Filtros</h2>
+        <h3>Integridad de la cadena</h3>
+        <p className="section-copy">
+          Los registros de estos sistemas forman una cadena de hashes firmada —
+          cualquier edición o borrado se detecta.
+        </p>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 12,
+            marginTop: 12,
+          }}
+        >
+          {integrity.map(({ label, result }) => {
+            const status = result?.status ?? 'UNAVAILABLE';
+            const isValid = status === 'VALID';
+            const isBroken = status === 'BROKEN';
+            const text = isValid
+              ? `verificado · ${result?.checked ?? 0} eventos`
+              : isBroken
+                ? `cadena rota en seq ${result?.firstBreak?.seq ?? '?'}`
+                : status === 'EMPTY'
+                  ? 'sin eventos'
+                  : 'no disponible';
+            return (
+              <div
+                key={label}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 12px',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 10,
+                }}
+              >
+                <strong>{label}</strong>
+                <span
+                  className={
+                    isValid
+                      ? 'status-badge'
+                      : isBroken
+                        ? 'badge badge-danger'
+                        : 'badge'
+                  }
+                >
+                  {isValid ? '✓ ' : isBroken ? '⚠ ' : ''}
+                  {text}
+                </span>
+              </div>
+            );
+          })}
         </div>
+      </section>
 
-        <form action="/app/audit" className="stack" method="get">
-          <div className="grid-4">
-            <div className="field">
-              <label htmlFor="action">Acción</label>
-              <input
-                className="input"
-                defaultValue={action}
-                id="action"
-                name="action"
-                placeholder="DOCUMENT_UPLOAD"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="resourceType">Tipo de recurso</label>
-              <input
-                className="input"
-                defaultValue={resourceType}
-                id="resourceType"
-                name="resourceType"
-                placeholder="document"
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="outcome">Resultado</label>
-              <select className="select" defaultValue={outcome} id="outcome" name="outcome">
-                <option value="">Todos</option>
-                <option value="SUCCESS">SUCCESS</option>
-                <option value="FAILURE">FAILURE</option>
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="limit">Eventos por página</label>
-              <select className="select" defaultValue={String(limit)} id="limit" name="limit">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid-2">
-            <div className="field">
-              <label htmlFor="from">Desde</label>
-              <input className="input" defaultValue={from} id="from" name="from" type="datetime-local" />
-            </div>
-            <div className="field">
-              <label htmlFor="to">Hasta</label>
-              <input className="input" defaultValue={to} id="to" name="to" type="datetime-local" />
-            </div>
-          </div>
-
-          <div className="inline-actions">
-            <button className="button" type="submit">
-              Aplicar filtros
-            </button>
-            <a className="button-secondary" href="/app/audit">
-              Limpiar
-            </a>
-          </div>
-        </form>
+      <section className="panel">
+        <div className="inline-actions">
+          {SYSTEM_TABS.map((tab) => {
+            const href = tab.value
+              ? `/app/audit?system=${tab.value}`
+              : '/app/audit';
+            const active = systemFilter === tab.value;
+            return (
+              <a
+                key={tab.value || 'all'}
+                className={active ? 'button' : 'button-secondary'}
+                href={href}
+              >
+                {tab.label}
+              </a>
+            );
+          })}
+        </div>
       </section>
 
       <section className="table-shell">
-        <div className="panel-head" style={{ padding: '18px 18px 0' }}>
-          <h2 className="panel-title">Eventos recientes</h2>
-        </div>
         <table>
           <thead>
             <tr>
               <th>Fecha</th>
+              <th>Sistema</th>
+              <th>Categoría</th>
               <th>Acción</th>
-              <th>Recurso</th>
-              <th>Usuario</th>
-              <th>HTTP</th>
+              <th>Actor</th>
               <th>Resultado</th>
-              <th>Seq</th>
             </tr>
           </thead>
           <tbody>
-            {audit.items.length ? (
-              audit.items.map((item) => {
-                const user = item.userId ? userMap.get(item.userId) : undefined;
+            {timeline.length ? (
+              timeline.map((event) => {
+                const actor = event.actorId
+                  ? userMap.get(event.actorId)
+                  : undefined;
+                const positive =
+                  event.outcome === 'success' || event.outcome === 'allow';
 
                 return (
-                  <tr key={item.id}>
-                    <td>{formatDate(item.createdAt)}</td>
+                  <tr key={event.key}>
+                    <td>{formatDate(event.occurredAt)}</td>
+                    <td>
+                      <span className="badge">{event.system}</span>
+                    </td>
+                    <td>
+                      <span className="muted">{event.category}</span>
+                    </td>
                     <td>
                       <div className="stack-xs">
-                        <strong>{item.action}</strong>
-                        <span className="muted">{item.httpPath}</span>
+                        <strong>{event.action}</strong>
+                        {event.detail ? (
+                          <span className="muted">{event.detail}</span>
+                        ) : null}
                       </div>
                     </td>
                     <td>
                       <div className="stack-xs">
-                        <strong>{item.resourceType}</strong>
-                        <span className="muted">{item.resourceId ?? 'Sin resourceId'}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="stack-xs">
-                        <strong>{formatName(user ?? {})}</strong>
-                        <span className="muted">{user?.email ?? item.userId ?? 'Sistema'}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="stack-xs">
-                        <strong>{item.httpMethod}</strong>
-                        <span className="muted">{item.httpStatus}</span>
+                        <strong>{formatName(actor ?? {})}</strong>
+                        <span className="muted">
+                          {actor?.email ?? event.actorId ?? 'Sistema'}
+                        </span>
                       </div>
                     </td>
                     <td>
                       <span
-                        className={item.outcome === 'SUCCESS' ? 'status-badge' : 'badge badge-danger'}
+                        className={
+                          positive ? 'status-badge' : 'badge badge-danger'
+                        }
                       >
-                        {item.outcome}
+                        {event.outcome}
                       </span>
                     </td>
-                    <td>{item.seq}</td>
                   </tr>
                 );
               })
             ) : (
               <tr>
-                <td colSpan={7}>No hay eventos para los filtros seleccionados.</td>
+                <td colSpan={6}>
+                  No hay eventos recientes para el filtro seleccionado.
+                </td>
               </tr>
             )}
           </tbody>
         </table>
-      </section>
-
-      <section className="pagination-row">
-        <a
-          className={canGoPrev ? 'button-secondary' : 'button-secondary button-disabled'}
-          href={
-            canGoPrev
-              ? `/app/audit?${new URLSearchParams({
-                  ...(action ? { action } : {}),
-                  ...(resourceType ? { resourceType } : {}),
-                  ...(outcome ? { outcome } : {}),
-                  ...(from ? { from } : {}),
-                  ...(to ? { to } : {}),
-                  limit: String(limit),
-                  page: String(page - 1),
-                }).toString()}`
-              : '#'
-          }
-        >
-          Anterior
-        </a>
-        <span className="muted">
-          Mostrando {audit.items.length} de {audit.total}
-        </span>
-        <a
-          className={canGoNext ? 'button-secondary' : 'button-secondary button-disabled'}
-          href={
-            canGoNext
-              ? `/app/audit?${new URLSearchParams({
-                  ...(action ? { action } : {}),
-                  ...(resourceType ? { resourceType } : {}),
-                  ...(outcome ? { outcome } : {}),
-                  ...(from ? { from } : {}),
-                  ...(to ? { to } : {}),
-                  limit: String(limit),
-                  page: String(page + 1),
-                }).toString()}`
-              : '#'
-          }
-        >
-          Siguiente
-        </a>
       </section>
     </div>
   );

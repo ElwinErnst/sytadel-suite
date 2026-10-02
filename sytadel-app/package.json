@@ -23,5 +23,6 @@
     "eslint-config-next": "^16.2.1",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
-  }
+  },
+  "license": "PolyForm-Strict-1.0.0"
 }

@@ -8,6 +8,12 @@
 # secret MUST be provided (via a root .env or the environment), or
 # `docker compose config` fails before anything starts.
 #
+# Requiring a secret in any service block gates the entire stack — if it is
+# unset, the whole `docker compose config` errors out. auth-api covers the six
+# shared JWT/internal secrets; the db services and their apis additionally
+# require the per-service database passwords, and vault-api/zerotrust-api the
+# vault master key and the gateway->Vault HMAC secret.
+#
 # See env.production.example for the full list and how to generate values.
 services:
   # --- Shared app secrets. auth-api references all six, so gating them here
@@ -41,26 +47,15 @@ services:
       POSTGRES_PASSWORD: ${VAULT_DB_PASSWORD:?set VAULT_DB_PASSWORD in .env for production}
       APP_DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:?set VAULT_APP_DB_PASSWORD in .env for production}
 
-  # --- Vault: app DB password, MinIO credentials, the shared ZT v1 HMAC secret,
-  #     and the envelope-encryption master key (KEK). ---
+  # --- Vault: app DB password, the shared ZT v1 HMAC secret, and the
+  #     envelope-encryption master key (KEK). Object storage runs on adobe/s3mock
+  #     (no credentials); wire real S3/MinIO creds here when swapping the backend. ---
   vault-api:
     environment:
       DB_PASSWORD: ${VAULT_APP_DB_PASSWORD:?set VAULT_APP_DB_PASSWORD in .env for production}
-      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env for production}
-      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env for production}
       ZT_HMAC_SECRET: ${ZT_HMAC_SECRET:?set ZT_HMAC_SECRET in .env for production}
-      MASTER_KEY_B64: ${MASTER_KEY_B64:?set MASTER_KEY_B64 (vault KEK) in .env for production}
-
-  # --- MinIO object storage root credentials. ---
-  minio:
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env for production}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env for production}
-
-  minio-init:
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env for production}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env for production}
+      # 32-byte key, base64-encoded. Encrypts every tenant DEK at rest.
+      MASTER_KEY_B64: ${VAULT_MASTER_KEY_B64:?set VAULT_MASTER_KEY_B64 (base64 of 32 random bytes) in .env for production}
 
   # --- Gateway: must share the same ZT v1 HMAC secret as vault-api. ---
   zerotrust-api:
