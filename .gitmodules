@@ -13,3 +13,6 @@
 [submodule "mcp-server"]
 	path = mcp-server
 	url = https://github.com/ElwinErnst/sytadel-mcp-server.git
+[submodule "sytadel-growth-os"]
+	path = sytadel-growth-os
+	url = https://github.com/ElwinErnst/sytadel-growth-os.git
