@@ -90,6 +90,7 @@ Separating organization ownership, security tenants, platform subscriptions, and
 
 - 2026-10-02: Requirements explored against Auth API, Billing API, and Sytadel App. Feature-branch-chain selected by the user.
 - 2026-10-02: Implemented SCP-001 in `auth/auth-api` on `codex/saas-control-plane`. The Auth API is a nested Git repository, so implementation and parent evidence are separate commits; the parent commit records the Auth API gitlink and this task document.
+- 2026-10-02: Applied the single review correction for `R3-tenant-authorization`: linking now requires the actor to be an active OWNER/ADMIN in both the receiving organization and target tenant. Added rejection coverage for an organization admin without target-tenant authority; the authorized owner path remains covered.
 
 ## Verification evidence
 
@@ -98,6 +99,7 @@ Separating organization ownership, security tenants, platform subscriptions, and
 - `git diff --check` — PASS; staged Auth API files contained no whitespace errors.
 - Structural check — PASS: the Auth API commit contains only Auth API files; the parent evidence commit stages only this task document and the `auth/auth-api` gitlink. `sytadel-growth-os` was not staged or modified by this task.
 - Auth implementation commit: `7c4a639670712ecd3ceefa7d85547361f4a09f09` (`feat(auth): add organization billing foundation`), 752 authored lines.
+- Review correction commit: `f32046126de71a11d5e40f277e8926d189f5edc0` (`fix(auth): require tenant authority before organization linking`), 41 authored lines. `cd auth/auth-api && npm test` — PASS: 9 suites, 51 tests. `cd auth/auth-api && npm run build` — PASS (`nest build`). `git diff --check` — PASS.
 - Rollback boundary: revert the Auth API implementation commit and parent evidence commit; this removes the organization/billing-account schema and API without changing tenant membership semantics or existing tenant endpoints. Existing tenant data remains untouched.
 
 ## Next step
