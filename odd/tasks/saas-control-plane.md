@@ -141,4 +141,4 @@ Separating organization ownership, security tenants, platform subscriptions, and
 
 ## Next step
 
-Proceed with SCP-005: implement idempotent SaaS provisioning APIs. SCP-004's RDD assessment/review remains parent-owned and pending.
+Proceed with SCP-005: implement idempotent SaaS provisioning APIs. SCP-004's final native review is complete and acknowledged; future review remains parent-owned.
