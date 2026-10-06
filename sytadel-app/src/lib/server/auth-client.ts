@@ -5,6 +5,8 @@ import type {
   ClientAppRecord,
   CreatedServiceAccountRecord,
   MembershipRecord,
+  OrganizationMembershipRecord,
+  OrganizationTenantRecord,
   SessionUser,
   ServiceAccountRecord,
   TenantEntitlements,
@@ -114,6 +116,23 @@ export async function listUserMemberships(accessToken: string, userId: string) {
       method: 'GET',
       token: accessToken,
     },
+  );
+}
+
+export async function listOrganizations(accessToken: string) {
+  return requestJson<OrganizationMembershipRecord[]>(
+    `${env.authApiUrl}/organizations`,
+    { method: 'GET', token: accessToken },
+  );
+}
+
+export async function listOrganizationTenants(
+  accessToken: string,
+  organizationId: string,
+) {
+  return requestJson<OrganizationTenantRecord[]>(
+    `${env.authApiUrl}/organizations/${organizationId}/tenants`,
+    { method: 'GET', token: accessToken },
   );
 }
 
