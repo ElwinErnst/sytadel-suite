@@ -1,22 +1,35 @@
 import { PageHeader } from '@/components/page-header';
 import * as authClient from '@/lib/server/auth-client';
+import { ApiError } from '@/lib/server/http';
 import { requireSession, withSessionToken } from '@/lib/server/session';
+
+function isAuthorizationFailure(error: unknown) {
+  return error instanceof ApiError && (error.status === 401 || error.status === 403);
+}
 
 export default async function OrganizationsPage() {
   await requireSession();
 
   const organizations = await withSessionToken(async (token) => {
     const memberships = await authClient.listOrganizations(token);
-    const tenantLists = await Promise.all(
+    const tenantListResults = await Promise.allSettled(
       memberships.map((membership) =>
         authClient.listOrganizationTenants(token, membership.organizationId),
       ),
     );
 
-    return memberships.map((membership, index) => ({
-      ...membership,
-      tenants: tenantLists[index],
-    }));
+    return memberships.map((membership, index) => {
+      const result = tenantListResults[index];
+      if (result.status === 'fulfilled') {
+        return { ...membership, tenants: result.value, tenantsUnavailable: false };
+      }
+
+      if (isAuthorizationFailure(result.reason)) {
+        throw result.reason;
+      }
+
+      return { ...membership, tenants: [], tenantsUnavailable: true };
+    });
   });
 
   return (
@@ -45,6 +58,17 @@ export default async function OrganizationsPage() {
                 </div>
                 <span className="status-badge">{membership.role}</span>
               </div>
+
+              {membership.tenantsUnavailable ? (
+                <div className="empty-card">
+                  <p className="muted" role="status">
+                    No se pudieron cargar los tenants de esta organización. Tu sesión sigue activa; podés volver a intentar.
+                  </p>
+                  <a className="button-secondary" href="/app/organizations">
+                    Reintentar carga
+                  </a>
+                </div>
+              ) : null}
 
               <div className="table-shell">
                 <table>
