@@ -123,6 +123,23 @@ Separating organization ownership, security tenants, platform subscriptions, and
     - [x] Add complete-fixture page tests for organization/tenant associations, empty states, status labels, and partial failure.
   - Work-unit commit: `03b8dd0` (`fix(app): isolate organization tenant loading failures`), 220 authored changed lines (215 additions, 5 deletions). Rollback: revert this commit to restore the previous all-or-nothing page loading and remove only its tests; no Auth/Billing or direct-tenant behavior changes.
 
+- [x] **SCP-006-FU2 — Correct policy editor dirty-state model**
+  - Root cause: `PolicyEditor` read `publishedSnapshot.current` during render to derive `hasUnsavedChanges`, violating React's refs rule and causing the repository-wide lint failure.
+  - Fix: store the published JSON baseline in React state, compare it to the current built draft during render, and update the baseline only after a successful publish. A failed publish leaves the baseline untouched; a remount/reload initializes the baseline from the supplied policy.
+  - Route: delegated direct; the bounded change was localized to one policy editor. Existing app test capabilities were inspected before deciding whether a component-level test was feasible.
+  - Effective TDD: off, from this task document; ordinary checks use `cd sytadel-app && npm test`, `npm run lint`, and `npm run build`.
+  - Authorized scope: `sytadel-app/src/features/zero-trust/policy-editor.tsx`, directly relevant existing tests if supported, and this canonical task document/Engram mirror only. `sytadel-growth-os` was not touched, staged, or committed.
+  - Acceptance: PASS — no render-time ref reads; edit dirty state is derived from React state and the current draft; only successful publication advances the baseline; failed publication retains unsaved status; reload/remount starts clean from `initialPolicy`; no lint suppression.
+  - Tests: no focused component test was added because the existing Vitest setup has no React DOM/component testing library or DOM environment; the existing tests cover server/API behavior only. Adding a new UI-testing dependency would exceed this localized bugfix. Existing suite remains green.
+  - Verification: `cd sytadel-app && npm test` — PASS (4 files, 16 tests); `cd sytadel-app && npm run lint` — PASS; `cd sytadel-app && npm run build` — PASS (Next.js production build; dynamic `/app/organizations` route retained); `git diff --check` — PASS; `git show --format= --check 0f6f457d6cc41bf7f9de5badb0dd3844508d6657` — PASS. React best-practices structural review — PASS: state is the source of truth for the published baseline, dirty status is derived during render, no ref reads/effect synchronization were introduced. Runtime/browser — N/A: the editor is behind the authenticated app and requires a practical local authenticated session/policy service, neither was available in this environment.
+  - Work-unit checklist:
+    - [x] Replace render-time ref baseline access with React state as the published policy baseline.
+    - [x] Verify edit/publish-failure/publish-success/remount semantics by state-flow inspection and run all available checks.
+  - Forecast: approximately 60 authored changed lines (advisory only); actual source commit contains 9 authored changed lines (4 additions, 5 deletions). Rollback boundary: revert `0f6f457d6cc41bf7f9de5badb0dd3844508d6657` to restore the previous dirty-state implementation; no policy API/schema or organization-page behavior changes.
+  - Commit: `0f6f457d6cc41bf7f9de5badb0dd3844508d6657` (`fix(app): track policy publication baseline in state`). RDD/native review was not started, per authorization; parent review remains unmanaged.
+
+- 2026-10-09: Completed SCP-006-FU2: replaced the policy editor's render-time `useRef` read with a state-owned published baseline. Successful publishes advance it, failed publishes do not, and remount/reload initializes cleanly. Commit `0f6f457` contains 9 authored changed lines; full app lint now passes.
+
 ## Progress
 
 - 2026-10-02: Requirements explored against Auth API, Billing API, and Sytadel App. Feature-branch-chain selected by the user.
@@ -194,4 +211,4 @@ Separating organization ownership, security tenants, platform subscriptions, and
 
 ## Next step
 
-SCP-006-FU1 is implemented and verified as new candidate `03b8dd0`; its corresponding fixes address the prior informational R3-001/R4-001 without reopening or altering approved SCP-006 lineage `review-cc4218ac056a6d69`. No native review was started for this follow-up. SCP-005's RDD assessment/review remains parent-owned and pending.
+SCP-006-FU1 (`03b8dd0`) and SCP-006-FU2 (`0f6f457`) are implemented and verified as separate new candidates. FU1 addresses informational R3-001/R4-001 without reopening approved SCP-006 lineage `review-cc4218ac056a6d69`; FU2 resolves the previously recorded policy-editor lint failure. No native review was started for these follow-ups. SCP-005's RDD assessment/review remains parent-owned and pending.
