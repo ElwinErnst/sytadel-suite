@@ -1,15 +1,15 @@
 :root {
-  --bg: #060511;
-  --bg-soft: #0d0a1d;
-  --bg-deep: #03030a;
-  --panel: rgba(15, 13, 32, 0.82);
-  --panel-strong: rgba(19, 16, 40, 0.94);
-  --text: #f6f7ff;
-  --muted: #b6b7d0;
+  --bg: #080c18;
+  --bg-soft: #0e1426;
+  --bg-deep: #05080f;
+  --panel: rgba(16, 22, 42, 0.82);
+  --panel-strong: rgba(20, 28, 52, 0.94);
+  --text: #eef2fb;
+  --muted: #93a0bd;
   --line: rgba(255, 255, 255, 0.08);
-  --violet: #8a4dff;
-  --blue: #1ea7ff;
-  --pink: #ff4fd8;
+  --violet: #4f7cff;
+  --blue: #38bdf8;
+  --pink: #6366f1;
   --max-width: 1180px;
   --shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
 }
@@ -29,10 +29,10 @@ body {
   color: var(--text);
   font-family: 'Geist Variable', 'Segoe UI', system-ui, sans-serif;
   background:
-    radial-gradient(circle at 10% 12%, rgba(138, 77, 255, 0.26), transparent 22%),
-    radial-gradient(circle at 88% 14%, rgba(30, 167, 255, 0.19), transparent 18%),
-    radial-gradient(circle at 78% 68%, rgba(255, 79, 216, 0.18), transparent 16%),
-    linear-gradient(180deg, #050510 0%, #0a0817 30%, #050510 64%, #03030a 100%);
+    radial-gradient(circle at 10% 12%, rgba(79, 124, 255, 0.26), transparent 22%),
+    radial-gradient(circle at 88% 14%, rgba(56, 189, 248, 0.19), transparent 18%),
+    radial-gradient(circle at 78% 68%, rgba(99, 102, 241, 0.18), transparent 16%),
+    linear-gradient(180deg, #070b16 0%, #0c1324 30%, #070b16 64%, #05080f 100%);
   background-attachment: fixed;
   overflow-x: hidden;
 }
@@ -63,13 +63,13 @@ a {
 .ambient-left {
   top: -8rem;
   left: -12rem;
-  background: radial-gradient(circle, rgba(138, 77, 255, 0.36), transparent 68%);
+  background: radial-gradient(circle, rgba(79, 124, 255, 0.36), transparent 68%);
 }
 
 .ambient-right {
   top: 10rem;
   right: -10rem;
-  background: radial-gradient(circle, rgba(255, 79, 216, 0.22), transparent 68%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.22), transparent 68%);
 }
 
 .topbar,
@@ -114,8 +114,8 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   background:
-    linear-gradient(90deg, rgba(138, 77, 255, 0.12), transparent 30%),
-    linear-gradient(90deg, transparent 55%, rgba(30, 167, 255, 0.08), rgba(255, 79, 216, 0.12));
+    linear-gradient(90deg, rgba(79, 124, 255, 0.12), transparent 30%),
+    linear-gradient(90deg, transparent 55%, rgba(56, 189, 248, 0.08), rgba(99, 102, 241, 0.12));
   backdrop-filter: blur(16px);
 }
 
@@ -144,7 +144,7 @@ a {
   text-transform: uppercase;
   font-weight: 800;
   color: white;
-  background: linear-gradient(135deg, rgba(138, 77, 255, 0.9), rgba(30, 167, 255, 0.7));
+  background: linear-gradient(135deg, rgba(79, 124, 255, 0.9), rgba(56, 189, 248, 0.7));
 }
 
 .launch-link {
@@ -171,7 +171,7 @@ a {
   border-radius: 14px;
   background: linear-gradient(135deg, var(--violet), var(--blue), var(--pink));
   color: white;
-  box-shadow: 0 0 26px rgba(138, 77, 255, 0.34);
+  box-shadow: 0 0 26px rgba(79, 124, 255, 0.34);
 }
 
 .brand-mark svg {
@@ -409,7 +409,7 @@ p {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background:
-    linear-gradient(135deg, rgba(138, 77, 255, 0.14), rgba(30, 167, 255, 0.08)),
+    linear-gradient(135deg, rgba(79, 124, 255, 0.14), rgba(56, 189, 248, 0.08)),
     rgba(255, 255, 255, 0.03);
   color: #f0ebff;
   font-size: 0.92rem;
@@ -453,7 +453,7 @@ p {
   color: white;
   box-shadow:
     0 14px 32px rgba(100, 60, 255, 0.28),
-    0 0 32px rgba(138, 77, 255, 0.18);
+    0 0 32px rgba(79, 124, 255, 0.18);
 }
 
 .button-secondary {
@@ -497,7 +497,7 @@ p {
   width: 120px;
   height: 120px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(138, 77, 255, 0.22), transparent 68%);
+  background: radial-gradient(circle, rgba(79, 124, 255, 0.22), transparent 68%);
 }
 
 .stat-card strong {
@@ -554,7 +554,7 @@ p {
   padding: 28px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
-    linear-gradient(140deg, rgba(138, 77, 255, 0.12), rgba(30, 167, 255, 0.05) 48%, rgba(255, 79, 216, 0.08));
+    linear-gradient(140deg, rgba(79, 124, 255, 0.12), rgba(56, 189, 248, 0.05) 48%, rgba(99, 102, 241, 0.08));
 }
 
 .signal {
@@ -569,7 +569,7 @@ p {
   height: 150px;
   top: 22px;
   right: 20px;
-  background: radial-gradient(circle, rgba(138, 77, 255, 0.9), transparent 65%);
+  background: radial-gradient(circle, rgba(79, 124, 255, 0.9), transparent 65%);
 }
 
 .signal-blue {
@@ -577,7 +577,7 @@ p {
   height: 180px;
   left: 24px;
   bottom: 26px;
-  background: radial-gradient(circle, rgba(30, 167, 255, 0.7), transparent 65%);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.7), transparent 65%);
 }
 
 .signal-pink {
@@ -585,7 +585,7 @@ p {
   height: 110px;
   right: 68px;
   bottom: 76px;
-  background: radial-gradient(circle, rgba(255, 79, 216, 0.76), transparent 65%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.76), transparent 65%);
 }
 
 .console-grid {
@@ -804,9 +804,9 @@ p {
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgba(138, 77, 255, 0.12),
-    rgba(30, 167, 255, 0.04) 45%,
-    rgba(255, 79, 216, 0.08)
+    rgba(79, 124, 255, 0.12),
+    rgba(56, 189, 248, 0.04) 45%,
+    rgba(99, 102, 241, 0.08)
   );
   opacity: 0.9;
   pointer-events: none;
@@ -848,7 +848,7 @@ p {
   height: 10px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--violet), var(--pink));
-  box-shadow: 0 0 16px rgba(255, 79, 216, 0.4);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
 }
 
 .bullet-list.compact {
@@ -962,7 +962,7 @@ p {
   border-color: rgba(255, 255, 255, 0.16);
   box-shadow:
     0 24px 80px rgba(0, 0, 0, 0.28),
-    0 0 0 1px rgba(138, 77, 255, 0.28);
+    0 0 0 1px rgba(79, 124, 255, 0.28);
 }
 
 .plan-badge {
@@ -975,7 +975,7 @@ p {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: white;
-  background: linear-gradient(135deg, rgba(138, 77, 255, 0.92), rgba(30, 167, 255, 0.78));
+  background: linear-gradient(135deg, rgba(79, 124, 255, 0.92), rgba(56, 189, 248, 0.78));
 }
 
 .plan-badge-secondary {
@@ -1217,7 +1217,7 @@ p {
   grid-row: span 2;
   min-height: 232px;
   background:
-    linear-gradient(160deg, rgba(138, 77, 255, 0.22), rgba(30, 167, 255, 0.08)),
+    linear-gradient(160deg, rgba(79, 124, 255, 0.22), rgba(56, 189, 248, 0.08)),
     rgba(255, 255, 255, 0.06);
 }
 
