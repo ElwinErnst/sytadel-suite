@@ -27,6 +27,13 @@ const topbarCtaLabels: Record<Locale, string> = {
 };
 
 const GITHUB_URL = 'https://github.com/ElwinErnst/sytadel-suite';
+const LICENSE_URL = 'https://github.com/ElwinErnst/sytadel-suite/blob/main/LICENSE';
+
+const licenseNotes: Record<Locale, string> = {
+  es: 'Código source-available bajo PolyForm Strict 1.0.0 · uso no comercial',
+  en: 'Source-available under PolyForm Strict 1.0.0 · noncommercial use',
+  pt: 'Código source-available sob PolyForm Strict 1.0.0 · uso não comercial',
+};
 
 const nav = getNav(lang);
 ---
@@ -134,6 +141,7 @@ const nav = getNav(lang);
       <div class="footer-links">
         <a href={getPagePath(lang, 'home')}>Sytadel Labs</a>
         <a href={GITHUB_URL} target="_blank" rel="noopener">GitHub</a>
+        <a href={LICENSE_URL} target="_blank" rel="noopener">{licenseNotes[lang]}</a>
       </div>
     </footer>
   </main>
