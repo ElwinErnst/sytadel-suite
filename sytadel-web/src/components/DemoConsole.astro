@@ -234,6 +234,34 @@ const { content, id = 'demo' } = Astro.props;
       },
     ],
     [
+      { t: 'user', text: 'Mostrame qué pasó con este usuario en los últimos 10 minutos.' },
+      { t: 'think' },
+      {
+        t: 'tool',
+        name: 'query_audit_timeline',
+        result:
+          '{\n  "subject": "priya.admin@…",\n  "window": "10m",\n  "events": [\n    { "ts": "10:02:11", "system": "auth",      "event": "login", "geo": "AR→DE (país nuevo)" },\n    { "ts": "10:02:40", "system": "zerotrust", "event": "policy_eval", "decision": "deny", "path": "/vaults/export" },\n    { "ts": "10:03:05", "system": "vault",     "event": "document.read", "docId": "inv-2026-08" },\n    { "ts": "10:04:22", "system": "billing",   "event": "plan.limit_hit", "metric": "api_calls" }\n  ],\n  "correlated": true\n}',
+      },
+      {
+        t: 'reply',
+        text: 'Correlacioné los cuatro sistemas en una sola línea de tiempo: login desde un país nuevo, un export bloqueado por Zero Trust, una lectura en Vault y un límite de plan en Billing. Todo desde la misma consola, sin cruzar logs a mano.',
+      },
+    ],
+    [
+      { t: 'user', text: 'El agente quiere subir a ADMIN a este usuario. ¿Procede?' },
+      { t: 'think' },
+      {
+        t: 'tool',
+        name: 'propose_agent_action',
+        result:
+          '{\n  "action": "membership.update",\n  "from": "MEMBER", "to": "ADMIN",\n  "subject": "diego.ops@…",\n  "agentRecommendation": "deny",\n  "confidence": 0.71,\n  "status": "approval_required",\n  "audit": "append-only · agent_action#4821 registrado"\n}',
+      },
+      {
+        t: 'reply',
+        text: 'El agente propone, no ejecuta: la acción quedó en approval_required y registrada en el audit append-only. Recomienda denegar (confianza 0.71) porque no hay un cambio previo que lo justifique. El humano decide — así gobernamos también a nuestros propios agentes.',
+      },
+    ],
+    [
       { t: 'user', text: 'Verificá que este documento no fue alterado.' },
       { t: 'think' },
       {
