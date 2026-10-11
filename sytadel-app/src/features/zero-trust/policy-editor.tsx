@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { publishPolicyAction } from './actions';
 import {
   MAX_POLICY_RULES,
@@ -116,7 +116,7 @@ export function PolicyEditor({ initialPolicy, canEdit }: Props) {
   // Snapshot of what is currently published, to detect unsaved changes. Built
   // through the same draft pipeline as buildPolicySet so key ordering matches
   // and an unedited policy never reads as "unsaved".
-  const publishedSnapshot = useRef(
+  const [publishedSnapshot, setPublishedSnapshot] = useState(
     JSON.stringify({
       version: 1,
       rules: initialPolicy.rules.map(toDraft).map(fromDraft),
@@ -194,13 +194,12 @@ export function PolicyEditor({ initialPolicy, canEdit }: Props) {
         setError(result.error);
         return;
       }
-      publishedSnapshot.current = JSON.stringify(policySet);
+      setPublishedSnapshot(JSON.stringify(policySet));
       setMessage(`Política publicada como versión ${result.version}.`);
     });
   }
 
-  const hasUnsavedChanges =
-    publishedSnapshot.current !== JSON.stringify(buildPolicySet());
+  const hasUnsavedChanges = publishedSnapshot !== JSON.stringify(buildPolicySet());
 
   const chipStyle = (active: boolean): React.CSSProperties => ({
     cursor: canEdit ? 'pointer' : 'default',

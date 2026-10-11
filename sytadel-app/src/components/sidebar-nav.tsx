@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 const NAV_ITEMS = [
   { href: '/app', label: 'Resumen' },
   { href: '/app/access', label: 'Equipo y acceso' },
+  { href: '/app/organizations', label: 'Organizaciones' },
   { href: '/app/vaults', label: 'Vaults' },
   { href: '/app/documents', label: 'Documentos' },
   { href: '/app/audit', label: 'Auditoría' },

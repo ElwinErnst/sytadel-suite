@@ -104,6 +104,36 @@ export type MembershipRecord = {
   };
 };
 
+export type OrganizationRole = 'OWNER' | 'ADMIN';
+
+export type OrganizationMembershipRecord = {
+  id: string;
+  organizationId: string;
+  userId: string;
+  role: OrganizationRole;
+  isActive: boolean;
+  createdAt?: string;
+  organization: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+};
+
+export type OrganizationTenantRecord = {
+  id: string;
+  organizationId: string;
+  tenantId: string;
+  createdAt?: string;
+  tenant: {
+    id: string;
+    name: string;
+    slug: string;
+    isActive: boolean;
+    planCode?: string | null;
+  };
+};
+
 export type ClientAppRecord = {
   id: string;
   tenantId: string;
