@@ -15,6 +15,9 @@ Es la **consola operativa** de la suite: la UI que un operador usa para manejar 
 - gestión básica de memberships por tenant
 - gestión de vaults
 - upload, download y delete de documentos vía `zerotrust-api`
+- vista de organizaciones y tenants gestionados
+
+Para integrar un backend SaaS con el flujo seguro de organizaciones y provisioning, consultá la [SaaS Control Plane Integration Guide](../docs/saas-control-plane-integration.md). El provisioning de organizaciones se ejecuta desde el backend confiable; la consola nunca maneja secretos de service accounts.
 
 ## Variables esperadas
 
