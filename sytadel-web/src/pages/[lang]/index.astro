@@ -16,6 +16,7 @@ const ids: Record<Locale, Record<string, string>> = {
     product: 'producto',
     integrations: 'apis',
     modules: 'modulos',
+    growthOs: 'growthos',
     flow: 'flujo',
     security: 'seguridad',
     pricing: 'precios',
@@ -26,6 +27,7 @@ const ids: Record<Locale, Record<string, string>> = {
     product: 'product',
     integrations: 'apis',
     modules: 'modules',
+    growthOs: 'growthos',
     flow: 'flow',
     security: 'security',
     pricing: 'pricing',
@@ -36,6 +38,7 @@ const ids: Record<Locale, Record<string, string>> = {
     product: 'produto',
     integrations: 'apis',
     modules: 'modulos',
+    growthOs: 'growthos',
     flow: 'fluxo',
     security: 'seguranca',
     pricing: 'precos',
@@ -49,6 +52,7 @@ const sectionKickers: Record<
     | 'platform'
     | 'integrations'
     | 'modules'
+    | 'growthOs'
     | 'flow'
     | 'useCases'
     | 'security'
@@ -67,6 +71,7 @@ const sectionKickers: Record<
     platform: 'Producto',
     integrations: 'APIs e integraciones',
     modules: 'Módulos',
+    growthOs: 'Prueba viva',
     flow: 'Flujo',
     useCases: 'Industrias',
     security: 'Seguridad',
@@ -84,6 +89,7 @@ const sectionKickers: Record<
     platform: 'Product',
     integrations: 'APIs & integrations',
     modules: 'Modules',
+    growthOs: 'Customer-zero',
     flow: 'Flow',
     useCases: 'Industries',
     security: 'Security',
@@ -101,6 +107,7 @@ const sectionKickers: Record<
     platform: 'Produto',
     integrations: 'APIs e integrações',
     modules: 'Módulos',
+    growthOs: 'Prova viva',
     flow: 'Fluxo',
     useCases: 'Setores',
     security: 'Segurança',
@@ -296,6 +303,23 @@ const contactHref = `mailto:${contactEmail}?subject=${encodeURIComponent(contact
 
     <div class="card-grid">
       {page.modules.cards.map((card) => (
+        <article class="feature-card">
+          <h3>{card.title}</h3>
+          <p>{card.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="content-section" id={ids.growthOs}>
+    <div class="section-intro">
+      <p class="section-kicker">{sectionKickers.growthOs}</p>
+      <h2>{page.growthOs.title}</h2>
+      <p>{page.growthOs.description}</p>
+    </div>
+
+    <div class="card-grid card-grid-three">
+      {page.growthOs.cards.map((card) => (
         <article class="feature-card">
           <h3>{card.title}</h3>
           <p>{card.description}</p>

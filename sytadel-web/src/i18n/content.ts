@@ -54,6 +54,11 @@ type PageCopy = {
     description: string;
     cards: SectionCard[];
   };
+  growthOs: {
+    title: string;
+    description: string;
+    cards: SectionCard[];
+  };
   useCases: {
     title: string;
     description: string;
@@ -131,6 +136,7 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'Producto', href: '#producto' },
       { label: 'APIs', href: '#apis' },
       { label: 'Módulos', href: '#modulos' },
+      { label: 'GrowthOS', href: '#growthos' },
       { label: 'Seguridad', href: '#seguridad' },
     ],
     hero: {
@@ -249,6 +255,33 @@ export const copy: Record<Locale, PageCopy> = {
           title: 'Sytadel MCP',
           description:
             'Un servidor MCP que expone estas capacidades como tools, para que Claude opere tu seguridad desde el mismo chat.',
+        },
+        {
+          title: 'Sytadel Console',
+          description:
+            'Un plano de control federado: identidad, políticas y acceso desde una sola consola, con un timeline de auditoría unificado que reúne la evidencia de Auth, ZeroTrust, Vault y Billing en una línea de tiempo verificable.',
+        },
+      ],
+    },
+    growthOs: {
+      title: 'Lo usamos con nuestra propia operación',
+      description:
+        'GrowthOS es el motor de crecimiento interno de Sytadel Labs: nuestro customer-zero. Gobernamos nuestra propia investigación de mercado con la misma dirección de control-plane que Sytadel ofrece a otros equipos. No es un producto a la venta — es la prueba viva de que la plataforma sostiene una operación real.',
+      cards: [
+        {
+          title: 'Evidencia → señales → Founder Brief',
+          description:
+            'Los agentes convierten material disperso en señales estructuradas, cada una citando su evidencia. El Founder Brief separa hechos de hipótesis, con su nivel de certeza. Nada se afirma sin respaldo.',
+        },
+        {
+          title: 'Los agentes proponen, el humano decide',
+          description:
+            'Cada acción consecuente pasa por una compuerta de aprobación humana. Los agentes presentan evidencia; la estrategia la decide el fundador. Sin efectos externos autónomos.',
+        },
+        {
+          title: 'Gobernado por el propio Sytadel',
+          description:
+            'Identidad opt-in vía Auth, enforcement de scopes y un registro append-only de cada acción de agente. Dogfooding real: usamos nuestra identidad, nuestras políticas y nuestra auditoría para gobernar a nuestros propios agentes.',
         },
       ],
     },
@@ -459,6 +492,7 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'Product', href: '#product' },
       { label: 'APIs', href: '#apis' },
       { label: 'Modules', href: '#modules' },
+      { label: 'GrowthOS', href: '#growthos' },
       { label: 'Security', href: '#security' },
     ],
     hero: {
@@ -577,6 +611,33 @@ export const copy: Record<Locale, PageCopy> = {
           title: 'Sytadel MCP',
           description:
             'An MCP server that exposes these capabilities as tools, so Claude can operate your security from the chat itself.',
+        },
+        {
+          title: 'Sytadel Console',
+          description:
+            'A federated control plane: identity, policy, and access from one console, with a unified audit timeline that brings evidence from Auth, ZeroTrust, Vault, and Billing into one verifiable line.',
+        },
+      ],
+    },
+    growthOs: {
+      title: 'We run it on our own operation',
+      description:
+        'GrowthOS is Sytadel Labs’ internal growth engine — our customer-zero. We govern our own market research with the same control-plane direction Sytadel offers other teams. It is not a product for sale — it is living proof that the platform holds up a real operation.',
+      cards: [
+        {
+          title: 'Evidence → signals → Founder Brief',
+          description:
+            'Agents turn scattered material into structured signals, each citing its evidence. The Founder Brief separates facts from hypotheses, with their confidence. Nothing is claimed without backing.',
+        },
+        {
+          title: 'Agents propose, the human decides',
+          description:
+            'Every consequential action goes through a human approval gate. Agents present evidence; the founder decides strategy. No autonomous external side effects.',
+        },
+        {
+          title: 'Governed by Sytadel itself',
+          description:
+            'Opt-in identity via Auth, scope enforcement, and an append-only trail of every agent action. Real dogfooding: we use our own identity, policies, and audit to govern our own agents.',
         },
       ],
     },
@@ -787,6 +848,7 @@ export const copy: Record<Locale, PageCopy> = {
       { label: 'Produto', href: '#produto' },
       { label: 'APIs', href: '#apis' },
       { label: 'Módulos', href: '#modulos' },
+      { label: 'GrowthOS', href: '#growthos' },
       { label: 'Segurança', href: '#seguranca' },
     ],
     hero: {
@@ -905,6 +967,33 @@ export const copy: Record<Locale, PageCopy> = {
           title: 'Sytadel MCP',
           description:
             'Um servidor MCP que expõe essas capacidades como tools, para que o Claude opere sua segurança a partir do próprio chat.',
+        },
+        {
+          title: 'Sytadel Console',
+          description:
+            'Um plano de controle federado: identidade, políticas e acesso a partir de um único console, com um timeline de auditoria unificado que reúne a evidência de Auth, ZeroTrust, Vault e Billing em uma linha do tempo verificável.',
+        },
+      ],
+    },
+    growthOs: {
+      title: 'Usamos na nossa própria operação',
+      description:
+        'GrowthOS é o motor de crescimento interno da Sytadel Labs — nosso customer-zero. Governamos nossa própria pesquisa de mercado com a mesma direção de control-plane que a Sytadel oferece a outras equipes. Não é um produto à venda — é a prova viva de que a plataforma sustenta uma operação real.',
+      cards: [
+        {
+          title: 'Evidência → sinais → Founder Brief',
+          description:
+            'Os agentes transformam material disperso em sinais estruturados, cada um citando sua evidência. O Founder Brief separa fatos de hipóteses, com seu nível de confiança. Nada é afirmado sem respaldo.',
+        },
+        {
+          title: 'Os agentes propõem, o humano decide',
+          description:
+            'Cada ação consequente passa por uma comporta de aprovação humana. Os agentes apresentam evidência; a estratégia é decidida pelo fundador. Sem efeitos externos autônomos.',
+        },
+        {
+          title: 'Governado pelo próprio Sytadel',
+          description:
+            'Identidade opt-in via Auth, enforcement de scopes e um registro append-only de cada ação de agente. Dogfooding real: usamos nossa identidade, nossas políticas e nossa auditoria para governar nossos próprios agentes.',
         },
       ],
     },
