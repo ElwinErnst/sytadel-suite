@@ -54,3 +54,6 @@ runner for web; runner: `npm run build`.)
 ## Progress
 - Exploration done (content.ts, [lang]/index.astro, growth-os README) 2026-10-10.
 - Delivery strategy: single-pr (ask-on-risk default; forecast < 400 authored lines).
+- SHIPPED 2026-10-10 — commit a3d7f39 on codex/saas-control-plane (web content only). Build green, readback OK in es/en/pt. Note: the uncommitted workspace also carries a pre-existing sytadel-growth-os gitlink bump (314f386→f56aae7), NOT part of this web work and not committed by it.
+- OPEN (surfaced, not actioned): dormant placeholder pricing block; optional honest PolyForm/source-available footer note; demo console content unchanged.
+- Next step (user decision): push + PR, or keep iterating (design/legal).
