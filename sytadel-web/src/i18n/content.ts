@@ -456,7 +456,7 @@ export const copy: Record<Locale, PageCopy> = {
       kicker: 'Cómo funciona',
       title: 'Mirá al agente en acción.',
       description:
-        'Una animación de una sesión real: el agente usa los mismos tools del servidor MCP de Sytadel sobre un tenant demo. Mirá qué herramienta llama y qué devuelve — access review, timeline de auditoría unificado, gobernanza de agentes, notarización. Sin instalar nada.',
+        'Una animación de una sesión real: el agente opera sobre la suite de Sytadel en un tenant demo, combinando tools del servidor MCP con capacidades de la plataforma. Mirá qué llama y qué devuelve — access review, timeline de auditoría unificado, gobernanza de agentes, notarización. Sin instalar nada.',
       disclaimer:
         'Animación con datos de demo — muestra el flujo real, sin llamadas en vivo ni costo.',
       placeholder: 'Preguntá sobre usuarios, anomalías o el estado de acceso…',
@@ -812,7 +812,7 @@ export const copy: Record<Locale, PageCopy> = {
       kicker: 'How it works',
       title: 'Watch the agent in action.',
       description:
-        'An animation of a real session: the agent uses the same tools the Sytadel MCP server exposes, over a demo tenant. Watch which tool it calls and what it returns — access review, unified audit timeline, agent governance, notarization. No install.',
+        'An animation of a real session: the agent operates across the Sytadel suite over a demo tenant, combining MCP server tools with platform capabilities. Watch what it calls and what it returns — access review, unified audit timeline, agent governance, notarization. No install.',
       disclaimer:
         'Animation with demo data — shows the real flow, no live calls and no cost.',
       placeholder: 'Ask about users, anomalies, or the access posture…',
@@ -1168,7 +1168,7 @@ export const copy: Record<Locale, PageCopy> = {
       kicker: 'Como funciona',
       title: 'Veja o agente em ação.',
       description:
-        'Uma animação de uma sessão real: o agente usa as mesmas ferramentas que o servidor MCP da Sytadel expõe, sobre um tenant de demonstração. Veja qual ferramenta ele chama e o que retorna — access review, timeline de auditoria unificado, governança de agentes, notarização. Sem instalar nada.',
+        'Uma animação de uma sessão real: o agente opera sobre a suíte da Sytadel em um tenant de demonstração, combinando tools do servidor MCP com capacidades da plataforma. Veja o que ele chama e o que retorna — access review, timeline de auditoria unificado, governança de agentes, notarização. Sem instalar nada.',
       disclaimer:
         'Animação com dados de demonstração — mostra o fluxo real, sem chamadas ao vivo nem custo.',
       placeholder: 'Pergunte sobre usuários, anomalias ou o estado de acesso…',

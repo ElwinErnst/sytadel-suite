@@ -27,8 +27,6 @@ implemented components, not a complete hosted agent runtime.
 | **AI security layer** | LLM **as a policy compiler** (NL → RBAC), AI access review, session-anomaly classification — all with **evals** (precision/recall, cost, latency) | AI Engineering, AI+Security |
 | **MCP + agentic HITL** | An MCP server exposing typed tools over the identity plane, and a LangGraph agent that **proposes** access decisions a human **applies** | Agentic systems, Anthropic ecosystem |
 
-A deep technical/security self-review of this suite lives at [`docs/reports/sytadel-portfolio-review-2026-09.md`](./docs/reports/sytadel-portfolio-review-2026-09.md), including known issues and their status.
-
 ---
 
 ## Architecture
@@ -200,7 +198,7 @@ EOF
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
-The prod overlay also gates the vault master key (`VAULT_MASTER_KEY_B64`) and the gateway→Vault HMAC (`ZT_HMAC_SECRET`), which are `dev-insecure-*` fallbacks in the base compose. The local Postgres/MinIO credentials remain plain dev defaults (they only ever bind to the compose network) — hardening those is a low-priority follow-up in the [review report](./docs/reports/sytadel-portfolio-review-2026-09.md).
+The prod overlay also gates the vault master key (`VAULT_MASTER_KEY_B64`) and the gateway→Vault HMAC (`ZT_HMAC_SECRET`), which are `dev-insecure-*` fallbacks in the base compose. The local Postgres/MinIO credentials remain plain dev defaults (they only ever bind to the compose network) — hardening those is a low-priority follow-up.
 
 ### Demo credentials
 
@@ -221,7 +219,6 @@ They only exist when `AUTH_BOOTSTRAP_DEMO_DATA=true`. Do not enable demo bootstr
 
 - **Roadmap** — [`docs/ROADMAP.md`](./docs/ROADMAP.md)
 - **Architecture (master doc)** — [`docs/architecture/sytadel-master-es.md`](./docs/architecture/sytadel-master-es.md)
-- **Security & portfolio review** — [`docs/reports/sytadel-portfolio-review-2026-09.md`](./docs/reports/sytadel-portfolio-review-2026-09.md)
 - **Per-service** — [auth-api](./auth/auth-api/README.md) · [zerotrust-api](./ZeroTrust/zerotrust-api/README.md) · [vault-api](./securechain-vault/README.md) · [billing-api](./billing/billing-api/README.md) · [mcp-server](./mcp-server/README.md) · [sytadel-app](./sytadel-app/README.md) · [sytadel-web](./sytadel-web/README.md)
 
 > Most in-repo documentation is written in Spanish; this README is in English for the primary audience. If you'd like any service doc translated, open an issue.
