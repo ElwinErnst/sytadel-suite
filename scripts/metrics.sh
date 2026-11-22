@@ -48,7 +48,6 @@ have_gh() { command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; }
 # Weeks in the window, for cadence rates. At least 1 to avoid divide-by-zero.
 window_weeks() {
   local start_epoch now_epoch days
-  start_epoch="$(git log -1 --format=%ct --since="$SINCE" 2>/dev/null || true)"
   start_epoch="$(git log --since="$SINCE" --format=%ct --reverse 2>/dev/null | head -1 || true)"
   now_epoch="$(git log -1 --format=%ct 2>/dev/null || echo 0)"
   if [[ -z "$start_epoch" || "$now_epoch" -le "$start_epoch" ]]; then echo 1; return; fi

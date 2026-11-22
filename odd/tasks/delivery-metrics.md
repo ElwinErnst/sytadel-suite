@@ -26,17 +26,19 @@ Delivery strategy: ask-on-risk. Test runner: bash (shellcheck + script self-chec
 
 - [x] **DM-001 — metrics.sh** (S1). Route: inline. New file `scripts/metrics.sh`. Verified: `bash -n` OK; table + `--json` run against real history (172 commits/82 PRs over 1y, lead-time median 0.2h/p90 23.7h, fix ratio 9.8%, churn 2.3%); `jq` confirms valid JSON with all expected keys; git-only degrade path yields `prs:null` + `commit-proxy` defect source; `--submodules` reports all 6. Fixed two bugs found in verification (git-only `generated_from` and `prs:0`→`null`). Risk: none (read-only analysis script).
 - [x] **DM-002 — ODD block + AGENTS.md** (S2). Route: inline. Documented the `## Metrics` block (AGENTS.md §2) and `scripts/metrics.sh` usage (AGENTS.md §4); seeded a real block here. Verified: `metrics.sh` now reports ODD forecast drift 19% over 1 doc (was n/a). Risk: none (docs).
-- [ ] **DM-003 — metrics.yml** (S3). Route: inline. New workflow pushing to orphan `metrics` branch. Risk: item 5 (CI/delivery) — own commit; verify workflow YAML and token scope.
+- [x] **DM-003 — metrics.yml** (S3). Route: inline. New workflow appends a dated snapshot to the orphan `metrics` branch on merge to `main`. Verified: YAML valid (ruby); jq snapshot-merge shape OK; orphan clone→create→append→push flow simulated against a local bare remote across 3 runs (history.jsonl accumulates, `main` untouched). Independent verifier (general-purpose, adversarial): **no blockers** — token auto-masked, non-ff push fails safe, `contents:write` minimal, `metrics.sh` strictly read-only. Applied 2 non-blocking fixes it surfaced: removed a dead line in `window_weeks`, pass `METRICS_REPO=${{ github.repository }}` instead of hardcoded slug. Runtime (actual CI push) — N/A until merged to `main`; cannot run GitHub Actions locally. Risk: item 5 (CI/delivery).
 
 ## Log
 
 - L1 (2026-11-22): user asked to tackle the metrics gap (speed/rework/defects) identified in the AI-maturity ladder assessment, to move from ladder level 3 (Delegated) toward 4 (Orchestrated). Chose option C: git/GitHub-derived script + structured ODD block + CI trend.
 - L2 (2026-11-22): verified `main` branch protection (`enforce_admins: true`, PR required). The design's "commit history.jsonl to main via CI" is unachievable; switched S3 storage to an orphan `metrics` branch. Recorded as a constraint.
 - L3 (2026-11-22): DM-001 shipped (`9bba40e`); two bugs caught in verification (git-only `generated_from`, `prs:0`→`null`), not in production.
+- L4 (2026-11-22): DM-002 shipped (ODD `## Metrics` block + AGENTS.md docs); drift metric went live (19% over 1 doc).
+- L5 (2026-11-22): DM-003 shipped. Independent adversarial verifier returned no blockers; applied its 2 non-blocking fixes. CI push path is N/A until merged (cannot run Actions locally). Feature complete; all 3 specs met. Delivery note: the `metrics` orphan branch is created by the first post-merge run — nothing to seed manually.
 
 ## Metrics
 forecast_lines: 400
-actual_lines: 324
+actual_lines: 397
 rework_rounds: 0
 review_defects: 0
 verify: PASS
