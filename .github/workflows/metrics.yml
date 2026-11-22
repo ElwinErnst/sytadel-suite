@@ -1,0 +1,67 @@
+name: metrics
+
+# Append a dated delivery-metrics snapshot on every merge to main.
+#
+# The snapshot is stored on the orphan `metrics` branch (one JSON line per
+# merge in history.jsonl), NOT on main: main is protected (enforce_admins +
+# required PR), so a GitHub Action cannot push to it. The orphan branch is
+# unprotected and carries no source — only the metrics trend.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: metrics-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+          METRICS_REPO: ${{ github.repository }}
+        run: |
+          ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          ./scripts/metrics.sh --json \
+            | jq -c --arg ts "$ts" --arg sha "${GITHUB_SHA}" \
+                '{date: $ts, commit: $sha} + .' \
+            > "${RUNNER_TEMP}/snapshot.json"
+          echo "Snapshot:"; cat "${RUNNER_TEMP}/snapshot.json"
+
+      - name: Append to orphan metrics branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          work="$(mktemp -d)"
+
+          # Clone the existing metrics branch, or start a fresh orphan if absent.
+          if git clone --branch metrics --single-branch --depth 1 "$remote" "$work" 2>/dev/null; then
+            cd "$work"
+          else
+            git clone --single-branch --depth 1 "$remote" "$work"
+            cd "$work"
+            git checkout --orphan metrics
+            git rm -rf --quiet . 2>/dev/null || true
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          cat "${RUNNER_TEMP}/snapshot.json" >> history.jsonl
+          git add history.jsonl
+          git commit -m "metrics: snapshot $(date -u +%F) (${GITHUB_SHA:0:7})"
+          git push origin metrics
