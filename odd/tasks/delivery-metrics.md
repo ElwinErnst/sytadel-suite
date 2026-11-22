@@ -25,10 +25,19 @@ Delivery strategy: ask-on-risk. Test runner: bash (shellcheck + script self-chec
 ## Tasks
 
 - [x] **DM-001 — metrics.sh** (S1). Route: inline. New file `scripts/metrics.sh`. Verified: `bash -n` OK; table + `--json` run against real history (172 commits/82 PRs over 1y, lead-time median 0.2h/p90 23.7h, fix ratio 9.8%, churn 2.3%); `jq` confirms valid JSON with all expected keys; git-only degrade path yields `prs:null` + `commit-proxy` defect source; `--submodules` reports all 6. Fixed two bugs found in verification (git-only `generated_from` and `prs:0`→`null`). Risk: none (read-only analysis script).
-- [ ] **DM-002 — ODD block + AGENTS.md** (S2). Route: inline. Edit `AGENTS.md`; add template snippet. Risk: none (docs).
+- [x] **DM-002 — ODD block + AGENTS.md** (S2). Route: inline. Documented the `## Metrics` block (AGENTS.md §2) and `scripts/metrics.sh` usage (AGENTS.md §4); seeded a real block here. Verified: `metrics.sh` now reports ODD forecast drift 19% over 1 doc (was n/a). Risk: none (docs).
 - [ ] **DM-003 — metrics.yml** (S3). Route: inline. New workflow pushing to orphan `metrics` branch. Risk: item 5 (CI/delivery) — own commit; verify workflow YAML and token scope.
 
 ## Log
 
 - L1 (2026-11-22): user asked to tackle the metrics gap (speed/rework/defects) identified in the AI-maturity ladder assessment, to move from ladder level 3 (Delegated) toward 4 (Orchestrated). Chose option C: git/GitHub-derived script + structured ODD block + CI trend.
 - L2 (2026-11-22): verified `main` branch protection (`enforce_admins: true`, PR required). The design's "commit history.jsonl to main via CI" is unachievable; switched S3 storage to an orphan `metrics` branch. Recorded as a constraint.
+- L3 (2026-11-22): DM-001 shipped (`9bba40e`); two bugs caught in verification (git-only `generated_from`, `prs:0`→`null`), not in production.
+
+## Metrics
+forecast_lines: 400
+actual_lines: 324
+rework_rounds: 0
+review_defects: 0
+verify: PASS
+agent_route: inline

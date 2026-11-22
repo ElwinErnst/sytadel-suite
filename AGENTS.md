@@ -55,9 +55,23 @@ A feature document follows a fixed order:
   (inline/delegated), status, and the commit that holds it.
 - **`## Log`** — the logbook. `L1` is the original request verbatim; later
   corrections, rationale, and verification evidence are appended.
+- **`## Metrics`** *(optional, machine-readable)* — one block per feature (or
+  per task), consumed by `scripts/metrics.sh` to measure forecast accuracy.
+  Plain `key: value` lines so the script can grep them:
+
+  ```
+  ## Metrics
+  forecast_lines: 700
+  actual_lines: 1031
+  rework_rounds: 1
+  review_defects: 2
+  verify: PASS
+  agent_route: delegated
+  ```
 
 See `odd/tasks/saas-control-plane.md` for a worked example (specs `SCP-001`..
-`SCP-006`, per-task acceptance + verification + commit SHAs).
+`SCP-006`, per-task acceptance + verification + commit SHAs), and
+`odd/tasks/delivery-metrics.md` for a `## Metrics` block.
 
 Small, understood, low-risk changes do **not** need a feature document — work
 inline and keep it proportionate.
@@ -117,6 +131,30 @@ Every repo in the suite has CI (`.github/workflows/`):
 Before claiming work is done, run the affected repo's `test` and `build`, and —
 for runtime-affecting changes — drive the actual flow (not just unit tests).
 Record failed, skipped, or N/A checks honestly in the feature document's `Log`.
+
+### Delivery metrics
+
+`scripts/metrics.sh` derives AI-assisted delivery signal from real artifacts
+(git history, GitHub via `gh`, and the `## Metrics` blocks above) — nothing is
+self-reported:
+
+- **Speed** — commit cadence, merged-PR cadence, PR lead time (median/p90).
+- **Rework** — reverts, `fix(`-after-`feat(` in the same scope, file churn,
+  ODD forecast-vs-actual drift.
+- **Defects** — `fix`/hotfix PR ratio (proxy), smoke-check failure rate on
+  `main`.
+
+```
+scripts/metrics.sh                 # human table over the last 90 days
+scripts/metrics.sh --json          # machine snapshot
+scripts/metrics.sh --submodules    # add per-submodule git signal
+scripts/metrics.sh --since "1 year ago"
+```
+
+Proxy signals (a `fix:` commit is not exactly a defect) are labelled `(proxy)`.
+The script is read-only and degrades to a git-only path when `gh` is absent.
+CI appends a dated snapshot to the orphan `metrics` branch on every merge to
+`main` (see `.github/workflows/metrics.yml`).
 
 ---
 
