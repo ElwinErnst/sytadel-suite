@@ -24,7 +24,7 @@ Delivery strategy: ask-on-risk. Test runner: bash (shellcheck + script self-chec
 
 ## Tasks
 
-- [ ] **DM-001 — metrics.sh** (S1). Route: inline. New file `scripts/metrics.sh`. RED: self-check asserting `--json` emits valid JSON with the expected keys. Risk: none (read-only analysis script).
+- [x] **DM-001 — metrics.sh** (S1). Route: inline. New file `scripts/metrics.sh`. Verified: `bash -n` OK; table + `--json` run against real history (172 commits/82 PRs over 1y, lead-time median 0.2h/p90 23.7h, fix ratio 9.8%, churn 2.3%); `jq` confirms valid JSON with all expected keys; git-only degrade path yields `prs:null` + `commit-proxy` defect source; `--submodules` reports all 6. Fixed two bugs found in verification (git-only `generated_from` and `prs:0`→`null`). Risk: none (read-only analysis script).
 - [ ] **DM-002 — ODD block + AGENTS.md** (S2). Route: inline. Edit `AGENTS.md`; add template snippet. Risk: none (docs).
 - [ ] **DM-003 — metrics.yml** (S3). Route: inline. New workflow pushing to orphan `metrics` branch. Risk: item 5 (CI/delivery) — own commit; verify workflow YAML and token scope.
 
